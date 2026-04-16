@@ -3305,6 +3305,9 @@
   (function() {
     'use strict';
 
+    // ── Apps Script URL — must be defined inside this block ─────────────────
+    var DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiXivG7xjReARJ2nZs_TY2DaNq36wx7bc-rz9yJ9RzyMxBcgZwQ7k2gLlmsbFh6-liVw/exec';
+
     // ── Queued files: [{ file: File, status: 'queued'|'uploading'|'done'|'error', url: '' }]
     var driveQueue = [];
 
@@ -3332,7 +3335,7 @@
       bar.style.display = 'flex';
       if (label) label.textContent = 'Client folder: ' + code;
       // Try to fetch the folder URL from Drive via Apps Script
-      fetch(ILS_SHEET_URL, {
+      fetch(DRIVE_SCRIPT_URL, {
         method: 'POST',
         body: JSON.stringify({ __action: 'getClientFolderUrl', appCode: code })
       })
@@ -3441,7 +3444,7 @@
           var b64 = await fileToBase64(driveQueue[i].file);
 
           // Use no-cors redirect:follow to handle Apps Script redirects
-          var resp = await fetch(ILS_SHEET_URL, {
+          var resp = await fetch(DRIVE_SCRIPT_URL, {
             method:   'POST',
             redirect: 'follow',
             body: JSON.stringify({
