@@ -2105,7 +2105,7 @@
                 <div class="ua-text">Click to upload location, property, business, or residence photo</div>
                 <div class="ua-sub">JPEG files only (.jpg, .jpeg)</div>
                 <input type="file" id="fileResPhoto" multiple accept=".jpg,.jpeg,image/jpeg" style="display:none"
-                  onchange="handleFiles(this,'fileListResPhoto')">
+                  onchange="driveQueueFiles(this.files);handleFiles(this,'fileListResPhoto')">
               </div>
               <div class="file-chips" id="fileListResPhoto">
                 <span class="file-chip">&#x1F4F7; Location_Photo.jpg</span>
@@ -2120,7 +2120,7 @@
                 <div class="ua-text">Click to upload loan &amp; collateral docs</div>
                 <div class="ua-sub">PDF files only (.pdf)</div>
                 <input type="file" id="fileLoanDocs" multiple accept=".pdf,application/pdf" style="display:none"
-                  onchange="handleFiles(this,'fileListLoanDocs')">
+                  onchange="driveQueueFiles(this.files);handleFiles(this,'fileListLoanDocs')">
               </div>
               <div class="file-chips" id="fileListLoanDocs">
                 <span class="file-chip">&#x1F4C4; Collateral_Title.pdf</span>
@@ -2268,7 +2268,7 @@
             <div class="ua-text">Click or drag to upload credit-related documents</div>
             <div class="ua-sub">CIC reports, bank statements, payment records (Word, PDF, Excel, images)</div>
             <input type="file" id="fileInCB" multiple accept=".doc,.docx,.pdf,.xlsx,.xls,.jpg,.png" style="display:none"
-              onchange="handleFiles(this,'fileListCB')">
+              onchange="driveQueueFiles(this.files);handleFiles(this,'fileListCB')">
           </div>
           <div class="file-chips" id="fileListCB">
           </div>
@@ -3059,7 +3059,7 @@
     // ═══════════════════════════════════════════════════════════
     //  INTERVIEW FORM INTEGRATION — Shared Apps Script URL
     // ═══════════════════════════════════════════════════════════
-    var ILS_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxiXivG7xjReARJ2nZs_TY2DaNq36wx7bc-rz9yJ9RzyMxBcgZwQ7k2gLlmsbFh6-liVw/exec';
+    var ILS_SHEET_URL = 'https://script.google.com/macros/s/AKfycbx5cfixkka7bcw7PyrY8iGDNE3ea6vym5ox2xnEMEol_Z4kkxwhzD2QHpIh5OUKgoMiwg/exec';
 
     function ilsStatus(msg, type) {
       var el = document.getElementById('ilsStatus');
@@ -3306,7 +3306,7 @@
     'use strict';
 
     // ── Apps Script URL — must be defined inside this block ─────────────────
-    var DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiXivG7xjReARJ2nZs_TY2DaNq36wx7bc-rz9yJ9RzyMxBcgZwQ7k2gLlmsbFh6-liVw/exec';
+    var DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5cfixkka7bcw7PyrY8iGDNE3ea6vym5ox2xnEMEol_Z4kkxwhzD2QHpIh5OUKgoMiwg/exec';
 
     // ── Queued files: [{ file: File, status: 'queued'|'uploading'|'done'|'error', url: '' }]
     var driveQueue = [];
