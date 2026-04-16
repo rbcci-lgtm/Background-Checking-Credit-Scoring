@@ -3110,119 +3110,153 @@
     }
 
     function ilsPopulateFields(snap, record) {
-      // Helper: set input value safely
+
+      // ── STEP 1: Clear ALL hardcoded sample data first ───────
+      // Ensures fields with no Interview data show blank, not old placeholders
+      ['fN','fT','fAd','fPh','fSp','fAO','fAm','fTm','fCO'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      // Clear all unnamed text inputs in the form (removes sample data like "Pedro C. Almonte")
+      document.querySelectorAll('#vR .bd .fi input:not([type="date"]):not([type="number"]):not([type="file"]):not([id])').forEach(function(inp) {
+        inp.value = '';
+      });
+      // Clear number inputs
+      document.querySelectorAll('#vR .bd .fi input[type="number"]').forEach(function(inp) {
+        inp.value = '';
+      });
+      // Clear collateral table inputs
+      document.querySelectorAll('#colS .dt tbody td input').forEach(function(inp) {
+        inp.value = '';
+      });
+
+      // ── Helper: always set value (empty string if no data) ──
       function sv(id, val) {
         var el = document.getElementById(id);
-        if (el && val !== undefined && val !== null && val !== '') el.value = val;
+        if (!el) return;
+        el.value = (val !== undefined && val !== null) ? String(val) : '';
       }
-      // Helper: set select by matching option text or value
+
+      // ── Helper: set select by matching option ────────────────
       function ss(id, val) {
         var el = document.getElementById(id);
         if (!el || !val) return;
         for (var i = 0; i < el.options.length; i++) {
           if (el.options[i].value === val || el.options[i].text === val ||
               el.options[i].text.toLowerCase().includes(val.toLowerCase())) {
-            el.selectedIndex = i; break;
+            el.selectedIndex = i; return;
           }
         }
       }
 
       // ── Section 1: Applicant Info ────────────────────────────
-      sv('fN',  snap.fieldFirstName  ? [snap.fieldFirstName, snap.fieldMiddleName, snap.fieldLastName].filter(Boolean).join(' ') + (snap.fieldSuffix ? ', ' + snap.fieldSuffix : '') : record.fullName);
-      sv('fT',  snap.fieldTIN);
-      sv('fAd', snap.fieldAddress);
-      sv('fPh', snap.fieldMobile);
-      sv('fSp', snap.fieldSpouse);
+
+      // Full Name
+      var fullName = '';
+      if (snap.fieldFirstName || snap.fieldLastName) {
+        fullName = [snap.fieldFirstName, snap.fieldMiddleName, snap.fieldLastName]
+          .filter(Boolean).join(' ');
+        if (snap.fieldSuffix) fullName += ', ' + snap.fieldSuffix;
+      } else {
+        fullName = record.fullName || '';
+      }
+      sv('fN', fullName);
+
+      // TIN, Address, Mobile
+      sv('fT',  snap.fieldTIN     || '');
+      sv('fAd', snap.fieldAddress || '');
+      sv('fPh', snap.fieldMobile  || '');
+
+      // Spouse — only populate if Interview has spouse data
+      sv('fSp', snap.fieldSpouse || '');
 
       // DOB
       if (snap.dobMM && snap.dobDD && snap.dobYY) {
-        var dob = snap.dobYY + '-' + String(snap.dobMM).padStart(2,'0') + '-' + String(snap.dobDD).padStart(2,'0');
+        var dob = snap.dobYY + '-' +
+          String(snap.dobMM).padStart(2,'0') + '-' +
+          String(snap.dobDD).padStart(2,'0');
         var dobEl = document.querySelector('#vR input[type="date"]');
         if (dobEl) dobEl.value = dob;
       }
 
       // Civil Status
-      var civilMap = { 'Single':'Single','Married':'Married','Widowed':'Widowed','Separated':'Separated','Widower':'Widowed' };
+      var civilMap = {'Single':'Single','Married':'Married','Widowed':'Widowed','Separated':'Separated'};
       var civil = snap['radio_civil'] || '';
       if (civil) ss('fCv', civilMap[civil] || civil);
 
       // Housing
-      var homeMap = { 'Owned':'Owned','Rented':'Rented','Living with relatives':'Living with relatives' };
+      var homeMap = {'Owned':'Owned','Rented':'Rented','Living with relatives':'Living with relatives'};
       var home = snap['radio_homeOwnership'] || '';
       if (home) ss('fHs', homeMap[home] || home);
 
-      // Interviewer becomes Account Officer
-      sv('fAO', snap.fieldInterviewerName);
-
-      // Co-maker from co-borrower fields
-      var cobFull = [snap.cobFirstName, snap.cobMiddleName, snap.cobLastName].filter(Boolean).join(' ');
-      if (cobFull) {
-        var comakerEl = document.querySelector('#vR .fi input[placeholder*="Enter officer name"]');
-        // Find co-maker field (it's near fAO)
-        var allInputs = document.querySelectorAll('#vR .bd .fi input:not([type="date"]):not([type="number"]):not([type="file"])');
-        allInputs.forEach(function(inp) {
-          if (inp.placeholder && inp.placeholder.toLowerCase().includes('co-maker')) inp.value = cobFull;
-        });
-      }
-
-      // Source of repayment = payment source
-      var srcEl = document.querySelector('#vR .fi input[value="Farm income + copra trading"]');
-      if (!srcEl) {
-        // fallback: find by placeholder or proximity
-        var allInputs2 = document.querySelectorAll('#vR .bd .fi input:not([id]):not([type="date"]):not([type="number"])');
-        allInputs2.forEach(function(inp){ if(inp.placeholder && inp.placeholder.toLowerCase().includes('source')) inp.value = snap.fieldPaySource || ''; });
-      } else { srcEl.value = snap.fieldPaySource || srcEl.value; }
-
       // Years at address
       var yrsInputs = document.querySelectorAll('#vR .bd .fi input[type="number"]');
-      if (yrsInputs[0] && snap.fieldYearsAddr) yrsInputs[0].value = snap.fieldYearsAddr;
+      if (yrsInputs[0]) yrsInputs[0].value = snap.fieldYearsAddr || '';
+
+      // Account Officer = Interviewer
+      sv('fAO', snap.fieldInterviewerName || '');
+
+      // Co-maker and Source of Repayment — find by placeholder
+      document.querySelectorAll('#vR .bd .fi input:not([id]):not([type="date"]):not([type="number"]):not([type="file"])').forEach(function(inp) {
+        var ph = (inp.placeholder || '').toLowerCase();
+        if (ph.includes('co-maker') || ph.includes('guarantor')) {
+          var cobFull = [snap.cobFirstName, snap.cobMiddleName, snap.cobLastName].filter(Boolean).join(' ');
+          inp.value = cobFull || '';
+        }
+        if (ph.includes('source') || ph.includes('repayment')) {
+          inp.value = snap.fieldPaySource || '';
+        }
+      });
 
       // ── Section 2: Loan Details ──────────────────────────────
       sv('fAm', snap.fieldLoanAmount ? snap.fieldLoanAmount.replace(/[^0-9.]/g,'') : '');
       sv('fTm', snap.fieldLoanTerm   ? snap.fieldLoanTerm + ' months' : '');
 
       // Loan purpose
-      var purposes = [];
-      ['purpBusiness','purpPersonal','purpEducation','purpMedical','purpHouse','purpTax','purpPayoff'].forEach(function(p){
-        if (snap[p] === true || snap[p] === 'true') {
-          var lbl = p.replace('purp','').replace('Business','Agricultural/Business').replace('Personal','Personal').replace('Education','Personal').replace('Medical','Personal').replace('House','Housing').replace('Tax','Personal').replace('Payoff','Business/Commercial');
-          purposes.push(lbl);
+      var purposeMap = {
+        'purpBusiness':  'Agricultural/Business',
+        'purpPersonal':  'Personal',
+        'purpEducation': 'Personal',
+        'purpMedical':   'Personal',
+        'purpHouse':     'Housing',
+        'purpTax':       'Personal',
+        'purpPayoff':    'Business/Commercial'
+      };
+      var firstPurpose = '';
+      Object.keys(purposeMap).forEach(function(key) {
+        if (!firstPurpose && (snap[key] === true || snap[key] === 'true')) {
+          firstPurpose = purposeMap[key];
         }
       });
-      if (purposes.length) ss('fPu', purposes[0]);
+      if (firstPurpose) ss('fPu', firstPurpose);
 
-      // Loan type (Secured / Unsecured)
+      // Loan type
       var ltype = snap['radio_loanType'] || '';
-      if (ltype.toLowerCase().includes('secured') && !ltype.toLowerCase().includes('un')) ss('fCl','Secured');
-      else if (ltype.toLowerCase().includes('unsecured')) ss('fCl','Unsecured');
+      if (ltype.toLowerCase().includes('unsecured')) ss('fCl','Unsecured');
+      else if (ltype.toLowerCase().includes('secured')) ss('fCl','Secured');
 
       // Borrower category
       var btype = snap['radio_btype'] || '';
-      if (btype === 'Individual') ss('fBT','Individual–Personal');
-      else if (btype === 'Corporation') ss('fBT','Corporation');
-      else if (btype === 'Cooperative') ss('fBT','Cooperative');
+      if      (btype === 'Individual')   ss('fBT','Individual–Personal');
+      else if (btype === 'Corporation')  ss('fBT','Corporation');
+      else if (btype === 'Cooperative')  ss('fBT','Cooperative');
 
-      // Collateral table (row 1)
-      if (snap.coll1Desc) {
-        var collInputs = document.querySelectorAll('#colS .dt tbody tr:first-child td input');
-        if (collInputs[0]) collInputs[0].value = snap.coll1Desc || '';
-        if (collInputs[1]) collInputs[1].value = snap.coll1Loc  || '';
-        if (collInputs[2]) collInputs[2].value = snap.coll1Title|| '';
-        if (collInputs[3]) collInputs[3].value = snap.coll1Area || '';
-      }
+      // Collateral row 1
+      var collInputs = document.querySelectorAll('#colS .dt tbody tr:first-child td input');
+      if (collInputs[0]) collInputs[0].value = snap.coll1Desc  || '';
+      if (collInputs[1]) collInputs[1].value = snap.coll1Loc   || '';
+      if (collInputs[2]) collInputs[2].value = snap.coll1Title || '';
+      if (collInputs[3]) collInputs[3].value = snap.coll1Area  || '';
 
-      // ── Credit Evaluation (Section 7) ───────────────────────
-      sv('fCO', snap.fieldInterviewerName); // interviewer → credit eval head pre-fill
+      // ── Section 7: Credit Evaluation ────────────────────────
+      sv('fCO', snap.fieldInterviewerName || '');
 
-      // ── Reference No. — auto-generate BI ref using ILS code ─
+      // ── Reference No. and Date ───────────────────────────────
       var ilsCode = document.getElementById('ilsCodeInput').value.trim().toUpperCase();
       sv('fR', 'BI-' + ilsCode);
+      sv('fDt', new Date().toISOString().slice(0,10));
 
-      // Set today's date
-      var today = new Date().toISOString().slice(0,10);
-      sv('fDt', today);
-
-      toast('✓ Fields auto-populated from Interview Form');
+      toast('✓ Fields populated from Interview Form');
     }
 
     // ── SAVE TO GOOGLE SHEETS ────────────────────────────────
