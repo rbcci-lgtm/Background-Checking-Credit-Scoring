@@ -2867,8 +2867,8 @@
               <div class="gauge" id="gau" style="--a:-40deg">
                 <div class="gc"></div>
               </div>
-              <div class="rl lo" id="rLb">LOW RISK</div>
-              <div style="font-size:0.74rem;color:var(--n3);margin-top:2px">Score: <strong id="rScD">79/100</strong>
+              <div class="rl" id="rLb"></div>
+              <div style="font-size:0.74rem;color:var(--n3);margin-top:2px">Score: <strong id="rScD">0/100</strong>
               </div>
             </div>
             <div class="rfl" style="text-align:left">
@@ -2876,10 +2876,10 @@
                 Recommendation</div>
               <div id="autoRec"
                 style="padding:8px 10px;background:var(--ok0);color:var(--ok);border-radius:var(--r);font-weight:700;font-size:0.84rem;margin-bottom:8px">
-                AA &#x2014; APPROVE at standard terms</div>
-              <div class="rf"><span>Quant Score</span><span class="rv" style="color:var(--ok)" id="rQ">37/50</span>
+                — Select criteria to calculate score</div>
+              <div class="rf"><span>Quant Score</span><span class="rv" id="rQ">0/50</span>
               </div>
-              <div class="rf"><span>Qual Score</span><span class="rv" style="color:var(--ok)" id="rQl">42/50</span>
+              <div class="rf"><span>Qual Score</span><span class="rv" id="rQl">0/50</span>
               </div>
               <div class="rf"><span>Credit History</span><span class="rv" style="color:var(--ok)">Pass (4/5)</span>
               </div>
@@ -3305,8 +3305,8 @@
         esrmNotes:       gv('fESRMnotes'),
         creditNotes:     gv('fCN'),
         creditEvalHead:  gv('fCO'),
-        totalScore:      document.getElementById('totalScore') ? document.getElementById('totalScore').textContent : '',
-        scoreRating:     document.getElementById('scoreRating') ? document.getElementById('scoreRating').textContent : '',
+        totalScore:      document.getElementById('rScD') ? document.getElementById('rScD').textContent : '',
+        scoreRating:     document.getElementById('autoRec') ? document.getElementById('autoRec').textContent : '',
         recommendation:  document.getElementById('autoRec') ? document.getElementById('autoRec').textContent : '',
         uploadedFiles:   driveLinks.map(function(l){ return l.name + ': ' + l.url; }).join(' | '),
         timestamp:       new Date().toLocaleString('en-PH', { timeZone: 'Asia/Manila' })
@@ -3609,8 +3609,8 @@
       document.getElementById('qSub').textContent  = qRound;
       document.getElementById('qlSub').textContent = qlRound;
 
-      var totalEl = document.getElementById('totalScore');
-      if (totalEl) totalEl.textContent = total;
+      var totalEl = document.getElementById('rScD');
+      if (totalEl) totalEl.textContent = total + '/100';
       var rScDEl = document.getElementById('rScD');
       if (rScDEl) rScDEl.textContent = total + '/100';
       var rQEl = document.getElementById('rQ');
@@ -3633,8 +3633,8 @@
       var bg = { ok: 'var(--ok0)', wn: 'var(--wn0)', er: 'var(--er0)' };
       var fg = { ok: 'var(--ok)',  wn: 'var(--wn)',  er: 'var(--er)'  };
 
-      var srEl = document.getElementById('scoreRating');
-      if (srEl) { srEl.textContent = rat; srEl.style.background = bg[cls]; srEl.style.color = fg[cls]; }
+      var srEl = document.getElementById('autoRec');
+      if (srEl) { srEl.textContent = rat + ' — ' + dec; srEl.style.background = bg[cls]; srEl.style.color = fg[cls]; }
       var rlEl = document.getElementById('rLb');
       if (rlEl) { rlEl.textContent = total >= 65 ? 'LOW RISK' : total >= 55 ? 'MODERATE RISK' : 'HIGH RISK'; rlEl.className = 'rl ' + (total >= 65 ? 'lo' : total >= 55 ? 'md' : 'hi'); }
       var gauEl = document.getElementById('gau');
@@ -3742,29 +3742,150 @@
     // Filter tabs
     document.querySelectorAll('.ftabs button').forEach(function (b) { b.addEventListener('click', function () { this.parentElement.querySelectorAll('button').forEach(function (x) { x.classList.remove('on') }); this.classList.add('on') }) });
 
-    // PDF Export
+    // ── Helper: get score display value safely
+    function getScore() { var el = document.getElementById('rScD'); return el ? el.textContent : '—'; }
+    function getRating() { var el = document.getElementById('autoRec'); return el ? el.textContent : '—'; }
+    function getQSub()  { var el = document.getElementById('qSub');  return el ? el.textContent : '0'; }
+    function getQLSub() { var el = document.getElementById('qlSub'); return el ? el.textContent : '0'; }
+    function php(v)     { var n = Number(v); return n ? '₱ ' + n.toLocaleString() : v || '—'; }
+    function val(id)    { return gv(id) || '—'; }
+
+    // PDF Final Report
     function xPDF() {
       try {
-        var J = window.jspdf, p = new J.jsPDF('p', 'mm', 'a4'), w = p.internal.pageSize.getWidth();
-        p.setFillColor(7, 26, 14); p.rect(0, 0, w, 24, 'F'); p.setTextColor(255, 255, 255); p.setFontSize(12);
-        p.text('RURAL BANK OF CALBAYOG CITY, INC.', w / 2, 10, { align: 'center' }); p.setFontSize(8);
-        p.text('Background Investigation, Checking & Credit Scoring Report', w / 2, 16, { align: 'center' });
-        p.text('82 T. Bugallon St., Calbayog City, W. Samar | RBCC 4.02 Rev.16', w / 2, 21, { align: 'center' });
-        p.setTextColor(15, 26, 19); var y = 32; p.setFontSize(9);
-        p.text('Ref: ' + gv('fR'), 14, y); p.text('Date: ' + gv('fDt'), w - 14, y, { align: 'right' });
-        y += 7; p.setFontSize(11); p.text('Applicant: ' + gv('fN'), 14, y); y += 9;
-        p.autoTable({
-          startY: y, theme: 'grid', headStyles: { fillColor: [17, 51, 29], fontSize: 7 }, bodyStyles: { fontSize: 7.5 },
-          head: [['Field', 'Value']], body: [
-            ['Purpose', gv('fPu')], ['Class', gv('fCl')], ['Amount', 'P' + Number(gv('fAm')).toLocaleString()],
-            ['Income', 'P' + Number(gv('fIn')).toLocaleString()], ['Debt', 'P' + Number(gv('fDb')).toLocaleString()],
-            ['DTI', gv('fDTI')], ['Credit Score', (document.getElementById('rScD') ? document.getElementById('rScD').textContent : '0/100')],
-            ['Rating', (document.getElementById('autoRec') ? document.getElementById('autoRec').textContent : '')], ['Recommendation', gv('fRc')],
-          ]
+        var J = window.jspdf;
+        if (!J) { toast('PDF library not loaded'); return; }
+        var p = new J.jsPDF('p', 'mm', 'a4');
+        var w = p.internal.pageSize.getWidth();
+        var date = new Date().toLocaleDateString('en-PH', { year:'numeric', month:'long', day:'numeric' });
+        var nm = val('fN');
+        var fn = 'RBCCI_BI_' + nm.replace(/[^a-zA-Z0-9]/g,'_') + '_' + new Date().toISOString().slice(0,10) + '.pdf';
+
+        // ── Header ──────────────────────────────────────────────
+        p.setFillColor(7, 26, 14);
+        p.rect(0, 0, w, 28, 'F');
+        p.setTextColor(255, 255, 255);
+        p.setFontSize(13); p.setFont(undefined, 'bold');
+        p.text('RURAL BANK OF CALBAYOG CITY, INC.', w/2, 10, { align:'center' });
+        p.setFontSize(8); p.setFont(undefined, 'normal');
+        p.text('Background Investigation, Checking & Credit Scoring Report', w/2, 16, { align:'center' });
+        p.text('82 T. Bugallon St., Brgy. Central, Calbayog City, W. Samar 6710  |  BSP Lic: RB-0567', w/2, 21, { align:'center' });
+        p.text('RBCC 4.02 Rev.16  |  CONFIDENTIAL', w/2, 26, { align:'center' });
+
+        // ── Meta bar ────────────────────────────────────────────
+        p.setTextColor(15, 26, 19);
+        p.setFillColor(240, 245, 240);
+        p.rect(0, 28, w, 9, 'F');
+        p.setFontSize(8);
+        p.text('Ref: ' + val('fR'), 14, 34);
+        p.text('Date: ' + val('fDt'), w/2, 34, { align:'center' });
+        p.text('Printed: ' + date, w-14, 34, { align:'right' });
+
+        var y = 42;
+        var hs = { fillColor:[17,51,29], textColor:255, fontSize:8, fontStyle:'bold' };
+        var bs = { fontSize:8 };
+        var ts = { theme:'grid', headStyles:hs, bodyStyles:bs, margin:{ left:14, right:14 } };
+
+        // ── Section 1: Applicant Info ────────────────────────────
+        p.setFontSize(9); p.setFont(undefined,'bold'); p.setTextColor(7,26,14);
+        p.text('1. APPLICANT / BORROWER INFORMATION', 14, y); y += 4;
+        p.autoTable({ ...ts, startY:y, body:[
+          ['Applicant Name', nm, 'Reference No.', val('fR')],
+          ['TIN', val('fT'), 'Date', val('fDt')],
+          ['Civil Status', val('fCv'), 'Spouse', val('fSp')],
+          ['Address', val('fAd'), 'Contact', val('fPh')],
+          ['Housing', val('fHs'), 'Years at Address', val('fYA')],
+          ['Co-Maker / Guarantor', val('fCM'), 'Source of Repayment', val('fSR')],
+          ['Account Officer', val('fAO'), '', ''],
+        ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
+        y = p.lastAutoTable.finalY + 5;
+
+        // ── Section 2: Loan Details ──────────────────────────────
+        p.setFont(undefined,'bold'); p.text('2. LOAN DETAILS', 14, y); y += 4;
+        p.autoTable({ ...ts, startY:y, body:[
+          ['Loan Purpose', val('fPu'), 'Classification', val('fCl')],
+          ['Loan Amount', php('fAm'), 'Term', val('fTm')],
+          ['Interest Rate', val('fRt'), 'Category', val('fBT')],
+          ['Repayment Mode', val('fRM'), '', ''],
+        ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
+        y = p.lastAutoTable.finalY + 5;
+
+        // ── Section 3: Credit Background ────────────────────────
+        p.setFont(undefined,'bold'); p.text('3. CREDIT BACKGROUND FINDINGS', 14, y); y += 4;
+        p.autoTable({ ...ts, startY:y, body:[
+          ['CIC Bureau Report', val('fCIC'), 'Payment Behavior', val('fPB')],
+          ['Monthly Income', php('fIn'), 'Total Monthly Debt', php('fDb')],
+          ['DTI Ratio', val('fDTI'), 'Occupation', val('fOc')],
+          ['Adverse Findings', val('fAF'), '', ''],
+        ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
+        y = p.lastAutoTable.finalY + 5;
+
+        // ── Section 4: Credit Score ──────────────────────────────
+        p.setFont(undefined,'bold'); p.text('4. CREDIT SCORE SUMMARY — RBCC 4.02 Rev.16', 14, y); y += 4;
+        p.autoTable({ ...ts, startY:y, body:[
+          ['Quantitative Score (50%)', getQSub() + ' / 50', 'Qualitative Score (50%)', getQLSub() + ' / 50'],
+          ['TOTAL CREDIT SCORE', getScore(), 'Score-Based Rating', getRating()],
+        ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
+        y = p.lastAutoTable.finalY + 5;
+
+        // ── Section 5: Compliance & KYC ─────────────────────────
+        p.addPage();
+        y = 18;
+        p.setFont(undefined,'bold'); p.text('5. COMPLIANCE, KYC & AMLA', 14, y); y += 4;
+        p.autoTable({ ...ts, startY:y, body:[
+          ['KYC Verification', val('fKYC'), 'AML/KYC Status', val('fAML')],
+          ['ESRM Env. Risk', val('fESRMenv'), 'ESRM Social Risk', val('fESRMsoc')],
+          ['ESRM Overall Rating', val('fESRMrating'), 'Compliance Officer', val('fCompOfficer')],
+          ['Compliance Date', val('fCompDate'), '', ''],
+        ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
+        y = p.lastAutoTable.finalY + 3;
+        p.setFontSize(8); p.setFont(undefined,'normal');
+        p.text('ESRM Notes:', 14, y+4); y += 5;
+        var esrmLines = p.splitTextToSize(val('fESRMnotes'), w-28);
+        p.text(esrmLines, 14, y); y += esrmLines.length * 4 + 3;
+        p.text('Compliance Findings:', 14, y); y += 5;
+        var compLines = p.splitTextToSize(val('fCompNotes'), w-28);
+        p.text(compLines, 14, y); y += compLines.length * 4 + 5;
+
+        // ── Section 6: Credit Evaluation ────────────────────────
+        p.setFontSize(9); p.setFont(undefined,'bold'); p.text('6. CREDIT EVALUATION', 14, y); y += 4;
+        p.setFontSize(8); p.setFont(undefined,'normal');
+        var cnLines = p.splitTextToSize(val('fCN'), w-28);
+        p.text(cnLines, 14, y); y += cnLines.length * 4 + 3;
+        p.setFont(undefined,'bold'); p.text('Credit Evaluation Head: ', 14, y);
+        p.setFont(undefined,'normal'); p.text(val('fCO'), 60, y); y += 8;
+
+        // ── Section 7: Final Recommendation ─────────────────────
+        p.setFontSize(9); p.setFont(undefined,'bold'); p.text('7. FINAL RECOMMENDATION', 14, y); y += 4;
+        p.autoTable({ ...ts, startY:y, body:[
+          ['Investigator Recommendation', val('fRc'), 'Recommended Amount', php('fRA')],
+          ['Risk Classification', val('fRiskClass'), 'Loan Processing Rec.', val('fLoanRec')],
+        ], columnStyles:{ 0:{cellWidth:55,fontStyle:'bold'}, 1:{cellWidth:35}, 2:{cellWidth:50,fontStyle:'bold'}, 3:{cellWidth:40} } });
+        y = p.lastAutoTable.finalY + 3;
+        p.setFontSize(8); p.setFont(undefined,'normal');
+        var jsLines = p.splitTextToSize(val('fJs'), w-28);
+        p.text(jsLines, 14, y); y += jsLines.length * 4 + 15;
+
+        // ── Signature lines ──────────────────────────────────────
+        if (y > 240) { p.addPage(); y = 20; }
+        var sigY = Math.max(y, 220);
+        var sigW = (w - 28) / 3;
+        [0,1,2].forEach(function(i) {
+          var x = 14 + i * (sigW + 7);
+          p.line(x, sigY, x + sigW, sigY);
         });
-        var fn = 'RBCCI_BI_' + gv('fN').replace(/\s+/g, '_') + '_' + new Date().toISOString().slice(0, 10) + '.pdf';
-        p.save(fn); toast('PDF: ' + fn);
-      } catch (e) { toast('Error: ' + e.message) }
+        sigY += 5;
+        p.setFontSize(7.5); p.setFont(undefined,'bold');
+        p.text('Account / Loan Officer', 14 + sigW/2, sigY, { align:'center' });
+        p.text('Credit Evaluation Head', 14 + sigW + 7 + sigW/2, sigY, { align:'center' });
+        p.text('President & CEO', 14 + 2*(sigW+7) + sigW/2, sigY, { align:'center' });
+        sigY += 10;
+        p.setFont(undefined,'normal'); p.setFontSize(7); p.setTextColor(150,150,150);
+        p.text('CONFIDENTIAL — For internal use only — Rural Bank of Calbayog City, Inc.', w/2, sigY, { align:'center' });
+
+        p.save(fn);
+        toast('✅ PDF saved: ' + fn);
+      } catch(e) { console.error(e); toast('✗ PDF Error: ' + e.message); }
     }
 
     // Excel Export
@@ -3783,52 +3904,171 @@
       } catch (e) { toast('Error: ' + e.message) }
     }
 
-    // Word Export
+    // Word Final Report
     function xWord() {
       try {
-        var D = window.docx; if (!D) { toast('Word lib not loaded'); return; }
-        var brd = { style: D.BorderStyle.SINGLE, size: 1, color: 'CCCCCC' }; var borders = { top: brd, bottom: brd, left: brd, right: brd };
-        var mg = { top: 60, bottom: 60, left: 100, right: 100 };
-        function row(l, v) {
-          return new D.TableRow({
-            children: [
-              new D.TableCell({ width: { size: 3200, type: D.WidthType.DXA }, borders: borders, margins: mg, children: [new D.Paragraph({ children: [new D.TextRun({ text: l, bold: true, size: 20, font: 'Calibri' })] })] }),
-              new D.TableCell({ width: { size: 6160, type: D.WidthType.DXA }, borders: borders, margins: mg, children: [new D.Paragraph({ children: [new D.TextRun({ text: v || '', size: 20, font: 'Calibri' })] })] })
-            ]
-          })
+        var D = window.docx;
+        if (!D) { toast('Word library not loaded'); return; }
+
+        var nm  = val('fN');
+        var fn  = 'RBCCI_BI_' + nm.replace(/[^a-zA-Z0-9]/g,'_') + '_' + new Date().toISOString().slice(0,10) + '.docx';
+        var sc  = getScore();
+        var rt  = getRating();
+        var brd = { style: D.BorderStyle.SINGLE, size: 4, color: '2d6a4f' };
+        var brdLight = { style: D.BorderStyle.SINGLE, size: 1, color: 'CCCCCC' };
+        var borders = { top: brdLight, bottom: brdLight, left: brdLight, right: brdLight };
+        var mg  = { top: 80, bottom: 80, left: 120, right: 120 };
+
+        function cell(text, bold, shade) {
+          var opts = { width:{ size:4680, type:D.WidthType.DXA }, borders:borders, margins:mg };
+          if (shade) opts.shading = { fill: shade };
+          return new D.TableCell({ ...opts, children:[new D.Paragraph({ children:[new D.TextRun({ text: text||'', bold:!!bold, size:20, font:'Calibri' })] })] });
         }
-        function hdr(t) { return new D.Paragraph({ heading: D.HeadingLevel.HEADING_2, children: [new D.TextRun({ text: t, bold: true, size: 24, font: 'Calibri' })], spacing: { before: 240, after: 120 } }) }
-        function para(t) { return new D.Paragraph({ children: [new D.TextRun({ text: t || '', size: 20, font: 'Calibri' })], spacing: { after: 80 } }) }
-        function tbl(rows) { return new D.Table({ width: { size: 9360, type: D.WidthType.DXA }, columnWidths: [3200, 6160], rows: rows }) }
-        var nm = gv('fN') || 'Applicant'; var sc = (document.getElementById('rScD') ? document.getElementById('rScD').textContent : '0/100'); var rt = (document.getElementById('autoRec') ? document.getElementById('autoRec').textContent : '');
+        function row2(label, value) {
+          return new D.TableRow({ children:[ cell(label, true, 'F0F5F0'), cell(value||'—', false) ] });
+        }
+        function row4(l1,v1,l2,v2) {
+          var c = { width:{ size:2340, type:D.WidthType.DXA }, borders:borders, margins:mg };
+          return new D.TableRow({ children:[
+            new D.TableCell({ ...c, shading:{fill:'F0F5F0'}, children:[new D.Paragraph({ children:[new D.TextRun({ text:l1||'', bold:true, size:20, font:'Calibri' })] })] }),
+            new D.TableCell({ ...c, children:[new D.Paragraph({ children:[new D.TextRun({ text:v1||'—', size:20, font:'Calibri' })] })] }),
+            new D.TableCell({ ...c, shading:{fill:'F0F5F0'}, children:[new D.Paragraph({ children:[new D.TextRun({ text:l2||'', bold:true, size:20, font:'Calibri' })] })] }),
+            new D.TableCell({ ...c, children:[new D.Paragraph({ children:[new D.TextRun({ text:v2||'—', size:20, font:'Calibri' })] })] }),
+          ]});
+        }
+        function tbl2(rows) { return new D.Table({ width:{ size:9360, type:D.WidthType.DXA }, rows:rows }); }
+        function tbl4(rows) { return new D.Table({ width:{ size:9360, type:D.WidthType.DXA }, rows:rows }); }
+        function hdr(n, t) {
+          return new D.Paragraph({
+            spacing:{ before:280, after:100 },
+            children:[new D.TextRun({ text: n + '. ' + t, bold:true, size:24, font:'Calibri', color:'071a0e' })]
+          });
+        }
+        function para(t) { return new D.Paragraph({ spacing:{after:80}, children:[new D.TextRun({ text:t||'', size:20, font:'Calibri' })] }); }
+        function divider() { return new D.Paragraph({ border:{ bottom:{ style:D.BorderStyle.SINGLE, size:4, color:'2d6a4f' } }, spacing:{after:80} }); }
+        function sigLine(name) {
+          return [
+            new D.Paragraph({ spacing:{before:600, after:40}, children:[new D.TextRun({ text:'______________________________', size:20, font:'Calibri' })] }),
+            new D.Paragraph({ spacing:{after:120}, children:[new D.TextRun({ text:name, bold:true, size:18, font:'Calibri', color:'444444' })] }),
+          ];
+        }
+
         var doc = new D.Document({
-          styles: { default: { document: { run: { font: 'Calibri', size: 20 } } } }, sections: [{
-            properties: { page: { size: { width: 12240, height: 15840 }, margin: { top: 1000, right: 1200, bottom: 1000, left: 1200 } } },
-            children: [
-              new D.Paragraph({ alignment: D.AlignmentType.CENTER, spacing: { after: 40 }, children: [new D.TextRun({ text: 'RURAL BANK OF CALBAYOG CITY, INC.', bold: true, size: 28, font: 'Calibri' })] }),
-              new D.Paragraph({ alignment: D.AlignmentType.CENTER, spacing: { after: 40 }, children: [new D.TextRun({ text: 'Background Investigation, Checking & Credit Scoring Report', size: 22, font: 'Calibri' })] }),
-              new D.Paragraph({ alignment: D.AlignmentType.CENTER, spacing: { after: 60 }, children: [new D.TextRun({ text: 'RBCC 4.02 Rev.16 | 82 T. Bugallon St., Calbayog City, W. Samar', size: 18, font: 'Calibri', color: '666666' })] }),
-              new D.Paragraph({ spacing: { after: 200 }, children: [new D.TextRun({ text: 'Ref: ' + gv('fR') + '  |  Date: ' + gv('fDt'), size: 20, font: 'Calibri' })] }),
-              hdr('1. Borrower Details'),
-              tbl([row('Name', nm), row('TIN', gv('fT')), row('Civil Status', gv('fCv')), row('Spouse', gv('fSp')), row('Address', gv('fAd')), row('Contact', gv('fPh')), row('Officer', gv('fAO'))]),
-              hdr('2. Loan Details'),
-              tbl([row('Purpose', gv('fPu')), row('Classification', gv('fCl')), row('Amount', 'PHP ' + Number(gv('fAm')).toLocaleString()), row('Term', gv('fTm')), row('Rate', gv('fRt'))]),
-              hdr('3. Credit Background'),
-              tbl([row('CIC Report', gv('fCIC')), row('Total Debt', 'PHP ' + Number(gv('fDb')).toLocaleString()), row('DTI', gv('fDTI'))]),
-              hdr('4. Credit Score (RBCC 4.02 Rev.16)'),
-              tbl([row('Credit Score', sc + '/100'), row('Rating', rt), row('AML/KYC', gv('fAML'))]),
-              hdr('5. Credit Evaluation'), para(gv('fCN')), para('Officer: ' + gv('fCO')),
-              hdr('6. Compliance & KYC - AMLA / AML-CFT / Anti-Terrorism / Sanctions / ESRM'), para('KYC: ' + gv('fKYC')), para('AML/KYC: ' + gv('fAML')), para('ESRM Env: ' + gv('fESRMenv') + ' | Social: ' + gv('fESRMsoc') + ' | Rating: ' + gv('fESRMrating')), para(gv('fCompNotes')), para('ESRM Notes: ' + gv('fESRMnotes')), para('Compliance Officer: ' + gv('fCompOfficer')),
-              hdr('7. Recommendation'), tbl([row('Decision', gv('fRc')), row('Amount', 'PHP ' + Number(gv('fRA')).toLocaleString())]), para(gv('fJs')),
-              new D.Paragraph({ spacing: { before: 400 } }),
-              new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ text: '_____________________     _____________________     _____________________', size: 18, font: 'Calibri' })] }),
-              new D.Paragraph({ alignment: D.AlignmentType.CENTER, spacing: { after: 40 }, children: [new D.TextRun({ text: ' Account / Loan Officer            Credit Evaluation Head           President & CEO  ', size: 16, font: 'Calibri', color: '555555' })] }),
-              new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ text: 'CONFIDENTIAL \u2014 Rural Bank of Calbayog City, Inc.', size: 16, font: 'Calibri', color: '999999', italics: true })] }),
+          styles:{ default:{ document:{ run:{ font:'Calibri', size:20 } } } },
+          sections:[{
+            properties:{ page:{ size:{ width:12240, height:15840 }, margin:{ top:900, right:1080, bottom:900, left:1080 } } },
+            children:[
+              // ── Cover Header ──────────────────────────────────
+              new D.Paragraph({ alignment:D.AlignmentType.CENTER, spacing:{after:40}, children:[new D.TextRun({ text:'RURAL BANK OF CALBAYOG CITY, INC.', bold:true, size:32, font:'Calibri', color:'071a0e' })] }),
+              new D.Paragraph({ alignment:D.AlignmentType.CENTER, spacing:{after:40}, children:[new D.TextRun({ text:'Background Investigation, Checking & Credit Scoring Report', size:24, font:'Calibri', color:'1a5c35' })] }),
+              new D.Paragraph({ alignment:D.AlignmentType.CENTER, spacing:{after:60}, children:[new D.TextRun({ text:'82 T. Bugallon St., Brgy. Central, Calbayog City, W. Samar 6710  |  BSP Lic: RB-0567', size:18, font:'Calibri', color:'666666' })] }),
+              new D.Paragraph({ alignment:D.AlignmentType.CENTER, spacing:{after:80}, children:[new D.TextRun({ text:'RBCC 4.02 Rev.16  |  CONFIDENTIAL', size:18, font:'Calibri', color:'888888', italics:true })] }),
+              divider(),
+
+              // ── Ref / Date ────────────────────────────────────
+              tbl4([ row4('Reference No.', val('fR'), 'Date', val('fDt')) ]),
+              new D.Paragraph({ spacing:{after:120} }),
+
+              // ── Section 1 ─────────────────────────────────────
+              hdr('1','Applicant / Borrower Information'),
+              tbl4([
+                row4('Applicant Name', nm, 'TIN', val('fT')),
+                row4('Civil Status', val('fCv'), 'Spouse', val('fSp')),
+                row4('Date of Birth', val('fDOB'), 'Contact No.', val('fPh')),
+                row4('Address', val('fAd'), 'Housing', val('fHs')),
+                row4('Years at Address', val('fYA'), 'Co-Maker / Guarantor', val('fCM')),
+                row4('Source of Repayment', val('fSR'), 'Account Officer', val('fAO')),
+              ]),
+              new D.Paragraph({ spacing:{after:120} }),
+
+              // ── Section 2 ─────────────────────────────────────
+              hdr('2','Loan Details'),
+              tbl4([
+                row4('Loan Purpose', val('fPu'), 'Classification', val('fCl')),
+                row4('Loan Amount', php('fAm'), 'Loan Term', val('fTm')),
+                row4('Interest Rate', val('fRt'), 'Borrower Category', val('fBT')),
+                row4('Repayment Mode', val('fRM'), '', ''),
+              ]),
+              new D.Paragraph({ spacing:{after:120} }),
+
+              // ── Section 3 ─────────────────────────────────────
+              hdr('3','Credit Background Findings'),
+              tbl4([
+                row4('CIC Bureau Report', val('fCIC'), 'Payment Behavior', val('fPB')),
+                row4('Monthly Income', php('fIn'), 'Total Monthly Debt', php('fDb')),
+                row4('DTI Ratio', val('fDTI'), 'Occupation', val('fOc')),
+              ]),
+              new D.Paragraph({ spacing:{after:80} }),
+              para('Adverse Findings / Red Flags: ' + val('fAF')),
+              new D.Paragraph({ spacing:{after:120} }),
+
+              // ── Section 4 ─────────────────────────────────────
+              hdr('4','Credit Score Summary — RBCC 4.02 Rev.16'),
+              tbl4([
+                row4('Quantitative Score (50%)', getQSub() + ' / 50', 'Qualitative Score (50%)', getQLSub() + ' / 50'),
+                row4('TOTAL CREDIT SCORE', sc, 'Score-Based Rating', rt),
+              ]),
+              new D.Paragraph({ spacing:{after:120} }),
+
+              // ── Section 5 ─────────────────────────────────────
+              hdr('5','Compliance, KYC & AMLA'),
+              tbl4([
+                row4('KYC Verification', val('fKYC'), 'AML/KYC Status', val('fAML')),
+                row4('ESRM Env. Risk', val('fESRMenv'), 'ESRM Social Risk', val('fESRMsoc')),
+                row4('ESRM Overall Rating', val('fESRMrating'), 'Compliance Officer', val('fCompOfficer')),
+                row4('Compliance Date', val('fCompDate'), '', ''),
+              ]),
+              new D.Paragraph({ spacing:{after:80} }),
+              para('ESRM Notes: ' + val('fESRMnotes')),
+              para('Compliance Findings: ' + val('fCompNotes')),
+              new D.Paragraph({ spacing:{after:120} }),
+
+              // ── Section 6 ─────────────────────────────────────
+              hdr('6','Credit Evaluation'),
+              para(val('fCN')),
+              tbl2([ row2('Credit Evaluation Head', val('fCO')) ]),
+              new D.Paragraph({ spacing:{after:120} }),
+
+              // ── Section 7 ─────────────────────────────────────
+              hdr('7','Final Recommendation'),
+              tbl4([
+                row4('Investigator Recommendation', val('fRc'), 'Recommended Amount', php('fRA')),
+                row4('Risk Classification', val('fRiskClass'), 'Loan Processing Rec.', val('fLoanRec')),
+              ]),
+              new D.Paragraph({ spacing:{after:80} }),
+              para('Justification: ' + val('fJs')),
+              new D.Paragraph({ spacing:{after:400} }),
+
+              // ── Signature Block ───────────────────────────────
+              divider(),
+              new D.Paragraph({
+                spacing:{after:40},
+                children:[
+                  new D.TextRun({ text:'Prepared by: ', bold:true, size:20, font:'Calibri' }),
+                  new D.TextRun({ text:val('fBIInv') + '   |   Date: ' + val('fBIInvDt'), size:20, font:'Calibri' }),
+                ]
+              }),
+              new D.Paragraph({ spacing:{after:480} }),
+
+              // Sig lines in a table for alignment
+              new D.Table({ width:{ size:9360, type:D.WidthType.DXA }, rows:[
+                new D.TableRow({ children:[
+                  new D.TableCell({ borders:{ top:brd, bottom:{style:D.BorderStyle.NONE}, left:{style:D.BorderStyle.NONE}, right:{style:D.BorderStyle.NONE} }, width:{size:3120,type:D.WidthType.DXA}, children:[new D.Paragraph({ spacing:{after:40}, children:[new D.TextRun({ text:'Account / Loan Officer', bold:true, size:18, font:'Calibri', color:'444444' })] })] }),
+                  new D.TableCell({ borders:{ top:brd, bottom:{style:D.BorderStyle.NONE}, left:{style:D.BorderStyle.NONE}, right:{style:D.BorderStyle.NONE} }, width:{size:3120,type:D.WidthType.DXA}, children:[new D.Paragraph({ spacing:{after:40}, children:[new D.TextRun({ text:'Credit Evaluation Head', bold:true, size:18, font:'Calibri', color:'444444' })] })] }),
+                  new D.TableCell({ borders:{ top:brd, bottom:{style:D.BorderStyle.NONE}, left:{style:D.BorderStyle.NONE}, right:{style:D.BorderStyle.NONE} }, width:{size:3120,type:D.WidthType.DXA}, children:[new D.Paragraph({ spacing:{after:40}, children:[new D.TextRun({ text:'President & CEO', bold:true, size:18, font:'Calibri', color:'444444' })] })] }),
+                ]}),
+              ]}),
+
+              new D.Paragraph({ spacing:{before:200}, alignment:D.AlignmentType.CENTER, children:[new D.TextRun({ text:'CONFIDENTIAL — For internal use only — Rural Bank of Calbayog City, Inc.', size:16, font:'Calibri', color:'999999', italics:true })] }),
             ]
           }]
         });
-        D.Packer.toBlob(doc).then(function (blob) { var fn = 'RBCCI_BI_' + nm.replace(/\s+/g, '_') + '_' + new Date().toISOString().slice(0, 10) + '.docx'; saveAs(blob, fn); toast('Word: ' + fn) });
-      } catch (e) { console.error(e); toast('Error: ' + e.message) }
+
+        D.Packer.toBlob(doc).then(function(blob) {
+          saveAs(blob, fn);
+          toast('✅ Word saved: ' + fn);
+        });
+      } catch(e) { console.error(e); toast('✗ Word Error: ' + e.message); }
     }
 
     // Init score calculation
