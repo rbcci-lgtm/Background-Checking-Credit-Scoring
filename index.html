@@ -1610,12 +1610,10 @@
         <button class="btn btn-p" onclick="xPDF()">&#x1F4C4; PDF</button>
         <button class="btn btn-w" onclick="xWord()">&#x1F4DD; Word</button>
         <button class="btn btn-s" onclick="xXL()">&#x1F4CA; Excel</button>
-        <button class="btn" style="background:#d97706;color:#fff;font-weight:700" onclick="showReportModal()">&#x1F4CB;
-          Generate Report</button>
+        <button class="btn" style="background:#d97706;color:#fff;font-weight:700" onclick="showReportModal()">&#x1F4CB; Generate Report</button>
         <button class="btn" style="background:#8b5cf6;color:#fff" onclick="saveDraft()">&#x1F4BE; Save Draft</button>
         <button class="btn" style="background:#6366f1;color:#fff" onclick="loadDraft()">&#x1F4C2; Load Draft</button>
-        <button class="btn" style="background:#1a8a42;color:#fff;font-weight:700" onclick="saveToSheets()"
-          id="btnSaveSheets">&#x1F4BE; Save to Sheets</button>
+        <button class="btn" style="background:#1a8a42;color:#fff;font-weight:700" onclick="saveToSheets()" id="btnSaveSheets">&#x1F4BE; Save to Sheets</button>
         <button class="btn btn-s" onclick="go('dash')">&#x2190; Back</button>
       </div>
 
@@ -1627,12 +1625,9 @@
         padding:16px 18px;
         margin-bottom:14px;
         box-shadow:0 4px 20px rgba(0,0,0,.35);">
-        <div
-          style="font-size:.8rem;font-weight:700;color:#d4ab12;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;">
+        <div style="font-size:.8rem;font-weight:700;color:#d4ab12;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;">
           &#x1F50D; Load from Initial Loan Interview Form
-          <span id="ilsLoaded"
-            style="display:none;background:#1a8a42;color:#fff;font-size:.68rem;padding:2px 10px;border-radius:20px;font-style:normal;">&#x2713;
-            Loaded</span>
+          <span id="ilsLoaded" style="display:none;background:#1a8a42;color:#fff;font-size:.68rem;padding:2px 10px;border-radius:20px;font-style:normal;">&#x2713; Loaded</span>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
           <input id="ilsCodeInput" placeholder="Enter App Code e.g. RBCCI-2026-A1B2C3" style="
@@ -1644,12 +1639,10 @@
             border:none;border-radius:7px;font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;">
             &#x2B07; Fetch &amp; Load
           </button>
-          <span id="ilsStatus"
-            style="font-size:.76rem;font-weight:600;padding:4px 12px;border-radius:20px;display:none;"></span>
+          <span id="ilsStatus" style="font-size:.76rem;font-weight:600;padding:4px 12px;border-radius:20px;display:none;"></span>
         </div>
         <div style="margin-top:8px;font-size:.72rem;color:rgba(255,255,255,.45);">
-          &#x2139; Enter the Application Code generated from the Initial Loan Interview Form, then click Fetch &amp;
-          Load to auto-populate applicant fields below.
+          &#x2139; Enter the Application Code generated from the Initial Loan Interview Form, then click Fetch &amp; Load to auto-populate applicant fields below.
         </div>
       </div>
 
@@ -1673,7 +1666,8 @@
                 <option>Separated</option>
               </select></div>
             <div class="fi"><label>Spouse</label><input id="fSp" value=""></div>
-            <div class="fi full"><label>Address</label><input id="fAd" value=""></div>
+            <div class="fi full"><label>Address</label><input id="fAd"
+                value=""></div>
             <div class="fi"><label>Contact</label><input id="fPh" value=""></div>
             <div class="fi"><label>Years at Address</label><input type="number" value=""></div>
             <div class="fi"><label>Housing</label><select id="fHs">
@@ -1715,15 +1709,16 @@
             </div>
 
             <!-- Drop zone -->
-            <div class="upload-area" id="driveDropZone" onclick="document.getElementById('fileIn').click()"
+            <div class="upload-area" id="driveDropZone"
+              onclick="document.getElementById('fileIn').click()"
               ondragover="event.preventDefault();this.style.borderColor='var(--d3)'"
               ondragleave="this.style.borderColor=''"
               ondrop="event.preventDefault();this.style.borderColor='';driveHandleDrop(event)">
               <div class="ua-icon">&#x2601;&#xFE0F;</div>
               <div class="ua-text">Click or drag files to queue for Drive upload</div>
-              <div class="ua-sub">PDF, Word, Excel, images · Files upload when you click <strong>Save to Sheets</strong>
-              </div>
-              <input type="file" id="fileIn" multiple accept=".doc,.docx,.pdf,.xlsx,.xls,.jpg,.jpeg,.png,.gif"
+              <div class="ua-sub">PDF, Word, Excel, images · Files upload when you click <strong>Save to Sheets</strong></div>
+              <input type="file" id="fileIn" multiple
+                accept=".doc,.docx,.pdf,.xlsx,.xls,.jpg,.jpeg,.png,.gif"
                 style="display:none" onchange="driveQueueFiles(this.files)">
             </div>
 
@@ -1804,7 +1799,7 @@
                     <td><input value=""></td>
                     <td><input type="number" value=""></td>
                     <td><select>
-                        <option value="">— Select —</option>
+                <option value="">— Select —</option>
                         <option>No</option>
                         <option>Yes</option>
                       </select></td>
@@ -1817,7 +1812,7 @@
                     <td><input></td>
                     <td><input type="number"></td>
                     <td><select>
-                        <option value="">— Select —</option>
+                <option value="">— Select —</option>
                         <option>No</option>
                         <option>Yes</option>
                       </select></td>
@@ -1829,7 +1824,7 @@
               <div class="fi"><label>Appraised (&#x20B1;)</label><input type="number" value=""></div>
               <div class="fi"><label>LTV</label><input value="" readonly class="ro"></div>
               <div class="fi"><label>Method</label><select>
-                  <option value="">— Select —</option>
+                <option value="">— Select —</option>
                   <option>Market comparison</option>
                   <option>Cost</option>
                   <option>Income</option>
@@ -1969,7 +1964,7 @@
                 <tr>
                   <td>Farm Lot/Tenancy</td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option>Verified</option>
                       <option>N/A</option>
                       <option>Pending</option>
@@ -1979,7 +1974,7 @@
                 <tr>
                   <td>Income Docs</td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option>Verified</option>
                       <option>N/A</option>
                       <option>Pending</option>
@@ -1989,7 +1984,7 @@
                 <tr>
                   <td>Valid IDs</td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option>Verified</option>
                       <option>N/A</option>
                       <option>Pending</option>
@@ -1999,7 +1994,7 @@
                 <tr>
                   <td>Trade Check</td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option>Verified</option>
                       <option>N/A</option>
                       <option>Pending</option>
@@ -2028,7 +2023,7 @@
                   <td><input value=""></td>
                   <td><input value=""></td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option>Positive</option>
                       <option>Neutral</option>
                       <option>Negative</option>
@@ -2040,7 +2035,7 @@
                   <td><input value=""></td>
                   <td><input value=""></td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option>Positive</option>
                       <option>Neutral</option>
                       <option>Negative</option>
@@ -2052,7 +2047,7 @@
                   <td><input value=""></td>
                   <td><input value=""></td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option>Positive</option>
                       <option>Neutral</option>
                       <option>Negative</option>
@@ -2066,7 +2061,8 @@
           <div class="sh">Investigation Findings <span class="tg">Summary</span></div>
           <div class="fi full"><label>Concise Summary (character, financial standing, income source, repayment behavior,
               collateral, other material observations)</label>
-            <textarea rows="4"></textarea>
+            <textarea
+              rows="4"></textarea>
           </div>
 
           <div class="dv"></div>
@@ -2145,7 +2141,7 @@
                   onchange="driveQueueFiles(this.files);handleFiles(this,'fileListResPhoto')">
               </div>
               <div class="file-chips" id="fileListResPhoto">
-
+                
               </div>
             </div>
             <div>
@@ -2160,7 +2156,7 @@
                   onchange="driveQueueFiles(this.files);handleFiles(this,'fileListLoanDocs')">
               </div>
               <div class="file-chips" id="fileListLoanDocs">
-
+                
               </div>
             </div>
           </div>
@@ -2192,7 +2188,7 @@
                   <td><input type="number" value=""></td>
                   <td><input type="number" value=""></td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option>Current</option>
                       <option>Past due</option>
                     </select></td>
@@ -2219,7 +2215,7 @@
                   <td><input type="number" value=""></td>
                   <td><input type="number" value=""></td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option>Current</option>
                       <option>Past due</option>
                     </select></td>
@@ -2345,7 +2341,7 @@
                   <td>1</td>
                   <td>AML / Sanctions Hit</td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option style="color:var(--ok)">&#x2705; Clear</option>
                       <option>&#x274C; Match found</option>
                     </select></td>
@@ -2355,7 +2351,7 @@
                   <td>2</td>
                   <td>PEP w/o Enhanced DD</td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option style="color:var(--ok)">&#x2705; Not PEP</option>
                       <option>&#x26A0; PEP&#x2013;EDD pending</option>
                     </select></td>
@@ -2365,7 +2361,7 @@
                   <td>3</td>
                   <td>Negative CIC (Active)</td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option style="color:var(--ok)">&#x2705; No adverse</option>
                       <option>&#x274C; Active litigation</option>
                     </select></td>
@@ -2375,7 +2371,7 @@
                   <td>4</td>
                   <td>Forged Documents</td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option style="color:var(--ok)">&#x2705; None detected</option>
                       <option>&#x274C; Detected</option>
                     </select></td>
@@ -2385,7 +2381,7 @@
                   <td>5</td>
                   <td>DSCR &lt; 1.0</td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option style="color:var(--ok)">&#x2705; Above 1.0</option>
                       <option>&#x274C; Below 1.0</option>
                     </select></td>
@@ -2395,7 +2391,7 @@
                   <td>6</td>
                   <td>DOSRI / RPT</td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option style="color:var(--ok)">&#x2705; Not DOSRI</option>
                       <option>&#x26A0; DOSRI&#x2013;comply Sec.136</option>
                     </select></td>
@@ -2405,7 +2401,7 @@
                   <td>7</td>
                   <td>NPL / Watch List</td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option style="color:var(--ok)">&#x2705; Not on list</option>
                       <option>&#x274C; On watch list</option>
                     </select></td>
@@ -2415,7 +2411,7 @@
                   <td>8</td>
                   <td>Calamity Area</td>
                   <td><select>
-                      <option value="">— Select —</option>
+                <option value="">— Select —</option>
                       <option style="color:var(--ok)">&#x2705; No declaration</option>
                       <option>&#x26A0; Active declaration</option>
                     </select></td>
@@ -2433,325 +2429,229 @@
           <div class="cn">6</div>Credit Scoring &#x2014; RBCC 4.02 Rev.16<span class="ar">&#x25BC;</span>
         </div>
         <div class="bd">
-          <div
-            style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:8px 12px;font-size:0.75rem;color:#166534;margin-bottom:10px">
-            Scale: <strong>1</strong>=Poor/Unacceptable &nbsp; <strong>2</strong>=Below Average &nbsp;
-            <strong>3</strong>=Average &nbsp; <strong>4</strong>=Good &nbsp; <strong>5</strong>=Excellent &nbsp;|&nbsp;
-            Max: <strong>100 pts</strong> (50 Quant + 50 Qual)
-          </div>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:8px 12px;font-size:0.75rem;color:#166534;margin-bottom:10px">
+      Scale: <strong>1</strong>=Poor/Unacceptable &nbsp; <strong>2</strong>=Below Average &nbsp; <strong>3</strong>=Average &nbsp; <strong>4</strong>=Good &nbsp; <strong>5</strong>=Excellent &nbsp;|&nbsp; Max: <strong>100 pts</strong> (50 Quant + 50 Qual)
+    </div>
 
-          <div class="sh">A. Quantitative Analysis (50%) <span class="tg">Financial &amp; Credit History</span></div>
+    <div class="sh">A. Quantitative Analysis (50%) <span class="tg">Financial &amp; Credit History</span></div>
 
-          <div
-            style="background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:8px 14px;font-size:0.74rem;color:#92400e;margin-bottom:10px;line-height:1.5">
-            <strong style="color:#b45309">&#9888; C3 Credit History Qualifier &mdash; Mandatory Escalation:</strong>
-            Where adverse findings exist (Score &#x2264; 2 &mdash; past due, restructured, written-off, default, or
-            negative CIC/BSP WatchList), this loan <strong>must be escalated to the Credit Committee</strong> regardless
-            of total quantitative score. Standard approval workflow is suspended. Documented mitigation, collateral
-            re-evaluation, and CCO concurrence are required per RBCC 4.02 Rev.16 &sect;8.3.
-          </div>
+    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:8px 14px;font-size:0.74rem;color:#92400e;margin-bottom:10px;line-height:1.5">
+      <strong style="color:#b45309">&#9888; C3 Credit History Qualifier &mdash; Mandatory Escalation:</strong> Where adverse findings exist (Score &#x2264; 2 &mdash; past due, restructured, written-off, default, or negative CIC/BSP WatchList), this loan <strong>must be escalated to the Credit Committee</strong> regardless of total quantitative score. Standard approval workflow is suspended. Documented mitigation, collateral re-evaluation, and CCO concurrence are required per RBCC 4.02 Rev.16 &sect;8.3.
+    </div>
 
-          <div class="score-row" style="background:var(--d7);color:#fff;font-weight:700;font-size:0.75rem">
-            <div class="sf">FACTOR</div>
-            <div>CRITERIA</div>
-            <div class="sw">SCORE</div>
-          </div>
+    <div class="score-row" style="background:var(--d7);color:#fff;font-weight:700;font-size:0.75rem">
+      <div class="sf">FACTOR</div><div>CRITERIA</div><div class="sw">SCORE</div>
+    </div>
 
-          <div class="score-row">
-            <div class="sf">C1&#x2014;DSCR (10%)<div
-                style="font-size:0.65rem;font-weight:400;color:var(--n3);margin-top:2px">Primary capacity measure</div>
-            </div>
-            <div><select
-                style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px"
-                onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
-                <option value="">&#x2014; Select &#x2014;</option>
-                <option value="5">5&#x2013;Excellent: DSCR &#x2265; 1.50x</option>
-                <option value="4">4&#x2013;Good: DSCR 1.25&#x2013;1.49x</option>
-                <option value="3">3&#x2013;Average: DSCR 1.10&#x2013;1.24x</option>
-                <option value="2">2&#x2013;Below Avg: DSCR 1.00&#x2013;1.09x</option>
-                <option value="1">1&#x2013;Poor: DSCR &lt; 1.00x</option>
-              </select></div>
-            <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10"
-                style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                onchange="calcScore()"></div>
-          </div>
+    <div class="score-row">
+      <div class="sf">C1&#x2014;DSCR (10%)<div style="font-size:0.65rem;font-weight:400;color:var(--n3);margin-top:2px">Primary capacity measure</div></div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;Excellent: DSCR &#x2265; 1.50x</option>
+        <option value="4">4&#x2013;Good: DSCR 1.25&#x2013;1.49x</option>
+        <option value="3">3&#x2013;Average: DSCR 1.10&#x2013;1.24x</option>
+        <option value="2">2&#x2013;Below Avg: DSCR 1.00&#x2013;1.09x</option>
+        <option value="1">1&#x2013;Poor: DSCR &lt; 1.00x</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
 
-          <div class="score-row">
-            <div class="sf">C1&#x2014;Monthly Net Surplus (10%)<div
-                style="font-size:0.65rem;font-weight:400;color:var(--n3);margin-top:2px">Post-amortization surplus</div>
-            </div>
-            <div><select
-                style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px"
-                onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
-                <option value="">&#x2014; Select &#x2014;</option>
-                <option value="5">5&#x2013;&#x2265; &#x20B1;15,000 surplus</option>
-                <option value="4">4&#x2013;&#x20B1;5,000 &#x2013; &#x20B1;14,999</option>
-                <option value="3">3&#x2013;&#x20B1;1,000 &#x2013; &#x20B1;4,999</option>
-                <option value="2">2&#x2013;&lt; &#x20B1;1,000</option>
-                <option value="1">1&#x2013;Deficit / zero surplus</option>
-              </select></div>
-            <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10"
-                style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                onchange="calcScore()"></div>
-          </div>
+    <div class="score-row">
+      <div class="sf">C1&#x2014;Monthly Net Surplus (10%)<div style="font-size:0.65rem;font-weight:400;color:var(--n3);margin-top:2px">Post-amortization surplus</div></div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;&#x2265; &#x20B1;15,000 surplus</option>
+        <option value="4">4&#x2013;&#x20B1;5,000 &#x2013; &#x20B1;14,999</option>
+        <option value="3">3&#x2013;&#x20B1;1,000 &#x2013; &#x20B1;4,999</option>
+        <option value="2">2&#x2013;&lt; &#x20B1;1,000</option>
+        <option value="1">1&#x2013;Deficit / zero surplus</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
 
-          <div class="score-row">
-            <div class="sf">C1&#x2014;Income/Loan Ratio (5%)<div
-                style="font-size:0.65rem;font-weight:400;color:var(--n3);margin-top:2px">Leverage indicator</div>
-            </div>
-            <div><select
-                style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px"
-                onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
-                <option value="">&#x2014; Select &#x2014;</option>
-                <option value="5">5&#x2013;&#x2265; 50% &mdash; Very low leverage</option>
-                <option value="4">4&#x2013;30&#x2013;49% &mdash; Low leverage</option>
-                <option value="3">3&#x2013;20&#x2013;29% &mdash; Moderate</option>
-                <option value="2">2&#x2013;10&#x2013;19% &mdash; High leverage</option>
-                <option value="1">1&#x2013;&lt; 10% &mdash; Excessive leverage</option>
-              </select></div>
-            <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="5"
-                style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                onchange="calcScore()"></div>
-          </div>
+    <div class="score-row">
+      <div class="sf">C1&#x2014;Income/Loan Ratio (5%)<div style="font-size:0.65rem;font-weight:400;color:var(--n3);margin-top:2px">Leverage indicator</div></div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;&#x2265; 50% &mdash; Very low leverage</option>
+        <option value="4">4&#x2013;30&#x2013;49% &mdash; Low leverage</option>
+        <option value="3">3&#x2013;20&#x2013;29% &mdash; Moderate</option>
+        <option value="2">2&#x2013;10&#x2013;19% &mdash; High leverage</option>
+        <option value="1">1&#x2013;&lt; 10% &mdash; Excessive leverage</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="5" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
 
-          <div class="score-row">
-            <div class="sf">C2&#x2014;Debt-to-Equity Ratio (Business) (10%)<div
-                style="font-size:0.65rem;font-weight:400;color:var(--n3);margin-top:2px">Capital adequacy</div>
-            </div>
-            <div><select
-                style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px"
-                onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
-                <option value="">&#x2014; Select &#x2014;</option>
-                <option value="5">5&#x2013;D/E &lt; 0.50 &mdash; Excellent capital</option>
-                <option value="4">4&#x2013;D/E 0.50&#x2013;0.99</option>
-                <option value="3">3&#x2013;D/E 1.00&#x2013;1.99</option>
-                <option value="2">2&#x2013;D/E 2.00&#x2013;2.99</option>
-                <option value="1">1&#x2013;D/E &#x2265; 3.00 &mdash; Overleveraged</option>
-              </select></div>
-            <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10"
-                style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                onchange="calcScore()"></div>
-          </div>
+    <div class="score-row">
+      <div class="sf">C2&#x2014;Debt-to-Equity Ratio (Business) (10%)<div style="font-size:0.65rem;font-weight:400;color:var(--n3);margin-top:2px">Capital adequacy</div></div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;D/E &lt; 0.50 &mdash; Excellent capital</option>
+        <option value="4">4&#x2013;D/E 0.50&#x2013;0.99</option>
+        <option value="3">3&#x2013;D/E 1.00&#x2013;1.99</option>
+        <option value="2">2&#x2013;D/E 2.00&#x2013;2.99</option>
+        <option value="1">1&#x2013;D/E &#x2265; 3.00 &mdash; Overleveraged</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
 
-          <div class="score-row">
-            <div class="sf">C2&#x2014;Net Worth vs. Loan (Individual) (10%)<div
-                style="font-size:0.65rem;font-weight:400;color:var(--n3);margin-top:2px">Equity cushion</div>
-            </div>
-            <div><select
-                style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px"
-                onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
-                <option value="">&#x2014; Select &#x2014;</option>
-                <option value="5">5&#x2013;NW &#x2265; 3.00x loan amount</option>
-                <option value="4">4&#x2013;NW 2.00&#x2013;2.99x loan</option>
-                <option value="3">3&#x2013;NW 1.50&#x2013;1.99x loan</option>
-                <option value="2">2&#x2013;NW 1.00&#x2013;1.49x loan</option>
-                <option value="1">1&#x2013;NW &lt; loan amount</option>
-              </select></div>
-            <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10"
-                style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                onchange="calcScore()"></div>
-          </div>
+    <div class="score-row">
+      <div class="sf">C2&#x2014;Net Worth vs. Loan (Individual) (10%)<div style="font-size:0.65rem;font-weight:400;color:var(--n3);margin-top:2px">Equity cushion</div></div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;NW &#x2265; 3.00x loan amount</option>
+        <option value="4">4&#x2013;NW 2.00&#x2013;2.99x loan</option>
+        <option value="3">3&#x2013;NW 1.50&#x2013;1.99x loan</option>
+        <option value="2">2&#x2013;NW 1.00&#x2013;1.49x loan</option>
+        <option value="1">1&#x2013;NW &lt; loan amount</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
 
-          <div class="score-row" style="background:#fff8e1">
-            <div class="sf">C3&#x2014;Credit History, Internal &amp; External (5%) <span
-                style="display:inline-block;background:#f59e0b;color:#fff;font-size:0.58rem;padding:2px 7px;border-radius:3px;font-weight:700;vertical-align:middle;margin-left:6px;letter-spacing:0.5px">QUALIFIER</span>
-              <div style="font-size:0.65rem;font-weight:400;color:#7c2d12;margin-top:2px">Mandatory escalation trigger
-                on adverse findings</div>
-            </div>
-            <div><select id="c3Select"
-                style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px;background:#fffef7"
-                onchange="document.getElementById('c3Score').value=this.value;calcScore();chkC3()">
-                <option value="">&#x2014; Select &#x2014;</option>
-                <option value="5">5&#x2013;Clean: No past due, excellent CIC, 100% paid history</option>
-                <option value="4">4&#x2013;Strong: Minor late &lt; 10 days resolved, good CIC</option>
-                <option value="3">3&#x2013;Average: 1&#x2013;2 late payments (11&#x2013;30 days), acceptable CIC
-                </option>
-                <option value="2">2&#x2013;Weak: Current past due OR restructured OR CIC adverse flag &#x26A0;</option>
-                <option value="1">1&#x2013;Adverse: Written-off / default / BSP WatchList / negative CIC &#x26A0;
-                </option>
-              </select></div>
-            <div class="sw"><input type="number" id="c3Score" value="" min="1" max="5" class="cs" data-w="5"
-                style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid #f59e0b;border-radius:5px;background:#fffef7"
-                onchange="calcScore();chkC3()"></div>
-          </div>
+    <div class="score-row" style="background:#fff8e1">
+      <div class="sf">C3&#x2014;Credit History, Internal &amp; External (5%) <span style="display:inline-block;background:#f59e0b;color:#fff;font-size:0.58rem;padding:2px 7px;border-radius:3px;font-weight:700;vertical-align:middle;margin-left:6px;letter-spacing:0.5px">QUALIFIER</span><div style="font-size:0.65rem;font-weight:400;color:#7c2d12;margin-top:2px">Mandatory escalation trigger on adverse findings</div></div>
+      <div><select id="c3Select" style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px;background:#fffef7" onchange="document.getElementById('c3Score').value=this.value;calcScore();chkC3()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;Clean: No past due, excellent CIC, 100% paid history</option>
+        <option value="4">4&#x2013;Strong: Minor late &lt; 10 days resolved, good CIC</option>
+        <option value="3">3&#x2013;Average: 1&#x2013;2 late payments (11&#x2013;30 days), acceptable CIC</option>
+        <option value="2">2&#x2013;Weak: Current past due OR restructured OR CIC adverse flag &#x26A0;</option>
+        <option value="1">1&#x2013;Adverse: Written-off / default / BSP WatchList / negative CIC &#x26A0;</option>
+      </select></div>
+      <div class="sw"><input type="number" id="c3Score" value="" min="1" max="5" class="cs" data-w="5" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid #f59e0b;border-radius:5px;background:#fffef7" onchange="calcScore();chkC3()"></div>
+    </div>
 
-          <div id="c3Alert"
-            style="display:none;margin:8px 0;padding:10px 14px;background:#fee2e2;border-left:4px solid #dc2626;border-radius:4px;font-size:0.74rem;color:#7f1d1d;line-height:1.5">
-            <strong style="display:block;margin-bottom:3px">&#9888; CREDIT HISTORY ESCALATION TRIGGERED</strong>
-            Adverse findings detected (C3 Score &#x2264; 2). This loan <strong>must be escalated to the Credit
-              Committee</strong> regardless of total score. Standard approval workflow is suspended until documented
-            mitigation, supplementary collateral review, and CCO concurrence are obtained per RBCC 4.02 Rev.16
-            &sect;8.3.
-          </div>
+    <div id="c3Alert" style="display:none;margin:8px 0;padding:10px 14px;background:#fee2e2;border-left:4px solid #dc2626;border-radius:4px;font-size:0.74rem;color:#7f1d1d;line-height:1.5">
+      <strong style="display:block;margin-bottom:3px">&#9888; CREDIT HISTORY ESCALATION TRIGGERED</strong>
+      Adverse findings detected (C3 Score &#x2264; 2). This loan <strong>must be escalated to the Credit Committee</strong> regardless of total score. Standard approval workflow is suspended until documented mitigation, supplementary collateral review, and CCO concurrence are obtained per RBCC 4.02 Rev.16 &sect;8.3.
+    </div>
 
-          <div
-            style="text-align:right;font-family:'JetBrains Mono';font-size:0.82rem;font-weight:700;color:var(--d6);padding:4px 0">
-            Quantitative Subtotal: <span id="qSub">0</span> / 50</div>
+    <div style="text-align:right;font-family:'JetBrains Mono';font-size:0.82rem;font-weight:700;color:var(--d6);padding:4px 0">Quantitative Subtotal: <span id="qSub">0</span> / 50</div>
 
-          <div class="sh">B. Qualitative Analysis (50%) <span class="tg">Non-Financial</span></div>
+    <div class="sh">B. Qualitative Analysis (50%) <span class="tg">Non-Financial</span></div>
 
-          <div class="score-row" style="background:var(--d7);color:#fff;font-weight:700;font-size:0.75rem">
-            <div class="sf">FACTOR</div>
-            <div>CRITERIA</div>
-            <div class="sw">SCORE</div>
-          </div>
+    <div class="score-row" style="background:var(--d7);color:#fff;font-weight:700;font-size:0.75rem">
+      <div class="sf">FACTOR</div><div>CRITERIA</div><div class="sw">SCORE</div>
+    </div>
 
-          <div class="score-row">
-            <div class="sf">C4&#x2014;Community Reputation &amp; References (10%)</div>
-            <div><select
-                style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px"
-                onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
-                <option value="">&#x2014; Select &#x2014;</option>
-                <option value="5">5&#x2013;Excellent; community leader</option>
-                <option value="4">4&#x2013;Positive; trustworthy</option>
-                <option value="3">3&#x2013;Neutral; no complaints</option>
-                <option value="2">2&#x2013;Mixed; some concerns</option>
-                <option value="1">1&#x2013;Negative; bad debts</option>
-              </select></div>
-            <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10"
-                style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                onchange="calcScore()"></div>
-          </div>
+    <div class="score-row">
+      <div class="sf">C4&#x2014;Community Reputation &amp; References (10%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;Excellent; community leader</option>
+        <option value="4">4&#x2013;Positive; trustworthy</option>
+        <option value="3">3&#x2013;Neutral; no complaints</option>
+        <option value="2">2&#x2013;Mixed; some concerns</option>
+        <option value="1">1&#x2013;Negative; bad debts</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
 
-          <div class="score-row">
-            <div class="sf">C4&#x2014;Loan Interview Assessment (5%)</div>
-            <div><select
-                style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px"
-                onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
-                <option value="">&#x2014; Select &#x2014;</option>
-                <option value="5">5&#x2013;Very candid, complete</option>
-                <option value="4">4&#x2013;Cooperative, minor gaps</option>
-                <option value="3">3&#x2013;Cooperative but vague</option>
-                <option value="2">2&#x2013;Partially evasive</option>
-                <option value="1">1&#x2013;Evasive/hostile</option>
-              </select></div>
-            <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="5"
-                style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                onchange="calcScore()"></div>
-          </div>
+    <div class="score-row">
+      <div class="sf">C4&#x2014;Loan Interview Assessment (5%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;Very candid, complete</option>
+        <option value="4">4&#x2013;Cooperative, minor gaps</option>
+        <option value="3">3&#x2013;Cooperative but vague</option>
+        <option value="2">2&#x2013;Partially evasive</option>
+        <option value="1">1&#x2013;Evasive/hostile</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="5" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
 
-          <div class="score-row">
-            <div class="sf">C4&#x2014;Loan Purpose &amp; Doc Consistency (2.5%)</div>
-            <div><select
-                style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px"
-                onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
-                <option value="">&#x2014; Select &#x2014;</option>
-                <option value="5">5&#x2013;Excellent, income-generating</option>
-                <option value="4">4&#x2013;Clear, well-supported</option>
-                <option value="3">3&#x2013;Acceptable</option>
-                <option value="2">2&#x2013;Weak</option>
-                <option value="1">1&#x2013;Suspicious</option>
-              </select></div>
-            <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="2.5"
-                style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                onchange="calcScore()"></div>
-          </div>
+    <div class="score-row">
+      <div class="sf">C4&#x2014;Loan Purpose &amp; Doc Consistency (2.5%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;Excellent, income-generating</option>
+        <option value="4">4&#x2013;Clear, well-supported</option>
+        <option value="3">3&#x2013;Acceptable</option>
+        <option value="2">2&#x2013;Weak</option>
+        <option value="1">1&#x2013;Suspicious</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="2.5" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
 
-          <div class="score-row">
-            <div class="sf">C4&#x2014;RBCCI Relationship History (5%)</div>
-            <div><select
-                style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px"
-                onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
-                <option value="">&#x2014; Select &#x2014;</option>
-                <option value="5">5&#x2013;7+ yrs, loyal, multiple loans</option>
-                <option value="4">4&#x2013;3&#x2013;7 yrs, active depositor</option>
-                <option value="3">3&#x2013;1&#x2013;3 yrs</option>
-                <option value="2">2&#x2013;&lt;1 yr</option>
-                <option value="1">1&#x2013;No prior relationship</option>
-              </select></div>
-            <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="5"
-                style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                onchange="calcScore()"></div>
-          </div>
+    <div class="score-row">
+      <div class="sf">C4&#x2014;RBCCI Relationship History (5%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;7+ yrs, loyal, multiple loans</option>
+        <option value="4">4&#x2013;3&#x2013;7 yrs, active depositor</option>
+        <option value="3">3&#x2013;1&#x2013;3 yrs</option>
+        <option value="2">2&#x2013;&lt;1 yr</option>
+        <option value="1">1&#x2013;No prior relationship</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="5" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
 
-          <div class="score-row">
-            <div class="sf">C5&#x2014;Loan-to-Value (LTV) Ratio (10%)</div>
-            <div><select
-                style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px"
-                onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
-                <option value="">&#x2014; Select &#x2014;</option>
-                <option value="5">5&#x2013;LTV &#x2264;40%</option>
-                <option value="4">4&#x2013;LTV 41&#x2013;60%</option>
-                <option value="3">3&#x2013;LTV 61&#x2013;75%</option>
-                <option value="2">2&#x2013;LTV 76&#x2013;90%</option>
-                <option value="1">1&#x2013;LTV &gt;90%</option>
-              </select></div>
-            <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10"
-                style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                onchange="calcScore()"></div>
-          </div>
+    <div class="score-row">
+      <div class="sf">C5&#x2014;Loan-to-Value (LTV) Ratio (10%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;LTV &#x2264;40%</option>
+        <option value="4">4&#x2013;LTV 41&#x2013;60%</option>
+        <option value="3">3&#x2013;LTV 61&#x2013;75%</option>
+        <option value="2">2&#x2013;LTV 76&#x2013;90%</option>
+        <option value="1">1&#x2013;LTV &gt;90%</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
 
-          <div class="score-row">
-            <div class="sf">C5&#x2014;Collateral Type &amp; Marketability (10%)</div>
-            <div><select
-                style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px"
-                onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
-                <option value="">&#x2014; Select &#x2014;</option>
-                <option value="5">5&#x2013;TCT prime/cash collateral</option>
-                <option value="4">4&#x2013;TCT/OCT secondary</option>
-                <option value="3">3&#x2013;Tax Dec/deed of sale</option>
-                <option value="2">2&#x2013;Chattel/movable</option>
-                <option value="1">1&#x2013;None/guarantee only</option>
-              </select></div>
-            <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10"
-                style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                onchange="calcScore()"></div>
-          </div>
+    <div class="score-row">
+      <div class="sf">C5&#x2014;Collateral Type &amp; Marketability (10%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;TCT prime/cash collateral</option>
+        <option value="4">4&#x2013;TCT/OCT secondary</option>
+        <option value="3">3&#x2013;Tax Dec/deed of sale</option>
+        <option value="2">2&#x2013;Chattel/movable</option>
+        <option value="1">1&#x2013;None/guarantee only</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
 
-          <div class="score-row">
-            <div class="sf">C5&#x2014;Collateral Documentation (2.5%)</div>
-            <div><select
-                style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px"
-                onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
-                <option value="">&#x2014; Select &#x2014;</option>
-                <option value="5">5&#x2013;Clean, insured, current appraisal</option>
-                <option value="4">4&#x2013;Clean, complete, free</option>
-                <option value="3">3&#x2013;Complete, minor annotation</option>
-                <option value="2">2&#x2013;Incomplete</option>
-                <option value="1">1&#x2013;Disputed/encumbered</option>
-              </select></div>
-            <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="2.5"
-                style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                onchange="calcScore()"></div>
-          </div>
+    <div class="score-row">
+      <div class="sf">C5&#x2014;Collateral Documentation (2.5%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;Clean, insured, current appraisal</option>
+        <option value="4">4&#x2013;Clean, complete, free</option>
+        <option value="3">3&#x2013;Complete, minor annotation</option>
+        <option value="2">2&#x2013;Incomplete</option>
+        <option value="1">1&#x2013;Disputed/encumbered</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="2.5" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
 
-          <div class="score-row">
-            <div class="sf">C6&#x2014;Industry/Sector Outlook (2.5%)</div>
-            <div><select
-                style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px"
-                onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
-                <option value="">&#x2014; Select &#x2014;</option>
-                <option value="5">5&#x2013;Essential (agri, retail Calbayog)</option>
-                <option value="4">4&#x2013;Growing sector</option>
-                <option value="3">3&#x2013;Stable</option>
-                <option value="2">2&#x2013;Challenging</option>
-                <option value="1">1&#x2013;Declining</option>
-              </select></div>
-            <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="2.5"
-                style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                onchange="calcScore()"></div>
-          </div>
+    <div class="score-row">
+      <div class="sf">C6&#x2014;Industry/Sector Outlook (2.5%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;Essential (agri, retail Calbayog)</option>
+        <option value="4">4&#x2013;Growing sector</option>
+        <option value="3">3&#x2013;Stable</option>
+        <option value="2">2&#x2013;Challenging</option>
+        <option value="1">1&#x2013;Declining</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="2.5" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
 
-          <div class="score-row">
-            <div class="sf">C6&#x2014;Local Economic Conditions (2.5%)</div>
-            <div><select
-                style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px"
-                onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
-                <option value="">&#x2014; Select &#x2014;</option>
-                <option value="5">5&#x2013;Strong activity</option>
-                <option value="4">4&#x2013;Stable, active market</option>
-                <option value="3">3&#x2013;Normal, seasonal</option>
-                <option value="2">2&#x2013;Recovering</option>
-                <option value="1">1&#x2013;Calamity/shutdown</option>
-              </select></div>
-            <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="2.5"
-                style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                onchange="calcScore()"></div>
-          </div>
+    <div class="score-row">
+      <div class="sf">C6&#x2014;Local Economic Conditions (2.5%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;Strong activity</option>
+        <option value="4">4&#x2013;Stable, active market</option>
+        <option value="3">3&#x2013;Normal, seasonal</option>
+        <option value="2">2&#x2013;Recovering</option>
+        <option value="1">1&#x2013;Calamity/shutdown</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="2.5" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
 
-          <div
-            style="text-align:right;font-family:'JetBrains Mono';font-size:0.82rem;font-weight:700;color:var(--d6);padding:4px 0">
-            Qualitative Subtotal: <span id="qlSub">0</span> / 50</div>
+    <div style="text-align:right;font-family:'JetBrains Mono';font-size:0.82rem;font-weight:700;color:var(--d6);padding:4px 0">Qualitative Subtotal: <span id="qlSub">0</span> / 50</div>
 
         </div>
       </div>
@@ -2761,7 +2661,8 @@
           <div class="cn">7</div>Credit Evaluation<span class="ar">&#x25BC;</span>
         </div>
         <div class="bd">
-          <div class="fi full"><label>Credit Evaluation Notes</label><textarea id="fCN" rows="3"></textarea>
+          <div class="fi full"><label>Credit Evaluation Notes</label><textarea id="fCN"
+              rows="3"></textarea>
           </div>
           <div class="fg c2" style="margin-top:8px">
             <div class="fi"><label>Credit Evaluation Head</label><input id="fCO" placeholder="Enter name..."></div>
@@ -2932,7 +2833,8 @@
           </div>
 
           <div class="fi full" style="margin-top:8px"><label>Compliance Findings / Notes</label><textarea
-              id="fCompNotes" rows="3"></textarea>
+              id="fCompNotes"
+              rows="3"></textarea>
           </div>
 
           <div class="sh">Compliance Officer Certification <span class="tg">Required</span></div>
@@ -3174,7 +3076,7 @@
 
     async function ilsFetchByCode() {
       var code = document.getElementById('ilsCodeInput').value.trim().toUpperCase();
-      var btn = document.getElementById('ilsFetchBtn');
+      var btn  = document.getElementById('ilsFetchBtn');
       if (!code) { toast('⚠ Enter an Application Code first'); return; }
       if (!code.startsWith('RBCCI-')) { toast('⚠ Invalid format — should be RBCCI-YYYY-XXXXXX'); return; }
 
@@ -3203,12 +3105,12 @@
         } else {
           throw new Error(result.message || 'Unknown error');
         }
-      } catch (e) {
+      } catch(e) {
         ilsStatus('✗ Failed', 'err');
         toast('✗ Could not reach server: ' + e.message);
       } finally {
         btn.disabled = false; btn.textContent = '⬇ Fetch & Load';
-        setTimeout(function () { ilsStatus('', ''); }, 8000);
+        setTimeout(function(){ ilsStatus('',''); }, 8000);
       }
     }
 
@@ -3216,20 +3118,20 @@
 
       // ── STEP 1: Clear ALL hardcoded sample data first ───────
       // Ensures fields with no Interview data show blank, not old placeholders
-      ['fN', 'fT', 'fAd', 'fPh', 'fSp', 'fAO', 'fAm', 'fTm', 'fCO'].forEach(function (id) {
+      ['fN','fT','fAd','fPh','fSp','fAO','fAm','fTm','fCO'].forEach(function(id) {
         var el = document.getElementById(id);
         if (el) el.value = '';
       });
       // Clear all unnamed text inputs in the form (removes sample data like "Pedro C. Almonte")
-      document.querySelectorAll('#vR .bd .fi input:not([type="date"]):not([type="number"]):not([type="file"]):not([id])').forEach(function (inp) {
+      document.querySelectorAll('#vR .bd .fi input:not([type="date"]):not([type="number"]):not([type="file"]):not([id])').forEach(function(inp) {
         inp.value = '';
       });
       // Clear number inputs
-      document.querySelectorAll('#vR .bd .fi input[type="number"]').forEach(function (inp) {
+      document.querySelectorAll('#vR .bd .fi input[type="number"]').forEach(function(inp) {
         inp.value = '';
       });
       // Clear collateral table inputs
-      document.querySelectorAll('#colS .dt tbody td input').forEach(function (inp) {
+      document.querySelectorAll('#colS .dt tbody td input').forEach(function(inp) {
         inp.value = '';
       });
 
@@ -3246,7 +3148,7 @@
         if (!el || !val) return;
         for (var i = 0; i < el.options.length; i++) {
           if (el.options[i].value === val || el.options[i].text === val ||
-            el.options[i].text.toLowerCase().includes(val.toLowerCase())) {
+              el.options[i].text.toLowerCase().includes(val.toLowerCase())) {
             el.selectedIndex = i; return;
           }
         }
@@ -3266,9 +3168,9 @@
       sv('fN', fullName);
 
       // TIN, Address, Mobile
-      sv('fT', snap.fieldTIN || '');
+      sv('fT',  snap.fieldTIN     || '');
       sv('fAd', snap.fieldAddress || '');
-      sv('fPh', snap.fieldMobile || '');
+      sv('fPh', snap.fieldMobile  || '');
 
       // Spouse — only populate if Interview has spouse data
       sv('fSp', snap.fieldSpouse || '');
@@ -3276,19 +3178,19 @@
       // DOB
       if (snap.dobMM && snap.dobDD && snap.dobYY) {
         var dob = snap.dobYY + '-' +
-          String(snap.dobMM).padStart(2, '0') + '-' +
-          String(snap.dobDD).padStart(2, '0');
+          String(snap.dobMM).padStart(2,'0') + '-' +
+          String(snap.dobDD).padStart(2,'0');
         var dobEl = document.querySelector('#vR input[type="date"]');
         if (dobEl) dobEl.value = dob;
       }
 
       // Civil Status
-      var civilMap = { 'Single': 'Single', 'Married': 'Married', 'Widowed': 'Widowed', 'Separated': 'Separated' };
+      var civilMap = {'Single':'Single','Married':'Married','Widowed':'Widowed','Separated':'Separated'};
       var civil = snap['radio_civil'] || '';
       if (civil) ss('fCv', civilMap[civil] || civil);
 
       // Housing
-      var homeMap = { 'Owned': 'Owned', 'Rented': 'Rented', 'Living with relatives': 'Living with relatives' };
+      var homeMap = {'Owned':'Owned','Rented':'Rented','Living with relatives':'Living with relatives'};
       var home = snap['radio_homeOwnership'] || '';
       if (home) ss('fHs', homeMap[home] || home);
 
@@ -3300,7 +3202,7 @@
       sv('fAO', snap.fieldInterviewerName || '');
 
       // Co-maker and Source of Repayment — find by placeholder
-      document.querySelectorAll('#vR .bd .fi input:not([id]):not([type="date"]):not([type="number"]):not([type="file"])').forEach(function (inp) {
+      document.querySelectorAll('#vR .bd .fi input:not([id]):not([type="date"]):not([type="number"]):not([type="file"])').forEach(function(inp) {
         var ph = (inp.placeholder || '').toLowerCase();
         if (ph.includes('co-maker') || ph.includes('guarantor')) {
           var cobFull = [snap.cobFirstName, snap.cobMiddleName, snap.cobLastName].filter(Boolean).join(' ');
@@ -3312,21 +3214,21 @@
       });
 
       // ── Section 2: Loan Details ──────────────────────────────
-      sv('fAm', snap.fieldLoanAmount ? snap.fieldLoanAmount.replace(/[^0-9.]/g, '') : '');
-      sv('fTm', snap.fieldLoanTerm ? snap.fieldLoanTerm + ' months' : '');
+      sv('fAm', snap.fieldLoanAmount ? snap.fieldLoanAmount.replace(/[^0-9.]/g,'') : '');
+      sv('fTm', snap.fieldLoanTerm   ? snap.fieldLoanTerm + ' months' : '');
 
       // Loan purpose
       var purposeMap = {
-        'purpBusiness': 'Agricultural/Business',
-        'purpPersonal': 'Personal',
+        'purpBusiness':  'Agricultural/Business',
+        'purpPersonal':  'Personal',
         'purpEducation': 'Personal',
-        'purpMedical': 'Personal',
-        'purpHouse': 'Housing',
-        'purpTax': 'Personal',
-        'purpPayoff': 'Business/Commercial'
+        'purpMedical':   'Personal',
+        'purpHouse':     'Housing',
+        'purpTax':       'Personal',
+        'purpPayoff':    'Business/Commercial'
       };
       var firstPurpose = '';
-      Object.keys(purposeMap).forEach(function (key) {
+      Object.keys(purposeMap).forEach(function(key) {
         if (!firstPurpose && (snap[key] === true || snap[key] === 'true')) {
           firstPurpose = purposeMap[key];
         }
@@ -3335,21 +3237,21 @@
 
       // Loan type
       var ltype = snap['radio_loanType'] || '';
-      if (ltype.toLowerCase().includes('unsecured')) ss('fCl', 'Unsecured');
-      else if (ltype.toLowerCase().includes('secured')) ss('fCl', 'Secured');
+      if (ltype.toLowerCase().includes('unsecured')) ss('fCl','Unsecured');
+      else if (ltype.toLowerCase().includes('secured')) ss('fCl','Secured');
 
       // Borrower category
       var btype = snap['radio_btype'] || '';
-      if (btype === 'Individual') ss('fBT', 'Individual–Personal');
-      else if (btype === 'Corporation') ss('fBT', 'Corporation');
-      else if (btype === 'Cooperative') ss('fBT', 'Cooperative');
+      if      (btype === 'Individual')   ss('fBT','Individual–Personal');
+      else if (btype === 'Corporation')  ss('fBT','Corporation');
+      else if (btype === 'Cooperative')  ss('fBT','Cooperative');
 
       // Collateral row 1
       var collInputs = document.querySelectorAll('#colS .dt tbody tr:first-child td input');
-      if (collInputs[0]) collInputs[0].value = snap.coll1Desc || '';
-      if (collInputs[1]) collInputs[1].value = snap.coll1Loc || '';
+      if (collInputs[0]) collInputs[0].value = snap.coll1Desc  || '';
+      if (collInputs[1]) collInputs[1].value = snap.coll1Loc   || '';
       if (collInputs[2]) collInputs[2].value = snap.coll1Title || '';
-      if (collInputs[3]) collInputs[3].value = snap.coll1Area || '';
+      if (collInputs[3]) collInputs[3].value = snap.coll1Area  || '';
 
       // ── Section 7: Credit Evaluation ────────────────────────
       sv('fCO', snap.fieldInterviewerName || '');
@@ -3357,7 +3259,7 @@
       // ── Reference No. and Date ───────────────────────────────
       var ilsCode = document.getElementById('ilsCodeInput').value.trim().toUpperCase();
       sv('fR', 'BI-' + ilsCode);
-      sv('fDt', new Date().toISOString().slice(0, 10));
+      sv('fDt', new Date().toISOString().slice(0,10));
 
       toast('✓ Fields populated from Interview Form');
     }
@@ -3368,14 +3270,14 @@
       btn.disabled = true; btn.textContent = '⟳ Saving…';
 
       var loadedCode = document.getElementById('ilsCodeInput').dataset.loadedCode || '';
-      var appCode = loadedCode || ('BI-' + new Date().getTime());
+      var appCode    = loadedCode || ('BI-' + new Date().getTime());
 
       // ── STEP 1: Upload queued files to Google Drive ──────────────────────
       var driveLinks = [];
       try {
         btn.textContent = '☁ Uploading files…';
         driveLinks = await driveUploadAll(appCode);
-      } catch (e) {
+      } catch(e) {
         console.warn('Drive upload warning:', e);
         // Non-fatal — continue saving to Sheets even if Drive upload fails
       }
@@ -3384,30 +3286,30 @@
       btn.textContent = '⟳ Saving to Sheets…';
 
       var payload = {
-        __action: 'saveBackgroundCheck',
-        appCode: appCode,
-        fullName: gv('fN'),
-        refNo: gv('fR'),
-        dateSaved: new Date().toLocaleString('en-PH', { timeZone: 'Asia/Manila' }),
-        tin: gv('fT'),
-        address: gv('fAd'),
-        phone: gv('fPh'),
-        spouse: gv('fSp'),
-        loanAmount: gv('fAm'),
-        loanTerm: gv('fTm'),
-        kycStatus: gv('fKYC'),
-        amlStatus: gv('fAML'),
-        esrmEnv: gv('fESRMenv'),
-        esrmSoc: gv('fESRMsoc'),
-        esrmRating: gv('fESRMrating'),
-        esrmNotes: gv('fESRMnotes'),
-        creditNotes: gv('fCN'),
-        creditEvalHead: gv('fCO'),
-        totalScore: document.getElementById('totalScore') ? document.getElementById('totalScore').textContent : '',
-        scoreRating: document.getElementById('scoreRating') ? document.getElementById('scoreRating').textContent : '',
-        recommendation: document.getElementById('autoRec') ? document.getElementById('autoRec').textContent : '',
-        uploadedFiles: driveLinks.map(function (l) { return l.name + ': ' + l.url; }).join(' | '),
-        timestamp: new Date().toLocaleString('en-PH', { timeZone: 'Asia/Manila' })
+        __action:        'saveBackgroundCheck',
+        appCode:         appCode,
+        fullName:        gv('fN'),
+        refNo:           gv('fR'),
+        dateSaved:       new Date().toLocaleString('en-PH', { timeZone: 'Asia/Manila' }),
+        tin:             gv('fT'),
+        address:         gv('fAd'),
+        phone:           gv('fPh'),
+        spouse:          gv('fSp'),
+        loanAmount:      gv('fAm'),
+        loanTerm:        gv('fTm'),
+        kycStatus:       gv('fKYC'),
+        amlStatus:       gv('fAML'),
+        esrmEnv:         gv('fESRMenv'),
+        esrmSoc:         gv('fESRMsoc'),
+        esrmRating:      gv('fESRMrating'),
+        esrmNotes:       gv('fESRMnotes'),
+        creditNotes:     gv('fCN'),
+        creditEvalHead:  gv('fCO'),
+        totalScore:      document.getElementById('totalScore') ? document.getElementById('totalScore').textContent : '',
+        scoreRating:     document.getElementById('scoreRating') ? document.getElementById('scoreRating').textContent : '',
+        recommendation:  document.getElementById('autoRec') ? document.getElementById('autoRec').textContent : '',
+        uploadedFiles:   driveLinks.map(function(l){ return l.name + ': ' + l.url; }).join(' | '),
+        timestamp:       new Date().toLocaleString('en-PH', { timeZone: 'Asia/Manila' })
       };
 
       try {
@@ -3420,7 +3322,7 @@
         } else {
           throw new Error(result.message || 'Save failed');
         }
-      } catch (e) {
+      } catch(e) {
         toast('✗ Save failed: ' + e.message);
       } finally {
         btn.disabled = false; btn.textContent = '💾 Save to Sheets';
@@ -3428,9 +3330,9 @@
     }
 
     // Allow Enter key in code input
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
       var inp = document.getElementById('ilsCodeInput');
-      if (inp) inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') ilsFetchByCode(); });
+      if (inp) inp.addEventListener('keydown', function(e){ if(e.key==='Enter') ilsFetchByCode(); });
     });
 
   </script>
@@ -3439,232 +3341,232 @@
        GOOGLE DRIVE FILE UPLOAD ENGINE
   ═══════════════════════════════════════════════════════════════════ -->
   <script>
-    (function () {
-      'use strict';
+  (function() {
+    'use strict';
 
-      // ── Apps Script URL — must be defined inside this block ─────────────────
-      var DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5cfixkka7bcw7PyrY8iGDNE3ea6vym5ox2xnEMEol_Z4kkxwhzD2QHpIh5OUKgoMiwg/exec';
+    // ── Apps Script URL — must be defined inside this block ─────────────────
+    var DRIVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5cfixkka7bcw7PyrY8iGDNE3ea6vym5ox2xnEMEol_Z4kkxwhzD2QHpIh5OUKgoMiwg/exec';
 
-      // ── Queued files: [{ file: File, status: 'queued'|'uploading'|'done'|'error', url: '' }]
-      var driveQueue = [];
+    // ── Queued files: [{ file: File, status: 'queued'|'uploading'|'done'|'error', url: '' }]
+    var driveQueue = [];
 
-      // ── Show/hide the "no app code" warning ─────────────────────────────────
-      function driveCheckCode() {
-        var code = (document.getElementById('ilsCodeInput').dataset.loadedCode || '').trim();
-        var warn = document.getElementById('driveNoCodeWarn');
-        var zone = document.getElementById('driveDropZone');
-        if (!code) {
-          if (warn) warn.style.display = 'block';
-          if (zone) zone.style.opacity = '0.5';
-        } else {
-          if (warn) warn.style.display = 'none';
-          if (zone) zone.style.opacity = '1';
-          // Show folder bar
-          showFolderBar(code);
-        }
+    // ── Show/hide the "no app code" warning ─────────────────────────────────
+    function driveCheckCode() {
+      var code = (document.getElementById('ilsCodeInput').dataset.loadedCode || '').trim();
+      var warn = document.getElementById('driveNoCodeWarn');
+      var zone = document.getElementById('driveDropZone');
+      if (!code) {
+        if (warn) warn.style.display = 'block';
+        if (zone) zone.style.opacity = '0.5';
+      } else {
+        if (warn) warn.style.display = 'none';
+        if (zone) zone.style.opacity = '1';
+        // Show folder bar
+        showFolderBar(code);
       }
+    }
 
-      function showFolderBar(code) {
-        var bar = document.getElementById('driveFolderBar');
-        var label = document.getElementById('driveFolderLabel');
-        var link = document.getElementById('driveFolderLink');
-        if (!bar) return;
-        bar.style.display = 'flex';
-        if (label) label.textContent = 'Client folder: ' + code;
-        // Try to fetch the folder URL from Drive via Apps Script
-        fetch(DRIVE_SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ __action: 'getClientFolderUrl', appCode: code })
-        })
-          .then(function (r) { return r.json(); })
-          .then(function (res) {
-            if (res.result === 'success' && res.folderUrl && link) {
-              link.href = res.folderUrl;
-              link.textContent = 'Open in Drive ↗';
-            } else if (link) {
-              link.textContent = '(folder will be created on upload)';
-              link.href = '#';
-            }
-          })
-          .catch(function () { if (link) link.textContent = '(folder will be created on upload)'; });
+    function showFolderBar(code) {
+      var bar   = document.getElementById('driveFolderBar');
+      var label = document.getElementById('driveFolderLabel');
+      var link  = document.getElementById('driveFolderLink');
+      if (!bar) return;
+      bar.style.display = 'flex';
+      if (label) label.textContent = 'Client folder: ' + code;
+      // Try to fetch the folder URL from Drive via Apps Script
+      fetch(DRIVE_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ __action: 'getClientFolderUrl', appCode: code })
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(res){
+        if (res.result === 'success' && res.folderUrl && link) {
+          link.href = res.folderUrl;
+          link.textContent = 'Open in Drive ↗';
+        } else if (link) {
+          link.textContent = '(folder will be created on upload)';
+          link.href = '#';
+        }
+      })
+      .catch(function(){ if (link) link.textContent = '(folder will be created on upload)'; });
+    }
+
+    // ── Handle files from input or drag-drop ────────────────────────────────
+    window.driveQueueFiles = function(files) {
+      for (var i = 0; i < files.length; i++) {
+        driveQueue.push({ file: files[i], status: 'queued', url: '' });
       }
+      renderDriveQueue();
+      driveCheckCode();
+    };
 
-      // ── Handle files from input or drag-drop ────────────────────────────────
-      window.driveQueueFiles = function (files) {
-        for (var i = 0; i < files.length; i++) {
-          driveQueue.push({ file: files[i], status: 'queued', url: '' });
-        }
-        renderDriveQueue();
-        driveCheckCode();
-      };
+    window.driveHandleDrop = function(e) {
+      var files = e.dataTransfer.files;
+      window.driveQueueFiles(files);
+    };
 
-      window.driveHandleDrop = function (e) {
-        var files = e.dataTransfer.files;
-        window.driveQueueFiles(files);
-      };
-
-      // ── Render the queued file list ──────────────────────────────────────────
-      function renderDriveQueue() {
-        var list = document.getElementById('driveFileList');
-        if (!list) return;
-        list.innerHTML = '';
-        driveQueue.forEach(function (item, idx) {
-          var ext = item.file.name.split('.').pop().toLowerCase();
-          var icon = ext === 'pdf' ? '📄' : ext === 'xlsx' || ext === 'xls' ? '📊' : ext === 'doc' || ext === 'docx' ? '📝' : ext === 'jpg' || ext === 'jpeg' || ext === 'png' || ext === 'gif' ? '🖼️' : '📎';
-          var size = (item.file.size / 1024).toFixed(1) + ' KB';
-          var statusIcon = item.status === 'done' ? '✅' : item.status === 'uploading' ? '⏳' : item.status === 'error' ? '❌' : '🕐';
-          var statusColor = item.status === 'done' ? '#1a5c30' : item.status === 'error' ? '#b02a1f' : item.status === 'uploading' ? '#1a6fa8' : '#555';
-          var row = document.createElement('div');
-          row.id = 'driveRow_' + idx;
-          row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f8faf9;border:1px solid #d2e3d8;border-radius:6px;font-size:.78rem;';
-          row.innerHTML =
-            '<span style="font-size:1rem">' + icon + '</span>' +
-            '<span style="flex:1;font-weight:600;color:#1e3328;word-break:break-all;">' + item.file.name + '</span>' +
-            '<span style="color:#6d9a7e;white-space:nowrap">' + size + '</span>' +
-            (item.status === 'done' && item.url
-              ? '<a href="' + item.url + '" target="_blank" style="color:#1a6fa8;font-size:.72rem;white-space:nowrap">View ↗</a>'
-              : '') +
-            '<span id="driveStatus_' + idx + '" style="font-size:.82rem;color:' + statusColor + ';white-space:nowrap">' + statusIcon + '</span>' +
-            (item.status === 'queued'
-              ? '<button onclick="driveRemove(' + idx + ')" style="background:none;border:none;color:#b02a1f;cursor:pointer;font-size:.8rem;padding:0 4px">✕</button>'
-              : '');
-          list.appendChild(row);
-        });
-      }
-
-      window.driveRemove = function (idx) {
-        driveQueue.splice(idx, 1);
-        renderDriveQueue();
-      };
-
-      // ── Convert File to base64 ───────────────────────────────────────────────
-      function fileToBase64(file) {
-        return new Promise(function (resolve, reject) {
-          var reader = new FileReader();
-          reader.onload = function (e) {
-            // Strip the data URL prefix (e.g. "data:application/pdf;base64,")
-            var base64 = e.target.result.split(',')[1];
-            resolve(base64);
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-      }
-
-      // ── Upload all queued files (called from saveToSheets) ───────────────────
-      window.driveUploadAll = async function (appCode) {
-        if (!appCode) {
-          toast('⚠ No App Code — files not uploaded to Drive');
-          return [];
-        }
-
-        var toUpload = driveQueue.filter(function (i) { return i.status === 'queued'; });
-        if (!toUpload.length) return [];
-
-        var links = [];
-
-        for (var i = 0; i < driveQueue.length; i++) {
-          if (driveQueue[i].status !== 'queued') continue;
-
-          driveQueue[i].status = 'uploading';
-          renderDriveQueue();
-
-          try {
-            // Check file size — Apps Script has a 6MB POST limit
-            if (driveQueue[i].file.size > 4 * 1024 * 1024) {
-              driveQueue[i].status = 'error';
-              toast('✗ ' + driveQueue[i].file.name + ' is too large (max 4MB)');
-              renderDriveQueue();
-              continue;
-            }
-
-            var b64 = await fileToBase64(driveQueue[i].file);
-
-            // Use no-cors redirect:follow to handle Apps Script redirects
-            var resp = await fetch(DRIVE_SCRIPT_URL, {
-              method: 'POST',
-              redirect: 'follow',
-              body: JSON.stringify({
-                __action: 'uploadFileToDrive',
-                appCode: appCode,
-                fileName: driveQueue[i].file.name,
-                mimeType: driveQueue[i].file.type || 'application/octet-stream',
-                fileData: b64
-              })
-            });
-
-            // Safely parse response — handle non-JSON gracefully
-            var result;
-            var rawText = await resp.text();
-            try {
-              result = JSON.parse(rawText);
-            } catch (parseErr) {
-              // Apps Script sometimes returns HTML on auth errors
-              driveQueue[i].status = 'error';
-              toast('✗ Server error — check Apps Script authorization');
-              console.error('Non-JSON response from Apps Script:', rawText.slice(0, 300));
-              renderDriveQueue();
-              continue;
-            }
-
-            if (result.result === 'success') {
-              driveQueue[i].status = 'done';
-              driveQueue[i].url = result.fileUrl;
-              links.push({ name: driveQueue[i].file.name, url: result.fileUrl });
-              toast('✅ ' + driveQueue[i].file.name + ' uploaded to Drive!');
-              // Update folder link in bar
-              if (result.folderUrl) {
-                var lnk = document.getElementById('driveFolderLink');
-                if (lnk) { lnk.href = result.folderUrl; lnk.textContent = 'Open in Drive ↗'; }
-              }
-            } else {
-              driveQueue[i].status = 'error';
-              // Show the actual error to the user — no more silent failures
-              var errMsg = result.message || 'Unknown error';
-              toast('✗ Upload failed: ' + errMsg);
-              console.error('Drive upload error:', errMsg);
-            }
-
-          } catch (e) {
-            driveQueue[i].status = 'error';
-            toast('✗ Upload error: ' + e.message);
-            console.error('Drive upload exception:', e);
-          }
-
-          renderDriveQueue();
-        }
-
-        // Show summary
-        if (links.length) {
-          var sumBox = document.getElementById('driveUploadSummary');
-          var sumList = document.getElementById('driveUploadLinks');
-          if (sumBox && sumList) {
-            sumBox.style.display = 'block';
-            sumList.innerHTML = links.map(function (l) {
-              return '<a href="' + l.url + '" target="_blank" style="color:#1a6fa8;text-decoration:underline;">' +
-                '📄 ' + l.name + ' ↗</a>';
-            }).join('');
-          }
-        }
-
-        return links;
-      };
-
-      // ── Init on page load ────────────────────────────────────────────────────
-      document.addEventListener('DOMContentLoaded', function () {
-        driveCheckCode();
-
-        // Re-check whenever a client is loaded via App Code fetch
-        var fetchBtn = document.getElementById('ilsFetchBtn');
-        if (fetchBtn) {
-          var _orig = fetchBtn.onclick;
-          fetchBtn.addEventListener('click', function () {
-            setTimeout(driveCheckCode, 2000); // wait for fetch to complete
-          });
-        }
+    // ── Render the queued file list ──────────────────────────────────────────
+    function renderDriveQueue() {
+      var list = document.getElementById('driveFileList');
+      if (!list) return;
+      list.innerHTML = '';
+      driveQueue.forEach(function(item, idx) {
+        var ext  = item.file.name.split('.').pop().toLowerCase();
+        var icon = ext==='pdf'?'📄':ext==='xlsx'||ext==='xls'?'📊':ext==='doc'||ext==='docx'?'📝':ext==='jpg'||ext==='jpeg'||ext==='png'||ext==='gif'?'🖼️':'📎';
+        var size = (item.file.size / 1024).toFixed(1) + ' KB';
+        var statusIcon = item.status==='done'?'✅':item.status==='uploading'?'⏳':item.status==='error'?'❌':'🕐';
+        var statusColor= item.status==='done'?'#1a5c30':item.status==='error'?'#b02a1f':item.status==='uploading'?'#1a6fa8':'#555';
+        var row = document.createElement('div');
+        row.id  = 'driveRow_' + idx;
+        row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f8faf9;border:1px solid #d2e3d8;border-radius:6px;font-size:.78rem;';
+        row.innerHTML =
+          '<span style="font-size:1rem">' + icon + '</span>' +
+          '<span style="flex:1;font-weight:600;color:#1e3328;word-break:break-all;">' + item.file.name + '</span>' +
+          '<span style="color:#6d9a7e;white-space:nowrap">' + size + '</span>' +
+          (item.status==='done' && item.url
+            ? '<a href="' + item.url + '" target="_blank" style="color:#1a6fa8;font-size:.72rem;white-space:nowrap">View ↗</a>'
+            : '') +
+          '<span id="driveStatus_' + idx + '" style="font-size:.82rem;color:' + statusColor + ';white-space:nowrap">' + statusIcon + '</span>' +
+          (item.status==='queued'
+            ? '<button onclick="driveRemove(' + idx + ')" style="background:none;border:none;color:#b02a1f;cursor:pointer;font-size:.8rem;padding:0 4px">✕</button>'
+            : '');
+        list.appendChild(row);
       });
+    }
 
-    })();
+    window.driveRemove = function(idx) {
+      driveQueue.splice(idx, 1);
+      renderDriveQueue();
+    };
+
+    // ── Convert File to base64 ───────────────────────────────────────────────
+    function fileToBase64(file) {
+      return new Promise(function(resolve, reject) {
+        var reader = new FileReader();
+        reader.onload  = function(e) {
+          // Strip the data URL prefix (e.g. "data:application/pdf;base64,")
+          var base64 = e.target.result.split(',')[1];
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // ── Upload all queued files (called from saveToSheets) ───────────────────
+    window.driveUploadAll = async function(appCode) {
+      if (!appCode) {
+        toast('⚠ No App Code — files not uploaded to Drive');
+        return [];
+      }
+
+      var toUpload = driveQueue.filter(function(i){ return i.status === 'queued'; });
+      if (!toUpload.length) return [];
+
+      var links = [];
+
+      for (var i = 0; i < driveQueue.length; i++) {
+        if (driveQueue[i].status !== 'queued') continue;
+
+        driveQueue[i].status = 'uploading';
+        renderDriveQueue();
+
+        try {
+          // Check file size — Apps Script has a 6MB POST limit
+          if (driveQueue[i].file.size > 4 * 1024 * 1024) {
+            driveQueue[i].status = 'error';
+            toast('✗ ' + driveQueue[i].file.name + ' is too large (max 4MB)');
+            renderDriveQueue();
+            continue;
+          }
+
+          var b64 = await fileToBase64(driveQueue[i].file);
+
+          // Use no-cors redirect:follow to handle Apps Script redirects
+          var resp = await fetch(DRIVE_SCRIPT_URL, {
+            method:   'POST',
+            redirect: 'follow',
+            body: JSON.stringify({
+              __action: 'uploadFileToDrive',
+              appCode:  appCode,
+              fileName: driveQueue[i].file.name,
+              mimeType: driveQueue[i].file.type || 'application/octet-stream',
+              fileData: b64
+            })
+          });
+
+          // Safely parse response — handle non-JSON gracefully
+          var result;
+          var rawText = await resp.text();
+          try {
+            result = JSON.parse(rawText);
+          } catch(parseErr) {
+            // Apps Script sometimes returns HTML on auth errors
+            driveQueue[i].status = 'error';
+            toast('✗ Server error — check Apps Script authorization');
+            console.error('Non-JSON response from Apps Script:', rawText.slice(0, 300));
+            renderDriveQueue();
+            continue;
+          }
+
+          if (result.result === 'success') {
+            driveQueue[i].status = 'done';
+            driveQueue[i].url    = result.fileUrl;
+            links.push({ name: driveQueue[i].file.name, url: result.fileUrl });
+            toast('✅ ' + driveQueue[i].file.name + ' uploaded to Drive!');
+            // Update folder link in bar
+            if (result.folderUrl) {
+              var lnk = document.getElementById('driveFolderLink');
+              if (lnk) { lnk.href = result.folderUrl; lnk.textContent = 'Open in Drive ↗'; }
+            }
+          } else {
+            driveQueue[i].status = 'error';
+            // Show the actual error to the user — no more silent failures
+            var errMsg = result.message || 'Unknown error';
+            toast('✗ Upload failed: ' + errMsg);
+            console.error('Drive upload error:', errMsg);
+          }
+
+        } catch(e) {
+          driveQueue[i].status = 'error';
+          toast('✗ Upload error: ' + e.message);
+          console.error('Drive upload exception:', e);
+        }
+
+        renderDriveQueue();
+      }
+
+      // Show summary
+      if (links.length) {
+        var sumBox  = document.getElementById('driveUploadSummary');
+        var sumList = document.getElementById('driveUploadLinks');
+        if (sumBox && sumList) {
+          sumBox.style.display = 'block';
+          sumList.innerHTML = links.map(function(l){
+            return '<a href="' + l.url + '" target="_blank" style="color:#1a6fa8;text-decoration:underline;">' +
+              '📄 ' + l.name + ' ↗</a>';
+          }).join('');
+        }
+      }
+
+      return links;
+    };
+
+    // ── Init on page load ────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function() {
+      driveCheckCode();
+
+      // Re-check whenever a client is loaded via App Code fetch
+      var fetchBtn = document.getElementById('ilsFetchBtn');
+      if (fetchBtn) {
+        var _orig = fetchBtn.onclick;
+        fetchBtn.addEventListener('click', function() {
+          setTimeout(driveCheckCode, 2000); // wait for fetch to complete
+        });
+      }
+    });
+
+  })();
   </script>
   <script>
 
@@ -3687,12 +3589,12 @@
     function calcScore() {
       // Quantitative: 6 factors (C1x3, C2x2, C3x1) — weights sum to 50
       // Qualitative:  9 factors (C4x4, C5x3, C6x2) — weights sum to 50
-      var qIds = ['#qSub'];
+      var qIds   = ['#qSub'];
       var inputs = document.querySelectorAll('.cs');
       var qTotal = 0, qlTotal = 0;
 
       // Separate by section — first 6 inputs are Quantitative, rest Qualitative
-      inputs.forEach(function (inp, idx) {
+      inputs.forEach(function(inp, idx) {
         var s = parseFloat(inp.value) || 0;
         var w = parseFloat(inp.getAttribute('data-w')) || 0;
         var pts = s * w / 5;
@@ -3700,11 +3602,11 @@
         else qlTotal += pts;
       });
 
-      var qRound = Math.round(qTotal * 10) / 10;
+      var qRound  = Math.round(qTotal * 10) / 10;
       var qlRound = Math.round(qlTotal * 10) / 10;
-      var total = Math.round((qTotal + qlTotal) * 10) / 10;
+      var total   = Math.round((qTotal + qlTotal) * 10) / 10;
 
-      document.getElementById('qSub').textContent = qRound;
+      document.getElementById('qSub').textContent  = qRound;
       document.getElementById('qlSub').textContent = qlRound;
 
       var totalEl = document.getElementById('totalScore');
@@ -3721,15 +3623,15 @@
 
       // Rating bands
       var rat = '', dec = '', cls = 'ok', ang = -55;
-      if (total >= 85) { rat = 'AAA \u2014 PRIME'; dec = 'APPROVE \u2014 Fast-track, preferential rate'; cls = 'ok'; ang = -55; }
-      else if (total >= 75) { rat = 'AA \u2014 GOOD'; dec = 'APPROVE at standard terms'; cls = 'ok'; ang = -40; }
-      else if (total >= 65) { rat = 'A \u2014 SATISFACTORY'; dec = 'APPROVE with conditions'; cls = 'wn'; ang = -15; }
-      else if (total >= 55) { rat = 'BBB \u2014 BORDERLINE'; dec = 'REFER to Credit Committee'; cls = 'wn'; ang = 10; }
-      else if (total >= 40) { rat = 'BB \u2014 MARGINAL'; dec = 'DECLINE \u2014 Re-apply after 6 months'; cls = 'er'; ang = 35; }
-      else { rat = 'B/C \u2014 HIGH RISK'; dec = 'DECLINE \u2014 Does not meet standards'; cls = 'er'; ang = 55; }
+      if (total >= 85)      { rat = 'AAA \u2014 PRIME';       dec = 'APPROVE \u2014 Fast-track, preferential rate';    cls = 'ok'; ang = -55; }
+      else if (total >= 75) { rat = 'AA \u2014 GOOD';         dec = 'APPROVE at standard terms';                       cls = 'ok'; ang = -40; }
+      else if (total >= 65) { rat = 'A \u2014 SATISFACTORY';  dec = 'APPROVE with conditions';                         cls = 'wn'; ang = -15; }
+      else if (total >= 55) { rat = 'BBB \u2014 BORDERLINE';  dec = 'REFER to Credit Committee';                       cls = 'wn'; ang = 10;  }
+      else if (total >= 40) { rat = 'BB \u2014 MARGINAL';     dec = 'DECLINE \u2014 Re-apply after 6 months';          cls = 'er'; ang = 35;  }
+      else                  { rat = 'B/C \u2014 HIGH RISK';   dec = 'DECLINE \u2014 Does not meet standards';          cls = 'er'; ang = 55;  }
 
       var bg = { ok: 'var(--ok0)', wn: 'var(--wn0)', er: 'var(--er0)' };
-      var fg = { ok: 'var(--ok)', wn: 'var(--wn)', er: 'var(--er)' };
+      var fg = { ok: 'var(--ok)',  wn: 'var(--wn)',  er: 'var(--er)'  };
 
       var srEl = document.getElementById('scoreRating');
       if (srEl) { srEl.textContent = rat; srEl.style.background = bg[cls]; srEl.style.color = fg[cls]; }
@@ -3743,7 +3645,7 @@
 
     // C3 Credit History qualifier escalation banner (RBCC 4.02 Rev.16 §8.3)
     function chkC3() {
-      var c3 = document.getElementById('c3Score');
+      var c3  = document.getElementById('c3Score');
       var alert = document.getElementById('c3Alert');
       if (!c3 || !alert) return;
       var v = parseInt(c3.value) || 0;
@@ -3754,7 +3656,7 @@
         if (arEl) {
           arEl.textContent = 'ESCALATED \u2014 C3 QUALIFIER: Refer to Credit Committee \u2014 adverse credit findings require CCO concurrence per RBCC 4.02 Rev.16 \u00a78.3';
           arEl.style.background = 'var(--er0)';
-          arEl.style.color = 'var(--er)';
+          arEl.style.color      = 'var(--er)';
         }
       } else {
         alert.style.display = 'none';
@@ -3856,8 +3758,8 @@
           head: [['Field', 'Value']], body: [
             ['Purpose', gv('fPu')], ['Class', gv('fCl')], ['Amount', 'P' + Number(gv('fAm')).toLocaleString()],
             ['Income', 'P' + Number(gv('fIn')).toLocaleString()], ['Debt', 'P' + Number(gv('fDb')).toLocaleString()],
-            ['DTI', gv('fDTI')], ['Credit Score', document.getElementById('totalScore').textContent + '/100'],
-            ['Rating', document.getElementById('scoreRating').textContent], ['Recommendation', gv('fRc')],
+            ['DTI', gv('fDTI')], ['Credit Score', (document.getElementById('rScD') ? document.getElementById('rScD').textContent : '0/100')],
+            ['Rating', (document.getElementById('autoRec') ? document.getElementById('autoRec').textContent : '')], ['Recommendation', gv('fRc')],
           ]
         });
         var fn = 'RBCCI_BI_' + gv('fN').replace(/\s+/g, '_') + '_' + new Date().toISOString().slice(0, 10) + '.pdf';
@@ -3871,8 +3773,8 @@
         var d = [['RBCCI Background Investigation & Credit Scoring'], [''],
         ['Ref', gv('fR')], ['Date', gv('fDt')], ['Name', gv('fN')], ['TIN', gv('fT')], ['Address', gv('fAd')],
         ['Purpose', gv('fPu')], ['Class', gv('fCl')], ['Amount', gv('fAm')], ['Income', gv('fIn')], ['Debt', gv('fDb')],
-        ['DTI', gv('fDTI')], ['Credit Score', document.getElementById('totalScore').textContent],
-        ['Rating', document.getElementById('scoreRating').textContent], ['Recommendation', gv('fRc')],
+        ['DTI', gv('fDTI')], ['Credit Score', (document.getElementById('rScD') ? document.getElementById('rScD').textContent : '0/100')],
+        ['Rating', (document.getElementById('autoRec') ? document.getElementById('autoRec').textContent : '')], ['Recommendation', gv('fRc')],
         [''], ['Compliance', gv('fCompNotes')], ['ESRM Env Risk', gv('fESRMenv')], ['ESRM Social', gv('fESRMsoc')], ['ESRM Rating', gv('fESRMrating')], ['ESRM Notes', gv('fESRMnotes')], ['Compliance Officer', gv('fCompOfficer')], ['Justification', gv('fJs')]
         ]; var ws = XLSX.utils.aoa_to_sheet(d); ws['!cols'] = [{ wch: 22 }, { wch: 50 }];
         var wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'BI Report');
@@ -3898,7 +3800,7 @@
         function hdr(t) { return new D.Paragraph({ heading: D.HeadingLevel.HEADING_2, children: [new D.TextRun({ text: t, bold: true, size: 24, font: 'Calibri' })], spacing: { before: 240, after: 120 } }) }
         function para(t) { return new D.Paragraph({ children: [new D.TextRun({ text: t || '', size: 20, font: 'Calibri' })], spacing: { after: 80 } }) }
         function tbl(rows) { return new D.Table({ width: { size: 9360, type: D.WidthType.DXA }, columnWidths: [3200, 6160], rows: rows }) }
-        var nm = gv('fN') || 'Applicant'; var sc = document.getElementById('totalScore').textContent; var rt = document.getElementById('scoreRating').textContent;
+        var nm = gv('fN') || 'Applicant'; var sc = (document.getElementById('rScD') ? document.getElementById('rScD').textContent : '0/100'); var rt = (document.getElementById('autoRec') ? document.getElementById('autoRec').textContent : '');
         var doc = new D.Document({
           styles: { default: { document: { run: { font: 'Calibri', size: 20 } } } }, sections: [{
             properties: { page: { size: { width: 12240, height: 15840 }, margin: { top: 1000, right: 1200, bottom: 1000, left: 1200 } } },
@@ -4038,139 +3940,126 @@
     }
   </script>
 
-  <!-- ═══════════════════════════════════════════════════════
+<!-- ═══════════════════════════════════════════════════════
      GENERATE REPORT MODAL
 ════════════════════════════════════════════════════════ -->
-  <div id="reportModal"
-    style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.55);display:none;align-items:center;justify-content:center">
-    <div
-      style="background:#fff;border-radius:12px;padding:32px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3);position:relative">
+<div id="reportModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.55);display:none;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:12px;padding:32px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3);position:relative">
 
-      <!-- Close button -->
-      <button onclick="hideReportModal()"
-        style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#888">&#x2715;</button>
+    <!-- Close button -->
+    <button onclick="hideReportModal()" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#888">&#x2715;</button>
 
-      <!-- Header -->
-      <div style="text-align:center;margin-bottom:20px">
-        <div style="font-size:2rem;margin-bottom:6px">&#x1F4CB;</div>
-        <div style="font-size:1.1rem;font-weight:700;color:#071a0e">Generate Report</div>
-        <div style="font-size:0.78rem;color:#888;margin-top:4px">Select format(s) to export the complete Background
-          Checking & Credit Scoring Report</div>
-      </div>
+    <!-- Header -->
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:2rem;margin-bottom:6px">&#x1F4CB;</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#071a0e">Generate Report</div>
+      <div style="font-size:0.78rem;color:#888;margin-top:4px">Select format(s) to export the complete Background Checking & Credit Scoring Report</div>
+    </div>
 
-      <!-- Format options -->
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px">
+    <!-- Format options -->
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px">
 
-        <label
-          style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:border-color 0.2s"
-          id="rptOptPDF">
-          <input type="checkbox" id="chkPDF" checked style="width:18px;height:18px;accent-color:#dc2626;cursor:pointer">
-          <div>
-            <div style="font-weight:700;color:#dc2626;font-size:0.95rem">&#x1F4C4; PDF Report</div>
-            <div style="font-size:0.75rem;color:#666">Formatted A4 document — ideal for printing and archiving</div>
-          </div>
-        </label>
+      <label style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:border-color 0.2s" id="rptOptPDF">
+        <input type="checkbox" id="chkPDF" checked style="width:18px;height:18px;accent-color:#dc2626;cursor:pointer">
+        <div>
+          <div style="font-weight:700;color:#dc2626;font-size:0.95rem">&#x1F4C4; PDF Report</div>
+          <div style="font-size:0.75rem;color:#666">Formatted A4 document — ideal for printing and archiving</div>
+        </div>
+      </label>
 
-        <label
-          style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:border-color 0.2s"
-          id="rptOptWord">
-          <input type="checkbox" id="chkWord" checked
-            style="width:18px;height:18px;accent-color:#2563eb;cursor:pointer">
-          <div>
-            <div style="font-weight:700;color:#2563eb;font-size:0.95rem">&#x1F4DD; Word Document (.docx)</div>
-            <div style="font-size:0.75rem;color:#666">Editable Word file — ideal for further review and editing</div>
-          </div>
-        </label>
-
-      </div>
-
-      <!-- Progress message -->
-      <div id="rptProgress"
-        style="display:none;text-align:center;font-size:0.82rem;color:#1a8a42;margin-bottom:14px;font-weight:600">
-        &#x23F3; Generating report...
-      </div>
-
-      <!-- Buttons -->
-      <div style="display:flex;gap:10px">
-        <button onclick="hideReportModal()"
-          style="flex:1;padding:10px;border:2px solid #e2e8f0;background:#fff;border-radius:8px;cursor:pointer;font-size:0.9rem;color:#555;font-weight:600">Cancel</button>
-        <button onclick="generateReport()" id="btnGenerateReport"
-          style="flex:2;padding:10px;background:#d97706;border:none;border-radius:8px;cursor:pointer;font-size:0.95rem;color:#fff;font-weight:700">&#x1F4CB;
-          Generate Now</button>
-      </div>
+      <label style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:2px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:border-color 0.2s" id="rptOptWord">
+        <input type="checkbox" id="chkWord" checked style="width:18px;height:18px;accent-color:#2563eb;cursor:pointer">
+        <div>
+          <div style="font-weight:700;color:#2563eb;font-size:0.95rem">&#x1F4DD; Word Document (.docx)</div>
+          <div style="font-size:0.75rem;color:#666">Editable Word file — ideal for further review and editing</div>
+        </div>
+      </label>
 
     </div>
+
+    <!-- Progress message -->
+    <div id="rptProgress" style="display:none;text-align:center;font-size:0.82rem;color:#1a8a42;margin-bottom:14px;font-weight:600">
+      &#x23F3; Generating report...
+    </div>
+
+    <!-- Buttons -->
+    <div style="display:flex;gap:10px">
+      <button onclick="hideReportModal()" style="flex:1;padding:10px;border:2px solid #e2e8f0;background:#fff;border-radius:8px;cursor:pointer;font-size:0.9rem;color:#555;font-weight:600">Cancel</button>
+      <button onclick="generateReport()" id="btnGenerateReport" style="flex:2;padding:10px;background:#d97706;border:none;border-radius:8px;cursor:pointer;font-size:0.95rem;color:#fff;font-weight:700">&#x1F4CB; Generate Now</button>
+    </div>
+
   </div>
+</div>
 
-  <script>
-    // ── Report Modal ────────────────────────────────────────────────────
-    function showReportModal() {
-      var modal = document.getElementById('reportModal');
-      modal.style.display = 'flex';
-      // Highlight checked options
-      updateOptStyle();
-      document.getElementById('rptProgress').style.display = 'none';
-      document.getElementById('btnGenerateReport').disabled = false;
-      document.getElementById('btnGenerateReport').textContent = '📋 Generate Now';
+<script>
+  // ── Report Modal ────────────────────────────────────────────────────
+  function showReportModal() {
+    var modal = document.getElementById('reportModal');
+    modal.style.display = 'flex';
+    // Highlight checked options
+    updateOptStyle();
+    document.getElementById('rptProgress').style.display = 'none';
+    document.getElementById('btnGenerateReport').disabled = false;
+    document.getElementById('btnGenerateReport').textContent = '📋 Generate Now';
+  }
+
+  function hideReportModal() {
+    document.getElementById('reportModal').style.display = 'none';
+  }
+
+  function updateOptStyle() {
+    var pdfChecked  = document.getElementById('chkPDF').checked;
+    var wordChecked = document.getElementById('chkWord').checked;
+    document.getElementById('rptOptPDF').style.borderColor  = pdfChecked  ? '#dc2626' : '#e2e8f0';
+    document.getElementById('rptOptWord').style.borderColor = wordChecked ? '#2563eb' : '#e2e8f0';
+  }
+
+  // Listen for checkbox changes
+  document.getElementById('chkPDF').addEventListener('change', updateOptStyle);
+  document.getElementById('chkWord').addEventListener('change', updateOptStyle);
+
+  // Close modal when clicking outside
+  document.getElementById('reportModal').addEventListener('click', function(e) {
+    if (e.target === this) hideReportModal();
+  });
+
+  async function generateReport() {
+    var pdfChecked  = document.getElementById('chkPDF').checked;
+    var wordChecked = document.getElementById('chkWord').checked;
+
+    if (!pdfChecked && !wordChecked) {
+      toast('Please select at least one format.');
+      return;
     }
 
-    function hideReportModal() {
-      document.getElementById('reportModal').style.display = 'none';
-    }
+    var btn = document.getElementById('btnGenerateReport');
+    var prog = document.getElementById('rptProgress');
+    btn.disabled = true;
+    btn.textContent = '⏳ Generating...';
+    prog.style.display = 'block';
 
-    function updateOptStyle() {
-      var pdfChecked = document.getElementById('chkPDF').checked;
-      var wordChecked = document.getElementById('chkWord').checked;
-      document.getElementById('rptOptPDF').style.borderColor = pdfChecked ? '#dc2626' : '#e2e8f0';
-      document.getElementById('rptOptWord').style.borderColor = wordChecked ? '#2563eb' : '#e2e8f0';
-    }
+    // Small delay so UI updates before heavy export
+    await new Promise(function(r) { setTimeout(r, 100); });
 
-    // Listen for checkbox changes
-    document.getElementById('chkPDF').addEventListener('change', updateOptStyle);
-    document.getElementById('chkWord').addEventListener('change', updateOptStyle);
-
-    // Close modal when clicking outside
-    document.getElementById('reportModal').addEventListener('click', function (e) {
-      if (e.target === this) hideReportModal();
-    });
-
-    async function generateReport() {
-      var pdfChecked = document.getElementById('chkPDF').checked;
-      var wordChecked = document.getElementById('chkWord').checked;
-
-      if (!pdfChecked && !wordChecked) {
-        toast('Please select at least one format.');
-        return;
+    try {
+      if (pdfChecked)  { prog.textContent = '⏳ Generating PDF...';  xPDF(); }
+      if (wordChecked) {
+        prog.textContent = '⏳ Generating Word document...';
+        await new Promise(function(r) { setTimeout(r, 300); });
+        xWord();
       }
-
-      var btn = document.getElementById('btnGenerateReport');
-      var prog = document.getElementById('rptProgress');
-      btn.disabled = true;
-      btn.textContent = '⏳ Generating...';
-      prog.style.display = 'block';
-
-      // Small delay so UI updates before heavy export
-      await new Promise(function (r) { setTimeout(r, 100); });
-
-      try {
-        if (pdfChecked) { prog.textContent = '⏳ Generating PDF...'; xPDF(); }
-        if (wordChecked) {
-          prog.textContent = '⏳ Generating Word document...';
-          await new Promise(function (r) { setTimeout(r, 300); });
-          xWord();
-        }
-        prog.textContent = '✅ Report generated successfully!';
-        prog.style.color = '#1a8a42';
-        btn.textContent = '✅ Done';
-        setTimeout(function () { hideReportModal(); }, 1800);
-      } catch (e) {
-        prog.textContent = '✗ Error: ' + e.message;
-        prog.style.color = '#dc2626';
-        btn.disabled = false;
-        btn.textContent = '📋 Try Again';
-      }
+      prog.textContent = '✅ Report generated successfully!';
+      prog.style.color = '#1a8a42';
+      btn.textContent  = '✅ Done';
+      setTimeout(function() { hideReportModal(); }, 1800);
+    } catch(e) {
+      prog.textContent = '✗ Error: ' + e.message;
+      prog.style.color = '#dc2626';
+      btn.disabled = false;
+      btn.textContent = '📋 Try Again';
     }
-  </script>
+  }
+</script>
 </body>
 
 </html>
