@@ -722,25 +722,31 @@
     }
 
     .score-row {
-      display: contents
+      display: grid;
+      grid-template-columns: 220px 1fr 80px;
+      align-items: center;
+      border-bottom: 1px solid var(--d0);
+      gap: 0;
     }
 
     .score-row>div {
       padding: 8px 10px;
       font-size: 0.82rem;
-      border-bottom: 1px solid var(--d0)
     }
 
     .score-row .sf {
       font-weight: 600;
-      color: var(--n7)
+      color: var(--n7);
     }
 
     .score-row .sw {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.76rem;
       color: var(--n3);
-      text-align: center
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .score-hd>div {
