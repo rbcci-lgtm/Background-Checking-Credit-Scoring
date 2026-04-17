@@ -2422,321 +2422,233 @@
           <div class="cn">6</div>Credit Scoring &#x2014; RBCC 4.02 Rev.16<span class="ar">&#x25BC;</span>
         </div>
         <div class="bd">
-          <div
-            style="font-size:0.76rem;color:var(--n3);margin-bottom:10px;padding:6px 10px;background:var(--d0);border-radius:var(--r)">
-            Scale: <strong>1</strong>=Poor/Unacceptable &nbsp; <strong>2</strong>=Below Average &nbsp;
-            <strong>3</strong>=Average &nbsp; <strong>4</strong>=Good &nbsp; <strong>5</strong>=Excellent &nbsp;|&nbsp;
-            Max: 100 pts (50 Quant + 50 Qual)
-          </div>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:8px 12px;font-size:0.75rem;color:#166534;margin-bottom:10px">
+      Scale: <strong>1</strong>=Poor/Unacceptable &nbsp; <strong>2</strong>=Below Average &nbsp; <strong>3</strong>=Average &nbsp; <strong>4</strong>=Good &nbsp; <strong>5</strong>=Excellent &nbsp;|&nbsp; Max: <strong>100 pts</strong> (50 Quant + 50 Qual)
+    </div>
 
-          <div class="sh">A. Quantitative Analysis (50%) <span class="tg">Financial</span></div>
-          <div class="score-grid">
-            <div class="score-row score-hd">
-              <div>Factor</div>
-              <div>Criteria</div>
-              <div>Score</div>
-            </div>
-            <div class="score-row">
-              <div class="sf">C1&#x2014;DSCR (15%)</div>
-              <div><select
-                  style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px">
-                <option value="">— Select —</option>
-                  <option value="5">5&#x2013;Excellent: DSCR &#x2265; 1.50x</option>
-                  <option value="4">4&#x2013;Good: DSCR 1.25&#x2013;1.49x</option>
-                  <option value="3">3&#x2013;Average: DSCR 1.10&#x2013;1.24x</option>
-                  <option value="2">2&#x2013;Below Avg: DSCR 1.0&#x2013;1.09x</option>
-                  <option value="1">1&#x2013;Poor: DSCR &lt;1.0x</option>
-                </select></div>
-              <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="15"
-                  style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                  onchange="calcScore()"></div>
-            </div>
-            <div class="score-row">
-              <div class="sf">C1&#x2014;Net Surplus (10%)</div>
-              <div><select
-                  style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px">
-                <option value="">— Select —</option>
-                  <option value="5">5&#x2013;&#x2265;&#x20B1;15K surplus</option>
-                  <option value="4">4&#x2013;&#x20B1;5K&#x2013;14.9K</option>
-                  <option value="3">3&#x2013;&#x20B1;1K&#x2013;4.9K</option>
-                  <option value="2">2&#x2013;&lt;&#x20B1;1K</option>
-                  <option value="1">1&#x2013;Deficit/zero</option>
-                </select></div>
-              <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10"
-                  style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                  onchange="calcScore()"></div>
-            </div>
-            <div class="score-row">
-              <div class="sf">C1&#x2014;Income/Loan (5%)</div>
-              <div><select
-                  style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px">
-                <option value="">— Select —</option>
-                  <option value="5">5&#x2013;&#x2265;50% Very low leverage</option>
-                  <option value="4">4&#x2013;30&#x2013;49%</option>
-                  <option value="3">3&#x2013;20&#x2013;29%</option>
-                  <option value="2">2&#x2013;10&#x2013;19%</option>
-                  <option value="1">1&#x2013;&lt;10%</option>
-                </select></div>
-              <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="5"
-                  style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                  onchange="calcScore()"></div>
-            </div>
-            <div class="score-row">
-              <div class="sf">C2&#x2014;D/E or NW Ratio (10%)</div>
-              <div><select
-                  style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px">
-                <option value="">— Select —</option>
-                  <option value="5">5&#x2013;D/E&lt;0.5 or NW&#x2265;3x loan</option>
-                  <option value="4">4&#x2013;D/E 0.5&#x2013;0.99</option>
-                  <option value="3">3&#x2013;D/E 1.0&#x2013;1.99</option>
-                  <option value="2">2&#x2013;D/E 2.0&#x2013;2.99</option>
-                  <option value="1">1&#x2013;D/E&gt;3.0</option>
-                </select></div>
-              <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10"
-                  style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                  onchange="calcScore()"></div>
-            </div>
-            <div class="score-row">
-              <div class="sf">C2&#x2014;NW vs Loan (10%)</div>
-              <div><select
-                  style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px">
-                <option value="">— Select —</option>
-                  <option value="5">5&#x2013;NW &#x2265; 3x loan</option>
-                  <option value="4">4&#x2013;NW 2&#x2013;2.99x</option>
-                  <option value="3">3&#x2013;NW 1.5&#x2013;1.99x</option>
-                  <option value="2">2&#x2013;NW 1.0&#x2013;1.49x</option>
-                  <option value="1">1&#x2013;NW &lt; loan</option>
-                </select></div>
-              <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10"
-                  style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                  onchange="calcScore()"></div>
-            </div>
-          </div>
-          <div
-            style="text-align:right;font-family:'JetBrains Mono';font-size:0.82rem;font-weight:700;color:var(--d6);padding:4px 0">
-            Quantitative Subtotal: <span id="qSub">37</span> / 50</div>
+    <div class="sh">A. Quantitative Analysis (50%) <span class="tg">Financial &amp; Credit History</span></div>
 
-          <div class="sh">B. Qualitative Analysis (50%) <span class="tg">Non-Financial</span></div>
-          <div class="score-grid">
-            <div class="score-row score-hd">
-              <div>Factor</div>
-              <div>Criteria</div>
-              <div>Score</div>
-            </div>
-            <div class="score-row">
-              <div class="sf">C4&#x2014;Reputation (15%)</div>
-              <div><select
-                  style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px">
-                <option value="">— Select —</option>
-                  <option value="5">5&#x2013;Excellent; community leader</option>
-                  <option value="4">4&#x2013;Positive; trustworthy</option>
-                  <option value="3">3&#x2013;Neutral; no complaints</option>
-                  <option value="2">2&#x2013;Mixed; some concerns</option>
-                  <option value="1">1&#x2013;Negative; bad debts</option>
-                </select></div>
-              <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="15"
-                  style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                  onchange="calcScore()"></div>
-            </div>
-            <div class="score-row">
-              <div class="sf">C4&#x2014;Interview (10%)</div>
-              <div><select
-                  style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px">
-                <option value="">— Select —</option>
-                  <option value="5">5&#x2013;Very candid, complete</option>
-                  <option value="4">4&#x2013;Cooperative, minor gaps</option>
-                  <option value="3">3&#x2013;Cooperative but vague</option>
-                  <option value="2">2&#x2013;Partially evasive</option>
-                  <option value="1">1&#x2013;Evasive/hostile</option>
-                </select></div>
-              <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10"
-                  style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                  onchange="calcScore()"></div>
-            </div>
-            <div class="score-row">
-              <div class="sf">C4&#x2014;Loan Purpose (5%)</div>
-              <div><select
-                  style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px">
-                <option value="">— Select —</option>
-                  <option value="5">5&#x2013;Excellent, income-generating</option>
-                  <option value="4">4&#x2013;Clear, well-supported</option>
-                  <option value="3">3&#x2013;Acceptable</option>
-                  <option value="2">2&#x2013;Weak</option>
-                  <option value="1">1&#x2013;Suspicious</option>
-                </select></div>
-              <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="5"
-                  style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                  onchange="calcScore()"></div>
-            </div>
-            <div class="score-row">
-              <div class="sf">C4&#x2014;RBCCI History (5%)</div>
-              <div><select
-                  style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px">
-                <option value="">— Select —</option>
-                  <option value="5">5&#x2013;7+ yrs, loyal, multiple loans</option>
-                  <option value="4">4&#x2013;3&#x2013;7 yrs, active depositor</option>
-                  <option value="3">3&#x2013;1&#x2013;3 yrs</option>
-                  <option value="2">2&#x2013;&lt;1 yr</option>
-                  <option value="1">1&#x2013;No prior relationship</option>
-                </select></div>
-              <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="5"
-                  style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                  onchange="calcScore()"></div>
-            </div>
-            <div class="score-row">
-              <div class="sf">C5&#x2014;LTV Ratio (10%)</div>
-              <div><select
-                  style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px">
-                <option value="">— Select —</option>
-                  <option value="5">5&#x2013;LTV &#x2264;40%</option>
-                  <option value="4">4&#x2013;LTV 41&#x2013;60%</option>
-                  <option value="3">3&#x2013;LTV 61&#x2013;75%</option>
-                  <option value="2">2&#x2013;LTV 76&#x2013;90%</option>
-                  <option value="1">1&#x2013;LTV &gt;90%</option>
-                </select></div>
-              <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10"
-                  style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                  onchange="calcScore()"></div>
-            </div>
-            <div class="score-row">
-              <div class="sf">C5&#x2014;Collateral Type (5%)</div>
-              <div><select
-                  style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px">
-                <option value="">— Select —</option>
-                  <option value="5">5&#x2013;TCT prime/cash collateral</option>
-                  <option value="4">4&#x2013;TCT/OCT secondary</option>
-                  <option value="3">3&#x2013;Tax Dec/deed of sale</option>
-                  <option value="2">2&#x2013;Chattel/movable</option>
-                  <option value="1">1&#x2013;None/guarantee only</option>
-                </select></div>
-              <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="5"
-                  style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                  onchange="calcScore()"></div>
-            </div>
-            <div class="score-row">
-              <div class="sf">C5&#x2014;Col. Docs (5%)</div>
-              <div><select
-                  style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px">
-                <option value="">— Select —</option>
-                  <option value="5">5&#x2013;Clean, insured, current appraisal</option>
-                  <option value="4">4&#x2013;Clean, complete, free</option>
-                  <option value="3">3&#x2013;Complete, minor annotation</option>
-                  <option value="2">2&#x2013;Incomplete</option>
-                  <option value="1">1&#x2013;Disputed/encumbered</option>
-                </select></div>
-              <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="5"
-                  style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                  onchange="calcScore()"></div>
-            </div>
-            <div class="score-row">
-              <div class="sf">C6&#x2014;Industry (5%)</div>
-              <div><select
-                  style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px">
-                <option value="">— Select —</option>
-                  <option value="5">5&#x2013;Essential (agri, retail Calbayog)</option>
-                  <option value="4">4&#x2013;Growing sector</option>
-                  <option value="3">3&#x2013;Stable</option>
-                  <option value="2">2&#x2013;Challenging</option>
-                  <option value="1">1&#x2013;Declining</option>
-                </select></div>
-              <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="5"
-                  style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                  onchange="calcScore()"></div>
-            </div>
-            <div class="score-row">
-              <div class="sf">C6&#x2014;Local Econ (5%)</div>
-              <div><select
-                  style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px">
-                <option value="">— Select —</option>
-                  <option value="5">5&#x2013;Strong activity</option>
-                  <option value="4">4&#x2013;Stable, active market</option>
-                  <option value="3">3&#x2013;Normal, seasonal</option>
-                  <option value="2">2&#x2013;Recovering</option>
-                  <option value="1">1&#x2013;Calamity/shutdown</option>
-                </select></div>
-              <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="5"
-                  style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px"
-                  onchange="calcScore()"></div>
-            </div>
-          </div>
-          <div
-            style="text-align:right;font-family:'JetBrains Mono';font-size:0.82rem;font-weight:700;color:var(--d6);padding:4px 0">
-            Qualitative Subtotal: <span id="qlSub">42</span> / 50</div>
+    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:8px 14px;font-size:0.74rem;color:#92400e;margin-bottom:10px;line-height:1.5">
+      <strong style="color:#b45309">&#9888; C3 Credit History Qualifier &mdash; Mandatory Escalation:</strong> Where adverse findings exist (Score &#x2264; 2 &mdash; past due, restructured, written-off, default, or negative CIC/BSP WatchList), this loan <strong>must be escalated to the Credit Committee</strong> regardless of total quantitative score. Standard approval workflow is suspended. Documented mitigation, collateral re-evaluation, and CCO concurrence are required per RBCC 4.02 Rev.16 &sect;8.3.
+    </div>
 
-          <div class="dv"></div>
-          <div
-            style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--d0);border-radius:var(--r);margin:8px 0">
-            <div><strong style="font-family:'Playfair Display',serif;font-size:1rem">FINAL CREDIT
-                SCORE</strong><br><span style="font-size:0.72rem;color:var(--n3)">Quantitative (50%) + Qualitative
-                (50%)</span></div>
-            <div style="font-family:'JetBrains Mono';font-size:1.8rem;font-weight:800;color:var(--d6)" id="totalScore">
-              79</div>
-            <div id="scoreRating"
-              style="font-weight:700;font-size:0.9rem;padding:4px 12px;border-radius:8px;background:var(--ok0);color:var(--ok)">
-              AA &#x2014; GOOD</div>
-          </div>
+    <div class="score-row" style="background:var(--d7);color:#fff;font-weight:700;font-size:0.75rem">
+      <div class="sf">FACTOR</div><div>CRITERIA</div><div class="sw">SCORE</div>
+    </div>
 
-          <div class="sh">Credit History Qualifier <span class="tg">Mandatory</span></div>
-          <div class="fg c2">
-            <div class="fi"><label>Internal (RBCCI/NextBank)</label><select id="fCH1">
-                <option value="">— Select —</option>
-                <option value="5">5&#x2013;On-time, no delinquency</option>
-                <option value="4">4&#x2013;1&#x2013;2 minor delays, cured</option>
-                <option value="3">3&#x2013;30&#x2013;60 DPD, now current</option>
-                <option value="2">2&#x2013;Major delinquency</option>
-                <option value="1">1&#x2013;Default/NPL/write-off</option>
-              </select></div>
-            <div class="fi"><label>External CIC Report</label><select id="fCH2">
-                <option value="">— Select —</option>
-                <option value="5">5&#x2013;Clean CIC, multiple settled</option>
-                <option value="4">4&#x2013;Positive, minor resolved</option>
-                <option value="3">3&#x2013;No CIC record (new)</option>
-                <option value="2">2&#x2013;Negative, settled but noted</option>
-                <option value="1">1&#x2013;Adverse, legal action</option>
-              </select></div>
-          </div>
-          <div
-            style="font-size:0.74rem;color:var(--er);padding:6px 10px;background:var(--er0);border-radius:var(--r);margin-top:8px">
-            &#x26A0; Credit History is a QUALIFIER: Score of 1 or 2 triggers mandatory Credit Committee escalation
-            regardless of final score.
-          </div>
+    <div class="score-row">
+      <div class="sf">C1&#x2014;DSCR (10%)<div style="font-size:0.65rem;font-weight:400;color:var(--n3);margin-top:2px">Primary capacity measure</div></div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;Excellent: DSCR &#x2265; 1.50x</option>
+        <option value="4">4&#x2013;Good: DSCR 1.25&#x2013;1.49x</option>
+        <option value="3">3&#x2013;Average: DSCR 1.10&#x2013;1.24x</option>
+        <option value="2">2&#x2013;Below Avg: DSCR 1.00&#x2013;1.09x</option>
+        <option value="1">1&#x2013;Poor: DSCR &lt; 1.00x</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
 
-          <div class="sh">Decision Matrix (Section 4.02.5-A)</div>
-          <div class="dm">
-            <div class="dh">Score</div>
-            <div class="dh">Rating</div>
-            <div class="dh">Decision</div>
-            <div class="dh">Action</div>
-            <div class="sc-aaa">85&#x2013;100</div>
-            <div>AAA Prime</div>
-            <div><strong style="color:var(--ok)">APPROVE</strong></div>
-            <div>Fast-track. Preferential rate.</div>
-            <div class="sc-aaa">75&#x2013;84</div>
-            <div>AA Good</div>
-            <div><strong style="color:var(--ok)">APPROVE</strong></div>
-            <div>Standard terms. Normal processing.</div>
-            <div class="sc-aaa">65&#x2013;74</div>
-            <div>A Satisfactory</div>
-            <div><strong style="color:var(--wn)">APPROVE w/ CONDS</strong></div>
-            <div>Add co-maker, more equity, stricter monitoring.</div>
-            <div class="sc-bb">55&#x2013;64</div>
-            <div>BBB Borderline</div>
-            <div><strong style="color:var(--wn)">REFER</strong></div>
-            <div>Credit Committee. Additional docs/collateral.</div>
-            <div class="sc-bb">40&#x2013;54</div>
-            <div>BB Marginal</div>
-            <div><strong style="color:var(--er)">DECLINE</strong></div>
-            <div>Re-apply after 6 months with improvement.</div>
-            <div class="sc-c">&lt;40</div>
-            <div>B/C High Risk</div>
-            <div><strong style="color:var(--er)">DECLINE</strong></div>
-            <div>Does not meet standards. 12-month bar.</div>
-          </div>
+    <div class="score-row">
+      <div class="sf">C1&#x2014;Monthly Net Surplus (10%)<div style="font-size:0.65rem;font-weight:400;color:var(--n3);margin-top:2px">Post-amortization surplus</div></div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;&#x2265; &#x20B1;15,000 surplus</option>
+        <option value="4">4&#x2013;&#x20B1;5,000 &#x2013; &#x20B1;14,999</option>
+        <option value="3">3&#x2013;&#x20B1;1,000 &#x2013; &#x20B1;4,999</option>
+        <option value="2">2&#x2013;&lt; &#x20B1;1,000</option>
+        <option value="1">1&#x2013;Deficit / zero surplus</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
+
+    <div class="score-row">
+      <div class="sf">C1&#x2014;Income/Loan Ratio (5%)<div style="font-size:0.65rem;font-weight:400;color:var(--n3);margin-top:2px">Leverage indicator</div></div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;&#x2265; 50% &mdash; Very low leverage</option>
+        <option value="4">4&#x2013;30&#x2013;49% &mdash; Low leverage</option>
+        <option value="3">3&#x2013;20&#x2013;29% &mdash; Moderate</option>
+        <option value="2">2&#x2013;10&#x2013;19% &mdash; High leverage</option>
+        <option value="1">1&#x2013;&lt; 10% &mdash; Excessive leverage</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="5" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
+
+    <div class="score-row">
+      <div class="sf">C2&#x2014;Debt-to-Equity Ratio (Business) (10%)<div style="font-size:0.65rem;font-weight:400;color:var(--n3);margin-top:2px">Capital adequacy</div></div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;D/E &lt; 0.50 &mdash; Excellent capital</option>
+        <option value="4">4&#x2013;D/E 0.50&#x2013;0.99</option>
+        <option value="3">3&#x2013;D/E 1.00&#x2013;1.99</option>
+        <option value="2">2&#x2013;D/E 2.00&#x2013;2.99</option>
+        <option value="1">1&#x2013;D/E &#x2265; 3.00 &mdash; Overleveraged</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
+
+    <div class="score-row">
+      <div class="sf">C2&#x2014;Net Worth vs. Loan (Individual) (10%)<div style="font-size:0.65rem;font-weight:400;color:var(--n3);margin-top:2px">Equity cushion</div></div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;NW &#x2265; 3.00x loan amount</option>
+        <option value="4">4&#x2013;NW 2.00&#x2013;2.99x loan</option>
+        <option value="3">3&#x2013;NW 1.50&#x2013;1.99x loan</option>
+        <option value="2">2&#x2013;NW 1.00&#x2013;1.49x loan</option>
+        <option value="1">1&#x2013;NW &lt; loan amount</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
+
+    <div class="score-row" style="background:#fff8e1">
+      <div class="sf">C3&#x2014;Credit History, Internal &amp; External (5%) <span style="display:inline-block;background:#f59e0b;color:#fff;font-size:0.58rem;padding:2px 7px;border-radius:3px;font-weight:700;vertical-align:middle;margin-left:6px;letter-spacing:0.5px">QUALIFIER</span><div style="font-size:0.65rem;font-weight:400;color:#7c2d12;margin-top:2px">Mandatory escalation trigger on adverse findings</div></div>
+      <div><select id="c3Select" style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px;background:#fffef7" onchange="document.getElementById('c3Score').value=this.value;calcScore();chkC3()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;Clean: No past due, excellent CIC, 100% paid history</option>
+        <option value="4">4&#x2013;Strong: Minor late &lt; 10 days resolved, good CIC</option>
+        <option value="3">3&#x2013;Average: 1&#x2013;2 late payments (11&#x2013;30 days), acceptable CIC</option>
+        <option value="2">2&#x2013;Weak: Current past due OR restructured OR CIC adverse flag &#x26A0;</option>
+        <option value="1">1&#x2013;Adverse: Written-off / default / BSP WatchList / negative CIC &#x26A0;</option>
+      </select></div>
+      <div class="sw"><input type="number" id="c3Score" value="" min="1" max="5" class="cs" data-w="5" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid #f59e0b;border-radius:5px;background:#fffef7" onchange="calcScore();chkC3()"></div>
+    </div>
+
+    <div id="c3Alert" style="display:none;margin:8px 0;padding:10px 14px;background:#fee2e2;border-left:4px solid #dc2626;border-radius:4px;font-size:0.74rem;color:#7f1d1d;line-height:1.5">
+      <strong style="display:block;margin-bottom:3px">&#9888; CREDIT HISTORY ESCALATION TRIGGERED</strong>
+      Adverse findings detected (C3 Score &#x2264; 2). This loan <strong>must be escalated to the Credit Committee</strong> regardless of total score. Standard approval workflow is suspended until documented mitigation, supplementary collateral review, and CCO concurrence are obtained per RBCC 4.02 Rev.16 &sect;8.3.
+    </div>
+
+    <div style="text-align:right;font-family:'JetBrains Mono';font-size:0.82rem;font-weight:700;color:var(--d6);padding:4px 0">Quantitative Subtotal: <span id="qSub">0</span> / 50</div>
+
+    <div class="sh">B. Qualitative Analysis (50%) <span class="tg">Non-Financial</span></div>
+
+    <div class="score-row" style="background:var(--d7);color:#fff;font-weight:700;font-size:0.75rem">
+      <div class="sf">FACTOR</div><div>CRITERIA</div><div class="sw">SCORE</div>
+    </div>
+
+    <div class="score-row">
+      <div class="sf">C4&#x2014;Community Reputation &amp; References (10%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;Excellent; community leader</option>
+        <option value="4">4&#x2013;Positive; trustworthy</option>
+        <option value="3">3&#x2013;Neutral; no complaints</option>
+        <option value="2">2&#x2013;Mixed; some concerns</option>
+        <option value="1">1&#x2013;Negative; bad debts</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
+
+    <div class="score-row">
+      <div class="sf">C4&#x2014;Loan Interview Assessment (5%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;Very candid, complete</option>
+        <option value="4">4&#x2013;Cooperative, minor gaps</option>
+        <option value="3">3&#x2013;Cooperative but vague</option>
+        <option value="2">2&#x2013;Partially evasive</option>
+        <option value="1">1&#x2013;Evasive/hostile</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="5" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
+
+    <div class="score-row">
+      <div class="sf">C4&#x2014;Loan Purpose &amp; Doc Consistency (2.5%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;Excellent, income-generating</option>
+        <option value="4">4&#x2013;Clear, well-supported</option>
+        <option value="3">3&#x2013;Acceptable</option>
+        <option value="2">2&#x2013;Weak</option>
+        <option value="1">1&#x2013;Suspicious</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="2.5" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
+
+    <div class="score-row">
+      <div class="sf">C4&#x2014;RBCCI Relationship History (5%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;7+ yrs, loyal, multiple loans</option>
+        <option value="4">4&#x2013;3&#x2013;7 yrs, active depositor</option>
+        <option value="3">3&#x2013;1&#x2013;3 yrs</option>
+        <option value="2">2&#x2013;&lt;1 yr</option>
+        <option value="1">1&#x2013;No prior relationship</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="5" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
+
+    <div class="score-row">
+      <div class="sf">C5&#x2014;Loan-to-Value (LTV) Ratio (10%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;LTV &#x2264;40%</option>
+        <option value="4">4&#x2013;LTV 41&#x2013;60%</option>
+        <option value="3">3&#x2013;LTV 61&#x2013;75%</option>
+        <option value="2">2&#x2013;LTV 76&#x2013;90%</option>
+        <option value="1">1&#x2013;LTV &gt;90%</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
+
+    <div class="score-row">
+      <div class="sf">C5&#x2014;Collateral Type &amp; Marketability (10%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;TCT prime/cash collateral</option>
+        <option value="4">4&#x2013;TCT/OCT secondary</option>
+        <option value="3">3&#x2013;Tax Dec/deed of sale</option>
+        <option value="2">2&#x2013;Chattel/movable</option>
+        <option value="1">1&#x2013;None/guarantee only</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="10" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
+
+    <div class="score-row">
+      <div class="sf">C5&#x2014;Collateral Documentation (2.5%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;Clean, insured, current appraisal</option>
+        <option value="4">4&#x2013;Clean, complete, free</option>
+        <option value="3">3&#x2013;Complete, minor annotation</option>
+        <option value="2">2&#x2013;Incomplete</option>
+        <option value="1">1&#x2013;Disputed/encumbered</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="2.5" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
+
+    <div class="score-row">
+      <div class="sf">C6&#x2014;Industry/Sector Outlook (2.5%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;Essential (agri, retail Calbayog)</option>
+        <option value="4">4&#x2013;Growing sector</option>
+        <option value="3">3&#x2013;Stable</option>
+        <option value="2">2&#x2013;Challenging</option>
+        <option value="1">1&#x2013;Declining</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="2.5" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
+
+    <div class="score-row">
+      <div class="sf">C6&#x2014;Local Economic Conditions (2.5%)</div>
+      <div><select style="width:100%;min-height:36px;font-size:0.8rem;border:1.5px solid var(--n1);border-radius:5px;padding:4px" onchange="var inp=this.closest('.score-row').querySelector('.cs');inp.value=this.value;calcScore()">
+        <option value="">&#x2014; Select &#x2014;</option>
+        <option value="5">5&#x2013;Strong activity</option>
+        <option value="4">4&#x2013;Stable, active market</option>
+        <option value="3">3&#x2013;Normal, seasonal</option>
+        <option value="2">2&#x2013;Recovering</option>
+        <option value="1">1&#x2013;Calamity/shutdown</option>
+      </select></div>
+      <div class="sw"><input type="number" value="" min="1" max="5" class="cs" data-w="2.5" style="width:50px;text-align:center;font-weight:700;font-family:'JetBrains Mono';min-height:36px;border:1.5px solid var(--n1);border-radius:5px" onchange="calcScore()"></div>
+    </div>
+
+    <div style="text-align:right;font-family:'JetBrains Mono';font-size:0.82rem;font-weight:700;color:var(--d6);padding:4px 0">Qualitative Subtotal: <span id="qlSub">0</span> / 50</div>
+
         </div>
       </div>
 
-
-      <!-- S7: CREDIT EVALUATION -->
       <div class="cd">
         <div class="hd" onclick="tog(this)">
           <div class="cn">7</div>Credit Evaluation<span class="ar">&#x25BC;</span>
@@ -3668,41 +3580,80 @@
 
     // Credit score computation
     function calcScore() {
+      // Quantitative: 6 factors (C1x3, C2x2, C3x1) — weights sum to 50
+      // Qualitative:  9 factors (C4x4, C5x3, C6x2) — weights sum to 50
+      var qIds   = ['#qSub'];
       var inputs = document.querySelectorAll('.cs');
-      var qTotal = 0, qlTotal = 0, count = 0;
-      inputs.forEach(function (inp) {
-        var s = parseInt(inp.value) || 0;
-        var w = parseInt(inp.getAttribute('data-w')) || 0;
+      var qTotal = 0, qlTotal = 0;
+
+      // Separate by section — first 6 inputs are Quantitative, rest Qualitative
+      inputs.forEach(function(inp, idx) {
+        var s = parseFloat(inp.value) || 0;
+        var w = parseFloat(inp.getAttribute('data-w')) || 0;
         var pts = s * w / 5;
-        if (count < 5) qTotal += pts; else qlTotal += pts;
-        count++;
+        if (idx < 6) qTotal += pts;
+        else qlTotal += pts;
       });
-      document.getElementById('qSub').textContent = Math.round(qTotal);
-      document.getElementById('qlSub').textContent = Math.round(qlTotal);
-      var total = Math.round(qTotal + qlTotal);
-      document.getElementById('totalScore').textContent = total;
-      document.getElementById('rScD').textContent = total + '/100';
-      document.getElementById('rQ').textContent = Math.round(qTotal) + '/50';
-      document.getElementById('rQl').textContent = Math.round(qlTotal) + '/50';
-      // Rating
+
+      var qRound  = Math.round(qTotal * 10) / 10;
+      var qlRound = Math.round(qlTotal * 10) / 10;
+      var total   = Math.round((qTotal + qlTotal) * 10) / 10;
+
+      document.getElementById('qSub').textContent  = qRound;
+      document.getElementById('qlSub').textContent = qlRound;
+
+      var totalEl = document.getElementById('totalScore');
+      if (totalEl) totalEl.textContent = total;
+      var rScDEl = document.getElementById('rScD');
+      if (rScDEl) rScDEl.textContent = total + '/100';
+      var rQEl = document.getElementById('rQ');
+      if (rQEl) rQEl.textContent = qRound + '/50';
+      var rQlEl = document.getElementById('rQl');
+      if (rQlEl) rQlEl.textContent = qlRound + '/50';
+
+      // Check C3 qualifier escalation
+      chkC3();
+
+      // Rating bands
       var rat = '', dec = '', cls = 'ok', ang = -55;
-      if (total >= 85) { rat = 'AAA \u2014 PRIME'; dec = 'APPROVE \u2014 Fast-track, preferential rate'; cls = 'ok'; ang = -55; }
-      else if (total >= 75) { rat = 'AA \u2014 GOOD'; dec = 'APPROVE at standard terms'; cls = 'ok'; ang = -40; }
-      else if (total >= 65) { rat = 'A \u2014 SATISFACTORY'; dec = 'APPROVE with conditions'; cls = 'wn'; ang = -15; }
-      else if (total >= 55) { rat = 'BBB \u2014 BORDERLINE'; dec = 'REFER to Credit Committee'; cls = 'wn'; ang = 10; }
-      else if (total >= 40) { rat = 'BB \u2014 MARGINAL'; dec = 'DECLINE \u2014 Re-apply after 6 months'; cls = 'er'; ang = 35; }
-      else { rat = 'B/C \u2014 HIGH RISK'; dec = 'DECLINE \u2014 Does not meet standards'; cls = 'er'; ang = 55; }
+      if (total >= 85)      { rat = 'AAA \u2014 PRIME';       dec = 'APPROVE \u2014 Fast-track, preferential rate';    cls = 'ok'; ang = -55; }
+      else if (total >= 75) { rat = 'AA \u2014 GOOD';         dec = 'APPROVE at standard terms';                       cls = 'ok'; ang = -40; }
+      else if (total >= 65) { rat = 'A \u2014 SATISFACTORY';  dec = 'APPROVE with conditions';                         cls = 'wn'; ang = -15; }
+      else if (total >= 55) { rat = 'BBB \u2014 BORDERLINE';  dec = 'REFER to Credit Committee';                       cls = 'wn'; ang = 10;  }
+      else if (total >= 40) { rat = 'BB \u2014 MARGINAL';     dec = 'DECLINE \u2014 Re-apply after 6 months';          cls = 'er'; ang = 35;  }
+      else                  { rat = 'B/C \u2014 HIGH RISK';   dec = 'DECLINE \u2014 Does not meet standards';          cls = 'er'; ang = 55;  }
+
       var bg = { ok: 'var(--ok0)', wn: 'var(--wn0)', er: 'var(--er0)' };
-      var fg = { ok: 'var(--ok)', wn: 'var(--wn)', er: 'var(--er)' };
-      document.getElementById('scoreRating').textContent = rat;
-      document.getElementById('scoreRating').style.background = bg[cls];
-      document.getElementById('scoreRating').style.color = fg[cls];
-      document.getElementById('rLb').textContent = total >= 65 ? 'LOW RISK' : total >= 55 ? 'MODERATE RISK' : 'HIGH RISK';
-      document.getElementById('rLb').className = 'rl ' + (total >= 65 ? 'lo' : total >= 55 ? 'md' : 'hi');
-      document.getElementById('gau').style.setProperty('--a', ang + 'deg');
-      document.getElementById('autoRec').textContent = rat + ' \u2014 ' + dec;
-      document.getElementById('autoRec').style.background = bg[cls];
-      document.getElementById('autoRec').style.color = fg[cls];
+      var fg = { ok: 'var(--ok)',  wn: 'var(--wn)',  er: 'var(--er)'  };
+
+      var srEl = document.getElementById('scoreRating');
+      if (srEl) { srEl.textContent = rat; srEl.style.background = bg[cls]; srEl.style.color = fg[cls]; }
+      var rlEl = document.getElementById('rLb');
+      if (rlEl) { rlEl.textContent = total >= 65 ? 'LOW RISK' : total >= 55 ? 'MODERATE RISK' : 'HIGH RISK'; rlEl.className = 'rl ' + (total >= 65 ? 'lo' : total >= 55 ? 'md' : 'hi'); }
+      var gauEl = document.getElementById('gau');
+      if (gauEl) gauEl.style.setProperty('--a', ang + 'deg');
+      var arEl = document.getElementById('autoRec');
+      if (arEl) { arEl.textContent = rat + ' \u2014 ' + dec; arEl.style.background = bg[cls]; arEl.style.color = fg[cls]; }
+    }
+
+    // C3 Credit History qualifier escalation banner (RBCC 4.02 Rev.16 §8.3)
+    function chkC3() {
+      var c3  = document.getElementById('c3Score');
+      var alert = document.getElementById('c3Alert');
+      if (!c3 || !alert) return;
+      var v = parseInt(c3.value) || 0;
+      if (v > 0 && v <= 2) {
+        alert.style.display = 'block';
+        // Override autoRec if C3 triggers escalation
+        var arEl = document.getElementById('autoRec');
+        if (arEl) {
+          arEl.textContent = 'ESCALATED \u2014 C3 QUALIFIER: Refer to Credit Committee \u2014 adverse credit findings require CCO concurrence per RBCC 4.02 Rev.16 \u00a78.3';
+          arEl.style.background = 'var(--er0)';
+          arEl.style.color      = 'var(--er)';
+        }
+      } else {
+        alert.style.display = 'none';
+      }
     }
 
     // File upload handler
