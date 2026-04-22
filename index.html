@@ -3173,8 +3173,17 @@
 
       // TIN, Address, Mobile
       sv('fT',  snap.fieldTIN     || '');
-      // Address — try multiple possible field names from Interview Form
-      var addressVal = snap.fieldAddress || snap.fieldPresentAddress || snap.address || snap.presentAddress || '';
+      // Address — fieldAddress is the exact key from Interview Form snapshot
+      // Also check snap directly by iterating keys in case of casing differences
+      var addressVal = snap.fieldAddress || '';
+      if (!addressVal) {
+        // Fallback: search snapshot keys case-insensitively
+        Object.keys(snap).forEach(function(k) {
+          if (!addressVal && k.toLowerCase().indexOf('address') !== -1) {
+            addressVal = snap[k] || '';
+          }
+        });
+      }
       sv('fAd', addressVal);
       sv('fPh', snap.fieldMobile  || snap.fieldPhone || snap.fieldContact || '');
 
