@@ -3115,6 +3115,10 @@
     }
 
     function ilsPopulateFields(snap, record) {
+      // Debug: log snapshot keys to console so we can verify field names
+      console.log('Snapshot keys:', Object.keys(snap));
+      console.log('fieldAddress:', snap.fieldAddress);
+      console.log('fieldMobile:', snap.fieldMobile);
 
       // ── STEP 1: Clear ALL hardcoded sample data first ───────
       // Ensures fields with no Interview data show blank, not old placeholders
@@ -3169,8 +3173,10 @@
 
       // TIN, Address, Mobile
       sv('fT',  snap.fieldTIN     || '');
-      sv('fAd', snap.fieldAddress || '');
-      sv('fPh', snap.fieldMobile  || '');
+      // Address — try multiple possible field names from Interview Form
+      var addressVal = snap.fieldAddress || snap.fieldPresentAddress || snap.address || snap.presentAddress || '';
+      sv('fAd', addressVal);
+      sv('fPh', snap.fieldMobile  || snap.fieldPhone || snap.fieldContact || '');
 
       // Spouse — only populate if Interview has spouse data
       sv('fSp', snap.fieldSpouse || '');
