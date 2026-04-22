@@ -3387,11 +3387,14 @@
       var link  = document.getElementById('driveFolderLink');
       if (!bar) return;
       bar.style.display = 'flex';
-      if (label) label.textContent = 'Client folder: ' + code;
+      // Show folder name as "Client Name — Code" if name is available
+      var clientName = document.getElementById('ilsCodeInput').dataset.loadedName || '';
+      var folderLabel = clientName ? clientName + ' \u2014 ' + code : code;
+      if (label) label.textContent = 'Client folder: ' + folderLabel;
       // Try to fetch the folder URL from Drive via Apps Script
       fetch(DRIVE_SCRIPT_URL, {
         method: 'POST',
-        body: JSON.stringify({ __action: 'getClientFolderUrl', appCode: code })
+        body: JSON.stringify({ __action: 'getClientFolderUrl', appCode: code, clientName: clientName })
       })
       .then(function(r){ return r.json(); })
       .then(function(res){
@@ -3475,6 +3478,9 @@
         return [];
       }
 
+      // Get client name from the loaded record for folder naming
+      var clientName = document.getElementById('ilsCodeInput').dataset.loadedName || '';
+
       var toUpload = driveQueue.filter(function(i){ return i.status === 'queued'; });
       if (!toUpload.length) return [];
 
@@ -3502,11 +3508,12 @@
             method:   'POST',
             redirect: 'follow',
             body: JSON.stringify({
-              __action: 'uploadFileToDrive',
-              appCode:  appCode,
-              fileName: driveQueue[i].file.name,
-              mimeType: driveQueue[i].file.type || 'application/octet-stream',
-              fileData: b64
+              __action:   'uploadFileToDrive',
+              appCode:    appCode,
+              clientName: clientName,
+              fileName:   driveQueue[i].file.name,
+              mimeType:   driveQueue[i].file.type || 'application/octet-stream',
+              fileData:   b64
             })
           });
 
