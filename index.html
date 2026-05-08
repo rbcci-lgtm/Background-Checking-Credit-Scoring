@@ -1494,104 +1494,68 @@
       <div class="stats">
         <div class="sc">
           <div class="sl">Total Cases</div>
-          <div class="sv">247</div>
+          <div class="sv" id="dshTotal">—</div>
           <div class="ss">YTD 2026</div>
         </div>
         <div class="sc">
           <div class="sl">Pending</div>
-          <div class="sv">18</div>
+          <div class="sv" id="dshPending">—</div>
           <div class="ss">Awaiting review</div>
         </div>
         <div class="sc">
           <div class="sl">Verified</div>
-          <div class="sv">214</div>
+          <div class="sv" id="dshVerified">—</div>
           <div class="ss">Investigation done</div>
         </div>
         <div class="sc">
           <div class="sl">High Risk</div>
-          <div class="sv">9</div>
+          <div class="sv" id="dshHighRisk">—</div>
           <div class="ss">Flagged</div>
         </div>
         <div class="sc">
           <div class="sl">Approved</div>
-          <div class="sv">198</div>
+          <div class="sv" id="dshApproved">—</div>
           <div class="ss">Recommended</div>
         </div>
         <div class="sc">
           <div class="sl">Declined</div>
-          <div class="sv">16</div>
-          <div class="ss">Deferred: 15</div>
+          <div class="sv" id="dshDeclined">—</div>
+          <div class="ss">All decisions</div>
         </div>
       </div>
-      <div class="bar"><button class="btn btn-p" onclick="go('rpt')">+ New Investigation</button><button
-          class="btn btn-s" onclick="go('trk')">All Cases</button></div>
+      <div class="bar">
+        <button class="btn btn-p" onclick="go('rpt')">+ New Investigation</button>
+        <button class="btn btn-s" onclick="go('trk')">All Cases</button>
+        <button class="btn" style="background:#1a5c35;color:#fff;margin-left:auto" onclick="loadDashboard()">&#x21BB; Refresh</button>
+      </div>
       <div class="cd">
         <div class="hd" onclick="tog(this)">
           <div class="cn">&#x21BB;</div>Recent Activity<span class="ar">&#x25BC;</span>
         </div>
         <div class="bd">
-          <div class="ttw">
+          <div id="dshLoading" style="text-align:center;padding:24px;color:var(--n3);font-size:0.85rem">
+            &#x23F3; Loading recent activity from Sheets...
+          </div>
+          <div class="ttw" id="dshTableWrap" style="display:none">
             <table class="tt">
               <thead>
                 <tr>
-                  <th>Ref</th>
+                  <th>App Code</th>
                   <th>Applicant</th>
-                  <th>Type</th>
+                  <th>Loan Amount</th>
                   <th>Score</th>
                   <th>Risk</th>
-                  <th>Status</th>
+                  <th>Recommendation</th>
                   <th>Date</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td style="font-family:'JetBrains Mono';font-size:0.74rem">BI-0247</td>
-                  <td class="nm">Juan D. Cruz</td>
-                  <td>Sec&#x2013;Agri</td>
-                  <td style="font-family:'JetBrains Mono';font-weight:600">82/100</td>
-                  <td><span class="bg ok"><span class="dot"></span>Low</span></td>
-                  <td><span class="bg ok"><span class="dot"></span>Done</span></td>
-                  <td>Mar 28</td>
-                </tr>
-                <tr>
-                  <td style="font-family:'JetBrains Mono';font-size:0.74rem">BI-0246</td>
-                  <td class="nm">Maria Reyes</td>
-                  <td>Uns&#x2013;Personal</td>
-                  <td style="font-family:'JetBrains Mono';font-weight:600">61/100</td>
-                  <td><span class="bg wn"><span class="dot"></span>Mod</span></td>
-                  <td><span class="bg wn"><span class="dot"></span>Pending</span></td>
-                  <td>Mar 27</td>
-                </tr>
-                <tr>
-                  <td style="font-family:'JetBrains Mono';font-size:0.74rem">BI-0245</td>
-                  <td class="nm">Erica Agri Corp</td>
-                  <td>Sec&#x2013;Biz</td>
-                  <td style="font-family:'JetBrains Mono';font-weight:600">38/100</td>
-                  <td><span class="bg er"><span class="dot"></span>High</span></td>
-                  <td><span class="bg er"><span class="dot"></span>Flag</span></td>
-                  <td>Mar 26</td>
-                </tr>
-                <tr>
-                  <td style="font-family:'JetBrains Mono';font-size:0.74rem">BI-0244</td>
-                  <td class="nm">Roberto Santos</td>
-                  <td>Sec&#x2013;Hsg</td>
-                  <td style="font-family:'JetBrains Mono';font-weight:600">76/100</td>
-                  <td><span class="bg ok"><span class="dot"></span>Low</span></td>
-                  <td><span class="bg in"><span class="dot"></span>Review</span></td>
-                  <td>Mar 25</td>
-                </tr>
-                <tr>
-                  <td style="font-family:'JetBrains Mono';font-size:0.74rem">BI-0243</td>
-                  <td class="nm">Lorna Pe&#xF1;a</td>
-                  <td>Uns&#x2013;Salary</td>
-                  <td style="font-family:'JetBrains Mono';font-weight:600">88/100</td>
-                  <td><span class="bg ok"><span class="dot"></span>Low</span></td>
-                  <td><span class="bg ok"><span class="dot"></span>Done</span></td>
-                  <td>Mar 24</td>
-                </tr>
-              </tbody>
+              <tbody id="dshTbody"></tbody>
             </table>
           </div>
+          <div id="dshEmpty" style="display:none;text-align:center;padding:24px;color:var(--n3);font-size:0.85rem">
+            No records found in Google Sheets yet. Start a new investigation to see data here.
+          </div>
+          <div id="dshError" style="display:none;text-align:center;padding:24px;color:var(--er);font-size:0.85rem"></div>
         </div>
       </div>
     </div>
@@ -4321,6 +4285,152 @@
       btn.textContent = '📋 Try Again';
     }
   }
+</script>
+<script>
+// ── Dashboard Loader ─────────────────────────────────────────────────────────
+var DASH_URL = 'https://script.google.com/macros/s/AKfycbx5cfixkka7bcw7PyrY8iGDNE3ea6vym5ox2xnEMEol_Z4kkxwhzD2QHpIh5OUKgoMiwg/exec';
+
+async function loadDashboard() {
+  var loading  = document.getElementById('dshLoading');
+  var tableWrap= document.getElementById('dshTableWrap');
+  var empty    = document.getElementById('dshEmpty');
+  var errDiv   = document.getElementById('dshError');
+  var tbody    = document.getElementById('dshTbody');
+
+  // Reset state
+  loading.style.display  = 'block';
+  tableWrap.style.display= 'none';
+  empty.style.display    = 'none';
+  errDiv.style.display   = 'none';
+  tbody.innerHTML        = '';
+
+  try {
+    var resp = await fetch(DASH_URL, {
+      method: 'POST',
+      redirect: 'follow',
+      body: JSON.stringify({ __action: 'listBackgroundChecks' })
+    });
+    var raw = await resp.text();
+    var data;
+    try { data = JSON.parse(raw); } catch(e) {
+      throw new Error('Invalid response from server');
+    }
+
+    if (data.result !== 'success') throw new Error(data.message || 'Unknown error');
+
+    var records = data.records || [];
+    loading.style.display = 'none';
+
+    if (records.length === 0) {
+      empty.style.display = 'block';
+      // Zero out stats
+      ['dshTotal','dshPending','dshVerified','dshHighRisk','dshApproved','dshDeclined'].forEach(function(id) {
+        document.getElementById(id).textContent = '0';
+      });
+      return;
+    }
+
+    // ── Compute stats ──────────────────────────────────────────
+    var total    = records.length;
+    var pending  = 0, verified = 0, highRisk = 0, approved = 0, declined = 0;
+
+    records.forEach(function(r) {
+      var rec  = (r.recommendation || r.Recommendation || '').toLowerCase();
+      var score= parseFloat(r.totalScore || r['Total Score'] || 0) || 0;
+      var ref  = (r.refNo || r['Reference No.'] || '').toLowerCase();
+
+      if (score >= 65) verified++;
+      if (score > 0 && score < 55) highRisk++;
+      if (rec.includes('approv')) approved++;
+      if (rec.includes('declin') || rec.includes('defer')) declined++;
+      if (!rec || rec === '—' || rec === '') pending++;
+    });
+
+    document.getElementById('dshTotal').textContent   = total;
+    document.getElementById('dshPending').textContent  = pending;
+    document.getElementById('dshVerified').textContent = verified;
+    document.getElementById('dshHighRisk').textContent = highRisk;
+    document.getElementById('dshApproved').textContent = approved;
+    document.getElementById('dshDeclined').textContent = declined;
+
+    // ── Build Recent Activity table (last 10 records, newest first) ─
+    var recent = records.slice().reverse().slice(0, 10);
+
+    recent.forEach(function(r) {
+      var appCode  = r.appCode      || r['Application Code'] || '—';
+      var name     = r.fullName     || r['Full Name']        || '—';
+      var amount   = r.loanAmount   || r['Loan Amount']      || '—';
+      var score    = r.totalScore   || r['Total Score']      || '—';
+      var rec      = r.recommendation || r['Recommendation'] || '—';
+      var ts       = r.timestamp    || r['Timestamp']        || r['Last Updated'] || '—';
+      var rating   = r.scoreRating  || r['Score Rating']     || '';
+
+      // Format date
+      var dateStr = '—';
+      if (ts && ts !== '—') {
+        try {
+          var d = new Date(ts);
+          if (!isNaN(d)) dateStr = d.toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' });
+          else dateStr = String(ts).slice(0, 10);
+        } catch(e) { dateStr = String(ts).slice(0, 10); }
+      }
+
+      // Score badge color
+      var sc = parseFloat(score) || 0;
+      var riskCls = sc >= 65 ? 'ok' : sc >= 55 ? 'wn' : sc > 0 ? 'er' : 'n3';
+      var riskLbl = sc >= 65 ? 'Low' : sc >= 55 ? 'Moderate' : sc > 0 ? 'High' : '—';
+      var scoreDisplay = sc > 0 ? sc + '/100' : '—';
+
+      // Recommendation badge
+      var recLow = rec.toLowerCase();
+      var recCls = recLow.includes('approv') ? 'ok' : recLow.includes('declin') || recLow.includes('defer') ? 'er' : 'wn';
+      var recLbl = rec.length > 20 ? rec.slice(0, 20) + '…' : rec;
+
+      // Format amount
+      var amtDisplay = '—';
+      if (amount && amount !== '—') {
+        var n = parseFloat(String(amount).replace(/[^0-9.]/g, ''));
+        if (!isNaN(n)) amtDisplay = '₱' + n.toLocaleString();
+        else amtDisplay = amount;
+      }
+
+      var tr = document.createElement('tr');
+      tr.style.cursor = 'pointer';
+      tr.title = 'Click to load this record';
+      tr.onclick = function() {
+        document.getElementById('ilsCodeInput').value = appCode;
+        go('rpt');
+        setTimeout(function() {
+          var btn = document.querySelector('[onclick*="ilsFetchByCode"]') ||
+                    document.getElementById('ilsFetchBtn');
+          if (btn) btn.click();
+        }, 300);
+      };
+      tr.innerHTML =
+        '<td style="font-family:\'JetBrains Mono\';font-size:0.74rem">' + appCode + '</td>' +
+        '<td class="nm">' + name + '</td>' +
+        '<td>' + amtDisplay + '</td>' +
+        '<td style="font-family:\'JetBrains Mono\';font-weight:600">' + scoreDisplay + '</td>' +
+        '<td><span class="bg ' + riskCls + '"><span class="dot"></span>' + riskLbl + '</span></td>' +
+        '<td><span class="bg ' + recCls + '"><span class="dot"></span>' + recLbl + '</span></td>' +
+        '<td>' + dateStr + '</td>';
+      tbody.appendChild(tr);
+    });
+
+    tableWrap.style.display = 'block';
+
+  } catch(e) {
+    loading.style.display = 'none';
+    errDiv.style.display  = 'block';
+    errDiv.textContent    = '✗ Could not load dashboard data: ' + e.message;
+    console.error('Dashboard load error:', e);
+  }
+}
+
+// Auto-load dashboard when page opens
+document.addEventListener('DOMContentLoaded', function() {
+  loadDashboard();
+});
 </script>
 </body>
 
