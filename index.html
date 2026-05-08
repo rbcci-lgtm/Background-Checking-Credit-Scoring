@@ -2928,96 +2928,48 @@
     </div>
 
     <div class="vw" id="vT">
-      <div class="bar"><button class="btn btn-p" onclick="go('rpt')">+ New</button><button class="btn btn-s"
-          onclick="go('dash')">&#x2190; Dashboard</button>
-        <div style="flex:1"></div><input type="text" placeholder="Search..."
+      <div class="bar">
+        <button class="btn btn-p" onclick="go('rpt')">+ New</button>
+        <button class="btn btn-s" onclick="go('dash')">&#x2190; Dashboard</button>
+        <div style="flex:1"></div>
+        <input type="text" id="trkSearch" placeholder="Search..." oninput="trkFilter()"
           style="padding:8px 12px;border:1.5px solid var(--n1);border-radius:var(--r);font-family:inherit;font-size:0.84rem;width:180px;min-height:42px">
       </div>
-      <div class="ftabs"><button class="on">All (247)</button><button>Done (214)</button><button>Pending
-          (18)</button><button>Review (6)</button><button>High Risk (9)</button></div>
+      <div class="ftabs" id="trkTabs">
+        <button class="on" onclick="trkSetFilter('all',this)">All (<span id="trkCntAll">0</span>)</button>
+        <button onclick="trkSetFilter('done',this)">Done (<span id="trkCntDone">0</span>)</button>
+        <button onclick="trkSetFilter('pending',this)">Pending (<span id="trkCntPending">0</span>)</button>
+        <button onclick="trkSetFilter('review',this)">Review (<span id="trkCntReview">0</span>)</button>
+        <button onclick="trkSetFilter('high',this)">High Risk (<span id="trkCntHigh">0</span>)</button>
+      </div>
       <div class="cd">
         <div class="hd">
           <div class="cn">&#x1F4CB;</div>All Cases
         </div>
         <div class="bd" style="padding:0">
-          <div class="ttw">
+          <div id="trkLoading" style="text-align:center;padding:24px;color:var(--n3);font-size:0.85rem">
+            &#x23F3; Loading cases from Sheets...
+          </div>
+          <div class="ttw" id="trkTableWrap" style="display:none">
             <table class="tt">
               <thead>
                 <tr>
-                  <th>Ref</th>
+                  <th>App Code</th>
                   <th>Applicant</th>
-                  <th>Type</th>
-                  <th>Amt</th>
+                  <th>Loan Amount</th>
                   <th>Score</th>
                   <th>Risk</th>
-                  <th>Status</th>
+                  <th>Recommendation</th>
                   <th>Date</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td style="font-family:'JetBrains Mono';font-size:0.72rem">BI-0248</td>
-                  <td class="nm">J.D.C. Santos</td>
-                  <td>Sec&#x2013;Agri</td>
-                  <td style="font-family:'JetBrains Mono'">350K</td>
-                  <td style="font-family:'JetBrains Mono';font-weight:600">79</td>
-                  <td><span class="bg ok"><span class="dot"></span>Low</span></td>
-                  <td><span class="bg wn"><span class="dot"></span>Pending</span></td>
-                  <td>Apr 9</td>
-                </tr>
-                <tr>
-                  <td style="font-family:'JetBrains Mono';font-size:0.72rem">BI-0247</td>
-                  <td class="nm">J. Cruz</td>
-                  <td>Sec&#x2013;Agri</td>
-                  <td style="font-family:'JetBrains Mono'">200K</td>
-                  <td style="font-family:'JetBrains Mono';font-weight:600">82</td>
-                  <td><span class="bg ok"><span class="dot"></span>Low</span></td>
-                  <td><span class="bg ok"><span class="dot"></span>Done</span></td>
-                  <td>Mar 28</td>
-                </tr>
-                <tr>
-                  <td style="font-family:'JetBrains Mono';font-size:0.72rem">BI-0246</td>
-                  <td class="nm">M. Reyes</td>
-                  <td>Uns&#x2013;Pers</td>
-                  <td style="font-family:'JetBrains Mono'">50K</td>
-                  <td style="font-family:'JetBrains Mono';font-weight:600">61</td>
-                  <td><span class="bg wn"><span class="dot"></span>Mod</span></td>
-                  <td><span class="bg wn"><span class="dot"></span>Pend</span></td>
-                  <td>Mar 27</td>
-                </tr>
-                <tr>
-                  <td style="font-family:'JetBrains Mono';font-size:0.72rem">BI-0245</td>
-                  <td class="nm">Erica Agri</td>
-                  <td>Sec&#x2013;Biz</td>
-                  <td style="font-family:'JetBrains Mono'">2.5M</td>
-                  <td style="font-family:'JetBrains Mono';font-weight:600">38</td>
-                  <td><span class="bg er"><span class="dot"></span>High</span></td>
-                  <td><span class="bg er"><span class="dot"></span>Flag</span></td>
-                  <td>Mar 26</td>
-                </tr>
-                <tr>
-                  <td style="font-family:'JetBrains Mono';font-size:0.72rem">BI-0244</td>
-                  <td class="nm">R. Santos</td>
-                  <td>Sec&#x2013;Hsg</td>
-                  <td style="font-family:'JetBrains Mono'">500K</td>
-                  <td style="font-family:'JetBrains Mono';font-weight:600">76</td>
-                  <td><span class="bg ok"><span class="dot"></span>Low</span></td>
-                  <td><span class="bg in"><span class="dot"></span>Rvw</span></td>
-                  <td>Mar 25</td>
-                </tr>
-                <tr>
-                  <td style="font-family:'JetBrains Mono';font-size:0.72rem">BI-0243</td>
-                  <td class="nm">L. Pe&#xF1;a</td>
-                  <td>Uns&#x2013;Sal</td>
-                  <td style="font-family:'JetBrains Mono'">30K</td>
-                  <td style="font-family:'JetBrains Mono';font-weight:600">88</td>
-                  <td><span class="bg ok"><span class="dot"></span>Low</span></td>
-                  <td><span class="bg ok"><span class="dot"></span>Done</span></td>
-                  <td>Mar 24</td>
-                </tr>
-              </tbody>
+              <tbody id="trkTbody"></tbody>
             </table>
           </div>
+          <div id="trkEmpty" style="display:none;text-align:center;padding:24px;color:var(--n3);font-size:0.85rem">
+            No records found.
+          </div>
+          <div id="trkError" style="display:none;text-align:center;padding:24px;color:var(--er);font-size:0.85rem"></div>
         </div>
       </div>
     </div>
@@ -4427,7 +4379,155 @@ async function loadDashboard() {
   }
 }
 
-// Auto-load dashboard when page opens
+// ── Tracking State ───────────────────────────────────────────────────────────
+var trkAllRecords = [];
+var trkCurrentFilter = 'all';
+
+async function loadTracking() {
+  var loading   = document.getElementById('trkLoading');
+  var tableWrap = document.getElementById('trkTableWrap');
+  var empty     = document.getElementById('trkEmpty');
+  var errDiv    = document.getElementById('trkError');
+  var tbody     = document.getElementById('trkTbody');
+
+  loading.style.display   = 'block';
+  tableWrap.style.display  = 'none';
+  empty.style.display      = 'none';
+  errDiv.style.display     = 'none';
+  tbody.innerHTML          = '';
+
+  try {
+    var resp = await fetch(DASH_URL, {
+      method: 'POST',
+      redirect: 'follow',
+      body: JSON.stringify({ __action: 'listBackgroundChecks' })
+    });
+    var raw = await resp.text();
+    var data;
+    try { data = JSON.parse(raw); } catch(e) { throw new Error('Invalid response'); }
+    if (data.result !== 'success') throw new Error(data.message || 'Error');
+
+    trkAllRecords = (data.records || []).slice().reverse(); // newest first
+    loading.style.display = 'none';
+    trkRender();
+  } catch(e) {
+    loading.style.display = 'none';
+    errDiv.style.display  = 'block';
+    errDiv.textContent    = '✗ Could not load tracking data: ' + e.message;
+  }
+}
+
+function trkRender() {
+  var tbody    = document.getElementById('trkTbody');
+  var tableWrap= document.getElementById('trkTableWrap');
+  var empty    = document.getElementById('trkEmpty');
+  var search   = (document.getElementById('trkSearch').value || '').toLowerCase();
+
+  tbody.innerHTML = '';
+
+  var filtered = trkAllRecords.filter(function(r) {
+    var sc  = parseFloat(r.totalScore || 0) || 0;
+    var rec = (r.recommendation || '').toLowerCase();
+    var pass = true;
+    if (trkCurrentFilter === 'done')    pass = sc >= 65 && rec.includes('approv');
+    if (trkCurrentFilter === 'pending') pass = !rec || rec === '—';
+    if (trkCurrentFilter === 'review')  pass = sc >= 55 && sc < 65;
+    if (trkCurrentFilter === 'high')    pass = sc > 0 && sc < 55;
+    if (!pass) return false;
+    if (search) {
+      var hay = (r.appCode + r.fullName + r.loanAmount + r.totalScore + r.recommendation + r.timestamp).toLowerCase();
+      return hay.indexOf(search) !== -1;
+    }
+    return true;
+  });
+
+  // Update tab counts
+  document.getElementById('trkCntAll').textContent     = trkAllRecords.length;
+  document.getElementById('trkCntDone').textContent    = trkAllRecords.filter(function(r){ var sc=parseFloat(r.totalScore||0)||0; return sc>=65 && (r.recommendation||'').toLowerCase().includes('approv'); }).length;
+  document.getElementById('trkCntPending').textContent = trkAllRecords.filter(function(r){ var rec=(r.recommendation||''); return !rec||rec==='—'; }).length;
+  document.getElementById('trkCntReview').textContent  = trkAllRecords.filter(function(r){ var sc=parseFloat(r.totalScore||0)||0; return sc>=55&&sc<65; }).length;
+  document.getElementById('trkCntHigh').textContent    = trkAllRecords.filter(function(r){ var sc=parseFloat(r.totalScore||0)||0; return sc>0&&sc<55; }).length;
+
+  if (filtered.length === 0) {
+    empty.style.display      = 'block';
+    tableWrap.style.display  = 'none';
+    return;
+  }
+  empty.style.display      = 'none';
+  tableWrap.style.display  = 'block';
+
+  filtered.forEach(function(r) {
+    var appCode  = r.appCode    || '—';
+    var name     = r.fullName   || '—';
+    var amount   = r.loanAmount || '—';
+    var score    = r.totalScore || '—';
+    var rec      = r.recommendation || '—';
+    var ts       = r.timestamp  || '—';
+
+    // Format date
+    var dateStr = '—';
+    if (ts && ts !== '—') {
+      try {
+        var d = new Date(ts);
+        if (!isNaN(d)) dateStr = d.toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' });
+        else dateStr = String(ts).slice(0, 10);
+      } catch(e) { dateStr = String(ts).slice(0,10); }
+    }
+
+    // Format amount
+    var amtDisplay = '—';
+    if (amount && amount !== '—') {
+      var n = parseFloat(String(amount).replace(/[^0-9.]/g,''));
+      if (!isNaN(n)) amtDisplay = '₱' + n.toLocaleString();
+      else amtDisplay = amount;
+    }
+
+    var sc = parseFloat(score) || 0;
+    var riskCls = sc >= 65 ? 'ok' : sc >= 55 ? 'wn' : sc > 0 ? 'er' : 'n3';
+    var riskLbl = sc >= 65 ? 'Low' : sc >= 55 ? 'Moderate' : sc > 0 ? 'High' : '—';
+    var scoreDisplay = sc > 0 ? sc + '/100' : '—';
+
+    var recLow = rec.toLowerCase();
+    var recCls = recLow.includes('approv') ? 'ok' : recLow.includes('declin') || recLow.includes('defer') ? 'er' : 'wn';
+    var recLbl = rec.length > 22 ? rec.slice(0, 22) + '…' : rec;
+
+    var tr = document.createElement('tr');
+    tr.style.cursor = 'pointer';
+    tr.title = 'Click to open record';
+    tr.onclick = function() {
+      document.getElementById('ilsCodeInput').value = appCode;
+      go('rpt');
+      setTimeout(function() { ilsFetchByCode(); }, 300);
+    };
+    tr.innerHTML =
+      '<td style="font-family:\'JetBrains Mono\';font-size:0.72rem">' + appCode + '</td>' +
+      '<td class="nm">' + name + '</td>' +
+      '<td>' + amtDisplay + '</td>' +
+      '<td style="font-family:\'JetBrains Mono\';font-weight:600">' + scoreDisplay + '</td>' +
+      '<td><span class="bg ' + riskCls + '"><span class="dot"></span>' + riskLbl + '</span></td>' +
+      '<td><span class="bg ' + recCls + '"><span class="dot"></span>' + recLbl + '</span></td>' +
+      '<td>' + dateStr + '</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function trkSetFilter(filter, btn) {
+  trkCurrentFilter = filter;
+  document.querySelectorAll('.ftabs button').forEach(function(b) { b.classList.remove('on'); });
+  btn.classList.add('on');
+  trkRender();
+}
+
+function trkFilter() { trkRender(); }
+
+// Auto-load tracking when switching to Tracking tab
+var _origGo = window.go;
+window.go = function(view) {
+  _origGo(view);
+  if (view === 'trk' && trkAllRecords.length === 0) loadTracking();
+};
+
+// Also load dashboard on page load
 document.addEventListener('DOMContentLoaded', function() {
   loadDashboard();
 });
