@@ -1873,6 +1873,36 @@ function printBICSR() {
   t('bp_ceo',            gv('fCO'));
   t('bp_recommendation', gv('fRc'));
 
+  // ── PAGE 5-BI: INCOME / RATIOS & COLLATERAL PROPERTY ───────────────────────
+  t('bp_bi_ref', gv('fR') || '');
+
+  // Income & Ratios
+  t('bp_bi_grossinc', php(gv('fGrossInc')));
+  t('bp_bi_otherinc', php(gv('fOtherInc')));
+  t('bp_bi_totalinc', php(gv('fTotalInc')));
+  t('bp_bi_livexp',   php(gv('fLivExp')));
+  t('bp_bi_surplus',  php(gv('fNetSurplus')));
+  t('bp_bi_amort',    php(gv('fMonthlyAmort')));
+  t('bp_bi_dscr',     gv('fBIDSCR') || '\u2014');
+  t('bp_bi_ilr',      gv('fBIILR')  || '\u2014');
+  t('bp_bi_dti',      gv('fBIDTI')  || '\u2014');
+
+  // Collateral Property
+  t('bp_col_addr',      gv('fColAddr')      || '\u2014');
+  t('bp_col_type',      gv('fColType')      || '\u2014');
+  t('bp_col_titletype', gv('fColTitleType') || '\u2014');
+  t('bp_col_titleno',   gv('fColTitleNo')   || '\u2014');
+  t('bp_col_owner',     gv('fColOwner')     || '\u2014');
+  t('bp_col_lotarea',   gv('fColLotArea')   ? gv('fColLotArea') + ' sqm' : '\u2014');
+  t('bp_col_floorarea', gv('fColFloorArea') ? gv('fColFloorArea') + ' sqm' : '\u2014');
+  t('bp_col_apprval',   php(gv('fColApprVal')));
+  t('bp_col_ltv',       gv('fColLTV')       || '\u2014');
+  t('bp_col_cond',      gv('fColCond')      || '\u2014');
+  t('bp_col_verif',     gv('fColVerif')     || '\u2014');
+  t('bp_col_appraiser', gv('fColAppraiser') || '\u2014');
+  t('bp_col_apprdate',  gv('fColApprDate')  || '\u2014');
+  t('bp_col_remarks',   gv('fColRemarks')   || '\u2014');
+
   // ── PRINT ────────────────────────────────────────────────────────────────────
   window.print();
 }
@@ -2178,62 +2208,7 @@ function printBICSR() {
                 <option>Seasonal / harvest</option>
               </select></div>
           </div>
-          <div id="colS">
-            <div class="sh">Collateral <span class="tg">Secured</span></div>
-            <div class="dtw">
-              <table class="dt">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Type</th>
-                    <th>Location</th>
-                    <th>Title/TD</th>
-                    <th>Area</th>
-                    <th>Value(&#x20B1;)</th>
-                    <th>Liens</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td><input value=""></td>
-                    <td><input value=""></td>
-                    <td><input value=""></td>
-                    <td><input value=""></td>
-                    <td><input type="number" value=""></td>
-                    <td><select>
-                <option value="">— Select —</option>
-                        <option>No</option>
-                        <option>Yes</option>
-                      </select></td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td><input></td>
-                    <td><input></td>
-                    <td><input></td>
-                    <td><input></td>
-                    <td><input type="number"></td>
-                    <td><select>
-                <option value="">— Select —</option>
-                        <option>No</option>
-                        <option>Yes</option>
-                      </select></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="fg c3" style="margin-top:8px">
-              <div class="fi"><label>Appraised (&#x20B1;)</label><input type="number" value=""></div>
-              <div class="fi"><label>LTV</label><input value="" readonly class="ro"></div>
-              <div class="fi"><label>Method</label><select>
-                <option value="">— Select —</option>
-                  <option>Market comparison</option>
-                  <option>Cost</option>
-                  <option>Income</option>
-                </select></div>
-            </div>
-          </div>
+
         </div>
       </div>
 
@@ -2353,6 +2328,23 @@ function printBICSR() {
             <div class="fi"><label>Years</label><input type="number" value=""></div>
           </div>
 
+          <div class="sh">Income / Ratios <span class="tg">Auto-Computed</span></div>
+          <div class="fg c3">
+            <div class="fi"><label>Gross Monthly Income (&#x20B1;/mo)</label><input type="number" id="fGrossInc" placeholder="0.00" oninput="calcBIRatios()"></div>
+            <div class="fi"><label>Other Income / Sideline (&#x20B1;/mo)</label><input type="number" id="fOtherInc" placeholder="0.00" oninput="calcBIRatios()"></div>
+            <div class="fi"><label>Total Monthly Income (&#x20B1;/mo)</label><input type="number" id="fTotalInc" readonly class="ro" placeholder="Auto"></div>
+            <div class="fi"><label>Monthly Living Expenses (&#x20B1;/mo)</label><input type="number" id="fLivExp" placeholder="0.00" oninput="calcBIRatios()"></div>
+            <div class="fi"><label>Net Monthly Surplus (&#x20B1;/mo)</label><input type="number" id="fNetSurplus" readonly class="ro" placeholder="Auto"></div>
+            <div class="fi"><label>Monthly Loan Amortization (&#x20B1;/mo)</label><input type="number" id="fMonthlyAmort" placeholder="0.00" oninput="calcBIRatios()"></div>
+            <div class="fi"><label>DSCR (Debt Service Coverage Ratio)</label><input id="fBIDSCR" readonly class="ro" placeholder="Auto" style="font-family:'JetBrains Mono',monospace;font-weight:700;"></div>
+            <div class="fi"><label>Income-to-Loan Ratio</label><input id="fBIILR" readonly class="ro" placeholder="Auto" style="font-family:'JetBrains Mono',monospace;font-weight:700;"></div>
+            <div class="fi"><label>DTI Ratio (%)</label><input id="fBIDTI" readonly class="ro" placeholder="Auto" style="font-family:'JetBrains Mono',monospace;font-weight:700;"></div>
+          </div>
+          <div style="background:var(--in0);border:1px solid var(--in);border-radius:6px;padding:8px 12px;font-size:0.74rem;color:var(--in);margin-top:6px;line-height:1.5;">
+            <strong>&#x2139; Ratio Guide:</strong>&nbsp;
+            DSCR &ge;1.20 = Adequate &bull; Income-to-Loan &ge;3&#215; = Good &bull; DTI &le;40% = Acceptable
+          </div>
+
           <div class="sh">Document Verification</div>
           <div class="dtw">
             <table class="dt">
@@ -2461,6 +2453,56 @@ function printBICSR() {
             </table>
           </div>
 
+          <div class="sh">Collateral Property <span class="tg">Field Verification</span></div>
+          <div class="fg c3">
+            <div class="fi s2"><label>Property Address / Description</label><input type="text" id="fColAddr" placeholder="Lot No., Block, Sitio, Barangay, Municipality/City, Province..."></div>
+            <div class="fi"><label>Property Type</label><select id="fColType">
+                <option value="">&#x2014; Select &#x2014;</option>
+                <option>Residential</option>
+                <option>Commercial</option>
+                <option>Agricultural / Farm</option>
+                <option>Industrial</option>
+                <option>Mixed Use</option>
+                <option>Vacant Lot</option>
+              </select></div>
+            <div class="fi"><label>Title Type</label><select id="fColTitleType">
+                <option value="">&#x2014; Select &#x2014;</option>
+                <option>TCT &#x2013; Transfer Certificate of Title</option>
+                <option>OCT &#x2013; Original Certificate of Title</option>
+                <option>CCT &#x2013; Condominium Certificate of Title</option>
+                <option>Tax Declaration</option>
+                <option>Deed of Sale</option>
+                <option>CLOA &#x2013; Certificate of Land Ownership Award</option>
+                <option>None / Guarantee Only</option>
+              </select></div>
+            <div class="fi"><label>Title / Document No.</label><input type="text" id="fColTitleNo" placeholder="e.g. TCT No. T-12345"></div>
+            <div class="fi"><label>Registered Owner</label><input type="text" id="fColOwner" placeholder="Full name of registered owner..."></div>
+            <div class="fi"><label>Lot Area (sqm)</label><input type="number" id="fColLotArea" placeholder="0.00"></div>
+            <div class="fi"><label>Floor Area (sqm)</label><input type="number" id="fColFloorArea" placeholder="0.00 (if with improvement)"></div>
+            <div class="fi"><label>Appraised / Market Value (&#x20B1;)</label><input type="number" id="fColApprVal" placeholder="0.00" oninput="calcBIRatios()"></div>
+            <div class="fi"><label>LTV Ratio (%)</label><input id="fColLTV" readonly class="ro" placeholder="Auto" style="font-family:'JetBrains Mono',monospace;font-weight:700;"></div>
+            <div class="fi"><label>Collateral Condition</label><select id="fColCond">
+                <option value="">&#x2014; Select &#x2014;</option>
+                <option>Excellent &#x2013; Prime location, well-maintained</option>
+                <option>Good &#x2013; Standard condition</option>
+                <option>Fair &#x2013; With minor defects</option>
+                <option>Poor &#x2013; Needs major repairs</option>
+                <option>N/A &#x2013; Not inspected</option>
+              </select></div>
+            <div class="fi"><label>Verification Status</label><select id="fColVerif">
+                <option value="">&#x2014; Select &#x2014;</option>
+                <option>Verified &#x2013; Title confirmed with Registry of Deeds</option>
+                <option>Verified &#x2013; Field-inspected only</option>
+                <option>Pending &#x2013; Awaiting RD confirmation</option>
+                <option>Not Verified</option>
+              </select></div>
+            <div class="fi"><label>Name of Appraiser / Inspector</label><input type="text" id="fColAppraiser" placeholder="Enter name of appraiser..."></div>
+            <div class="fi"><label>Date of Appraisal / Inspection</label><input type="date" id="fColApprDate"></div>
+            <div class="fi full"><label>Collateral Remarks / Encumbrances / Annotations</label>
+              <textarea id="fColRemarks" rows="2" placeholder="Note any liens, encumbrances, annotations, or special observations..."></textarea>
+            </div>
+          </div>
+
           <div class="sh">Investigation Findings <span class="tg">Summary</span></div>
           <div class="fi full"><label>Concise Summary (character, financial standing, income source, repayment behavior,
               collateral, other material observations)</label>
@@ -2503,8 +2545,11 @@ function printBICSR() {
             <div class="sig-pad-wrap" style="max-width:320px">
               <canvas id="sigPadBI" width="260" height="90"></canvas>
               <div class="sig-role" style="margin-top:4px">Investigator's Signature</div>
-              <div class="sig-actions"><button onclick="clearSig('BI')">Clear</button><button
-                  onclick="saveSig('BI')">Confirm</button></div>
+              <div class="sig-actions">
+                <button onclick="clearSig('BI')">Clear</button>
+                <button onclick="saveSig('BI')">Confirm</button>
+                <button onclick="eApproveSig('BI')" style="background:var(--in);color:#fff;border:none;border-radius:6px;padding:6px 10px;font-size:0.76rem;font-weight:700;cursor:pointer;">&#x26A1; E-Approve</button>
+              </div>
               <div class="sig-status" id="sigStatusBI"></div>
             </div>
           </div>
@@ -2515,16 +2560,22 @@ function printBICSR() {
               <canvas id="sigPadBW" width="260" height="90"></canvas>
               <div class="sig-name"><input type="text" id="sigNameBW" placeholder="Borrower full name..."></div>
               <div class="sig-role">Borrower's Signature</div>
-              <div class="sig-actions"><button onclick="clearSig('BW')">Clear</button><button
-                  onclick="saveSig('BW')">Confirm</button></div>
+              <div class="sig-actions">
+                <button onclick="clearSig('BW')">Clear</button>
+                <button onclick="saveSig('BW')">Confirm</button>
+                <button onclick="eApproveSig('BW')" style="background:var(--in);color:#fff;border:none;border-radius:6px;padding:6px 10px;font-size:0.76rem;font-weight:700;cursor:pointer;">&#x26A1; E-Approve</button>
+              </div>
               <div class="sig-status" id="sigStatusBW"></div>
             </div>
             <div class="sig-pad-wrap">
               <canvas id="sigPadCB" width="260" height="90"></canvas>
               <div class="sig-name"><input type="text" id="sigNameCB" placeholder="Co-Borrower full name..."></div>
               <div class="sig-role">Co-Borrower's Signature</div>
-              <div class="sig-actions"><button onclick="clearSig('CB')">Clear</button><button
-                  onclick="saveSig('CB')">Confirm</button></div>
+              <div class="sig-actions">
+                <button onclick="clearSig('CB')">Clear</button>
+                <button onclick="saveSig('CB')">Confirm</button>
+                <button onclick="eApproveSig('CB')" style="background:var(--in);color:#fff;border:none;border-radius:6px;padding:6px 10px;font-size:0.76rem;font-weight:700;cursor:pointer;">&#x26A1; E-Approve</button>
+              </div>
               <div class="sig-status" id="sigStatusCB"></div>
             </div>
           </div>
@@ -3247,8 +3298,11 @@ function printBICSR() {
             <div class="sig-pad-wrap">
               <canvas id="sigPadCO" width="260" height="90"></canvas>
               <div class="sig-role" style="margin-top:4px">Compliance Officer's Signature</div>
-              <div class="sig-actions"><button onclick="clearSig('CO')">Clear</button><button
-                  onclick="saveSig('CO')">Confirm</button></div>
+              <div class="sig-actions">
+                <button onclick="clearSig('CO')">Clear</button>
+                <button onclick="saveSig('CO')">Confirm</button>
+                <button onclick="eApproveSig('CO')" style="background:var(--in);color:#fff;border:none;border-radius:6px;padding:6px 10px;font-size:0.76rem;font-weight:700;cursor:pointer;">&#x26A1; E-Approve</button>
+              </div>
               <div class="sig-status" id="sigStatusCO"></div>
             </div>
           </div>
@@ -3335,25 +3389,34 @@ function printBICSR() {
               <canvas id="sigPad1" width="260" height="90"></canvas>
               <div class="sig-name"><input type="text" id="sigName1" placeholder="Enter name here..."></div>
               <div class="sig-role">Account / Loan Officer</div>
-              <div class="sig-actions"><button onclick="clearSig(1)">Clear</button><button
-                  onclick="saveSig(1)">Confirm</button></div>
+              <div class="sig-actions">
+                <button onclick="clearSig(1)">Clear</button>
+                <button onclick="saveSig(1)">Confirm</button>
+                <button onclick="eApproveSig(1)" style="background:var(--in);color:#fff;border:none;border-radius:6px;padding:6px 10px;font-size:0.76rem;font-weight:700;cursor:pointer;">&#x26A1; E-Approve</button>
+              </div>
               <div class="sig-status" id="sigStatus1"></div>
             </div>
             <div class="sig-pad-wrap">
               <canvas id="sigPad2" width="260" height="90"></canvas>
               <div class="sig-name"><input type="text" id="sigName2" placeholder="Enter name here..."></div>
               <div class="sig-role">Credit Evaluation Head</div>
-              <div class="sig-actions"><button onclick="clearSig(2)">Clear</button><button
-                  onclick="saveSig(2)">Confirm</button></div>
+              <div class="sig-actions">
+                <button onclick="clearSig(2)">Clear</button>
+                <button onclick="saveSig(2)">Confirm</button>
+                <button onclick="eApproveSig(2)" style="background:var(--in);color:#fff;border:none;border-radius:6px;padding:6px 10px;font-size:0.76rem;font-weight:700;cursor:pointer;">&#x26A1; E-Approve</button>
+              </div>
               <div class="sig-status" id="sigStatus2"></div>
             </div>
             <div class="sig-pad-wrap">
               <canvas id="sigPad3" width="260" height="90"></canvas>
-              <div class="sig-name"><input type="text" value="" style="font-weight:700">
+              <div class="sig-name"><input type="text" id="sigName3" value="" style="font-weight:700" placeholder="Enter name here...">
               </div>
               <div class="sig-role">President &amp; CEO</div>
-              <div class="sig-actions"><button onclick="clearSig(3)">Clear</button><button
-                  onclick="saveSig(3)">Confirm</button></div>
+              <div class="sig-actions">
+                <button onclick="clearSig(3)">Clear</button>
+                <button onclick="saveSig(3)">Confirm</button>
+                <button onclick="eApproveSig(3)" style="background:var(--in);color:#fff;border:none;border-radius:6px;padding:6px 10px;font-size:0.76rem;font-weight:700;cursor:pointer;">&#x26A1; E-Approve</button>
+              </div>
               <div class="sig-status" id="sigStatus3"></div>
             </div>
           </div>
@@ -3704,6 +3767,64 @@ function printBICSR() {
       var inp = document.getElementById('ilsCodeInput');
       if (inp) inp.addEventListener('keydown', function(e){ if(e.key==='Enter') ilsFetchByCode(); });
     });
+
+    // ── INCOME / RATIOS & COLLATERAL AUTO-CALCULATIONS ─────────────────────────
+    function calcBIRatios() {
+      var gross   = parseFloat(document.getElementById('fGrossInc')    ? document.getElementById('fGrossInc').value    : 0) || 0;
+      var other   = parseFloat(document.getElementById('fOtherInc')    ? document.getElementById('fOtherInc').value    : 0) || 0;
+      var livExp  = parseFloat(document.getElementById('fLivExp')       ? document.getElementById('fLivExp').value      : 0) || 0;
+      var amort   = parseFloat(document.getElementById('fMonthlyAmort') ? document.getElementById('fMonthlyAmort').value : 0) || 0;
+      var loanAmt = parseFloat(document.getElementById('fAm')           ? document.getElementById('fAm').value          : 0) || 0;
+      var apprVal = parseFloat(document.getElementById('fColApprVal')   ? document.getElementById('fColApprVal').value  : 0) || 0;
+
+      // ── Income Ratios ──────────────────────────────────────────
+      var totalInc   = gross + other;
+      var netSurplus = totalInc - livExp;
+      var dscr       = (amort > 0)   ? (netSurplus / amort)         : 0;
+      var ilr        = (loanAmt > 0) ? (totalInc / loanAmt * 12)   : 0; // Annual income / loan
+      var dti        = (totalInc > 0) ? ((amort / totalInc) * 100) : 0;
+
+      // ── Collateral LTV ─────────────────────────────────────────
+      var ltv        = (apprVal > 0 && loanAmt > 0) ? ((loanAmt / apprVal) * 100) : 0;
+
+      // ── Set computed field values ──────────────────────────────
+      function setRO(id, val) {
+        var el = document.getElementById(id);
+        if (el) el.value = val;
+      }
+
+      setRO('fTotalInc',  totalInc   > 0 ? totalInc.toFixed(2)   : '');
+      setRO('fNetSurplus', netSurplus !== 0 ? netSurplus.toFixed(2) : '');
+      setRO('fBIDSCR',   dscr   > 0 ? dscr.toFixed(2)   : '');
+      setRO('fBIILR',    ilr    > 0 ? ilr.toFixed(2) + 'x' : '');
+      setRO('fBIDTI',    dti    > 0 ? dti.toFixed(1) + '%' : '');
+      setRO('fColLTV',   ltv    > 0 ? ltv.toFixed(1) + '%' : '');
+
+      // ── Colour-code DSCR field ──────────────────────────────────
+      var dscrEl = document.getElementById('fBIDSCR');
+      if (dscrEl && dscr > 0) {
+        dscrEl.style.color = dscr >= 1.20 ? 'var(--ok)' : dscr >= 1.00 ? 'var(--wn)' : 'var(--er)';
+      }
+      // ── Colour-code DTI field ───────────────────────────────────
+      var dtiEl = document.getElementById('fBIDTI');
+      if (dtiEl && dti > 0) {
+        dtiEl.style.color = dti <= 40 ? 'var(--ok)' : dti <= 50 ? 'var(--wn)' : 'var(--er)';
+      }
+      // ── Colour-code LTV field ───────────────────────────────────
+      var ltvEl = document.getElementById('fColLTV');
+      if (ltvEl && ltv > 0) {
+        ltvEl.style.color = ltv <= 70 ? 'var(--ok)' : ltv <= 80 ? 'var(--wn)' : 'var(--er)';
+      }
+      // ── Sync DTI to fDTI field in Section 4 (Credit Background) ─
+      var fDTI = document.getElementById('fDTI');
+      if (fDTI && dti > 0 && !fDTI.value) fDTI.value = dti.toFixed(1) + '%';
+    }
+
+    // Re-run ratios whenever loan amount changes
+    (function() {
+      var loanInp = document.getElementById('fAm');
+      if (loanInp) loanInp.addEventListener('input', calcBIRatios);
+    })();
 
   </script>
 
@@ -4270,6 +4391,31 @@ function printBICSR() {
         ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
         y = p.lastAutoTable.finalY + 5;
 
+        // ── Section 3A: Income / Ratios ──────────────────────────
+        p.setFont(undefined,'bold'); p.text('3A. INCOME / FINANCIAL RATIOS', 14, y); y += 4;
+        p.autoTable({ ...ts, startY:y, body:[
+          ['Gross Monthly Income', php('fGrossInc'), 'Other Income / Sideline', php('fOtherInc')],
+          ['Total Monthly Income', php('fTotalInc'), 'Monthly Living Expenses', php('fLivExp')],
+          ['Net Monthly Surplus', php('fNetSurplus'), 'Monthly Loan Amortization', php('fMonthlyAmort')],
+          ['DSCR', val('fBIDSCR'), 'Income-to-Loan Ratio', val('fBIILR')],
+          ['DTI Ratio', val('fBIDTI'), '', ''],
+        ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
+        y = p.lastAutoTable.finalY + 5;
+
+        // ── Section 3B: Collateral Property ─────────────────────
+        p.setFont(undefined,'bold'); p.text('3B. COLLATERAL PROPERTY', 14, y); y += 4;
+        p.autoTable({ ...ts, startY:y, body:[
+          ['Property Address', val('fColAddr'), '', ''],
+          ['Property Type', val('fColType'), 'Title Type', val('fColTitleType')],
+          ['Title / Document No.', val('fColTitleNo'), 'Registered Owner', val('fColOwner')],
+          ['Lot Area (sqm)', val('fColLotArea'), 'Floor Area (sqm)', val('fColFloorArea')],
+          ['Appraised Value', php('fColApprVal'), 'LTV Ratio', val('fColLTV')],
+          ['Collateral Condition', val('fColCond'), 'Verification Status', val('fColVerif')],
+          ['Name of Appraiser', val('fColAppraiser'), 'Date of Appraisal', val('fColApprDate')],
+          ['Collateral Remarks', val('fColRemarks'), '', ''],
+        ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
+        y = p.lastAutoTable.finalY + 5;
+
         // ── Section 4: Credit Score ──────────────────────────────
         p.setFont(undefined,'bold'); p.text('4. CREDIT SCORE SUMMARY — RBCC 4.02 Rev.16', 14, y); y += 4;
         p.autoTable({ ...ts, startY:y, body:[
@@ -4354,162 +4500,349 @@ function printBICSR() {
       } catch (e) { toast('Error: ' + e.message) }
     }
 
-    // Word Final Report
+    // Word Final Report — Narrative Format (Board Memo Style)
     function xWord() {
       try {
         var D = window.docx;
         if (!D) { toast('Word library not loaded'); return; }
 
-        var nm  = val('fN');
-        var fn  = 'RBCCI_BI_' + nm.replace(/[^a-zA-Z0-9]/g,'_') + '_' + new Date().toISOString().slice(0,10) + '.docx';
-        var sc  = getScore();
-        var rt  = getRating();
-        var brd = { style: D.BorderStyle.SINGLE, size: 4, color: '2d6a4f' };
-        var brdLight = { style: D.BorderStyle.SINGLE, size: 1, color: 'CCCCCC' };
-        var borders = { top: brdLight, bottom: brdLight, left: brdLight, right: brdLight };
-        var mg  = { top: 80, bottom: 80, left: 120, right: 120 };
+        var nm       = val('fN');
+        var fn       = 'RBCCI_BoardMemo_' + nm.replace(/[^a-zA-Z0-9]/g,'_') + '_' + new Date().toISOString().slice(0,10) + '.docx';
+        var sc       = getScore();
+        var rt       = getRating();
+        var civStat  = val('fCv');
+        var spouse   = val('fSp');
+        var address  = val('fAd');
+        var phone    = val('fPh');
+        var housing  = val('fHs');
+        var aoName   = val('fAO');
+        var loanAmt  = php('fAm');
+        var loanTerm = val('fTm');
+        var loanRate = val('fRt');
+        var loanPurp = val('fPu');
+        var loanCl   = val('fCl');
+        var loanBT   = val('fBT');
+        var occup    = val('fOc');
+        var grossInc = php('fGrossInc');
+        var otherInc = php('fOtherInc');
+        var totalInc = php('fTotalInc');
+        var livExp   = php('fLivExp');
+        var netSurp  = php('fNetSurplus');
+        var monthAmort = php('fMonthlyAmort');
+        var dscr     = val('fBIDSCR');
+        var ilr      = val('fBIILR');
+        var dti      = val('fBIDTI') || val('fDTI');
+        var cicRpt   = val('fCIC');
+        var payBeh   = val('fPB');
+        var totDebt  = php('fDb');
+        var adverseF = val('fAF');
+        var colAddr  = val('fColAddr');
+        var colType  = val('fColType');
+        var colTitle = val('fColTitleType');
+        var colTitleNo = val('fColTitleNo');
+        var colOwner = val('fColOwner');
+        var colLotArea = val('fColLotArea');
+        var colFloorArea = val('fColFloorArea');
+        var colApprVal = php('fColApprVal');
+        var colLTV   = val('fColLTV');
+        var colCond  = val('fColCond');
+        var colVerif = val('fColVerif');
+        var colRemarks = val('fColRemarks');
+        var esrmEnv  = val('fESRMenv');
+        var esrmSoc  = val('fESRMsoc');
+        var esrmRating = val('fESRMrating');
+        var esrmNotes = val('fESRMnotes');
+        var kyc      = val('fKYC');
+        var aml      = val('fAML');
+        var compOfficer = val('fCompOfficer');
+        var compNotes = val('fCompNotes');
+        var creditNotes = val('fCN');
+        var creditHead = val('fCO');
+        var recFinal = val('fRc');
+        var recAmt   = php('fRA');
+        var riskCl   = val('fRiskClass');
+        var loanRec  = val('fLoanRec');
+        var justif   = val('fJs');
+        var invName  = val('fBIInv');
+        var invDate  = val('fBIInvDt');
+        var refNo    = val('fR');
+        var repDate  = val('fDt');
+        var tin      = val('fT');
+        var cbfSummary = (document.getElementById('cbfSummaryDisplay') ? document.getElementById('cbfSummaryDisplay').value : '') || '';
+        var cbfRemarks = (document.getElementById('cbfRemarksDisplay') ? document.getElementById('cbfRemarksDisplay').value : '') || '';
+        var coBorrower = (document.getElementById('sigNameCB') ? document.getElementById('sigNameCB').value : '') || '';
 
-        function cell(text, bold, shade) {
-          var opts = { width:{ size:4680, type:D.WidthType.DXA }, borders:borders, margins:mg };
+        // ── Helpers ──────────────────────────────────────────────────────────
+        var brd      = { style: D.BorderStyle.SINGLE, size: 4, color: '071a0e' };
+        var brdLight = { style: D.BorderStyle.SINGLE, size: 1, color: 'CCCCCC' };
+        var brdNone  = { style: D.BorderStyle.NONE };
+        var borders  = { top: brdLight, bottom: brdLight, left: brdLight, right: brdLight };
+        var bordersNone = { top: brdNone, bottom: brdNone, left: brdNone, right: brdNone };
+        var mg       = { top: 80, bottom: 80, left: 120, right: 120 };
+        var mgSm     = { top: 60, bottom: 60, left: 100, right: 100 };
+
+        // Summary table cell (label | value)
+        function cell(text, bold, shade, wPct) {
+          var w = Math.round((wPct||50) / 100 * 9360);
+          var opts = { width:{ size:w, type:D.WidthType.DXA }, borders:borders, margins:mg };
           if (shade) opts.shading = { fill: shade };
           return new D.TableCell({ ...opts, children:[new D.Paragraph({ children:[new D.TextRun({ text: text||'', bold:!!bold, size:20, font:'Calibri' })] })] });
         }
-        function row2(label, value) {
-          return new D.TableRow({ children:[ cell(label, true, 'F0F5F0'), cell(value||'—', false) ] });
+        function row2(label, value, lW, vW) {
+          return new D.TableRow({ children:[ cell(label, true, 'EBF5EE', lW||35), cell(value||'—', false, null, vW||65) ] });
         }
         function row4(l1,v1,l2,v2) {
           var c = { width:{ size:2340, type:D.WidthType.DXA }, borders:borders, margins:mg };
           return new D.TableRow({ children:[
-            new D.TableCell({ ...c, shading:{fill:'F0F5F0'}, children:[new D.Paragraph({ children:[new D.TextRun({ text:l1||'', bold:true, size:20, font:'Calibri' })] })] }),
+            new D.TableCell({ ...c, shading:{fill:'EBF5EE'}, children:[new D.Paragraph({ children:[new D.TextRun({ text:l1||'', bold:true, size:20, font:'Calibri' })] })] }),
             new D.TableCell({ ...c, children:[new D.Paragraph({ children:[new D.TextRun({ text:v1||'—', size:20, font:'Calibri' })] })] }),
-            new D.TableCell({ ...c, shading:{fill:'F0F5F0'}, children:[new D.Paragraph({ children:[new D.TextRun({ text:l2||'', bold:true, size:20, font:'Calibri' })] })] }),
+            new D.TableCell({ ...c, shading:{fill:'EBF5EE'}, children:[new D.Paragraph({ children:[new D.TextRun({ text:l2||'', bold:true, size:20, font:'Calibri' })] })] }),
             new D.TableCell({ ...c, children:[new D.Paragraph({ children:[new D.TextRun({ text:v2||'—', size:20, font:'Calibri' })] })] }),
           ]});
         }
         function tbl2(rows) { return new D.Table({ width:{ size:9360, type:D.WidthType.DXA }, rows:rows }); }
         function tbl4(rows) { return new D.Table({ width:{ size:9360, type:D.WidthType.DXA }, rows:rows }); }
-        function hdr(n, t) {
+
+        // Roman-numeral section heading (bold, underlined, e.g. "I. BORROWER PROFILE")
+        function secHdr(roman, title) {
           return new D.Paragraph({
-            spacing:{ before:280, after:100 },
-            children:[new D.TextRun({ text: n + '. ' + t, bold:true, size:24, font:'Calibri', color:'071a0e' })]
+            spacing:{ before:320, after:120 },
+            children:[new D.TextRun({ text: roman + '. ' + title, bold:true, size:22, font:'Calibri', underline:{type:'single'} })]
           });
         }
-        function para(t) { return new D.Paragraph({ spacing:{after:80}, children:[new D.TextRun({ text:t||'', size:20, font:'Calibri' })] }); }
-        function divider() { return new D.Paragraph({ border:{ bottom:{ style:D.BorderStyle.SINGLE, size:4, color:'2d6a4f' } }, spacing:{after:80} }); }
-        function sigLine(name) {
-          return [
-            new D.Paragraph({ spacing:{before:600, after:40}, children:[new D.TextRun({ text:'______________________________', size:20, font:'Calibri' })] }),
-            new D.Paragraph({ spacing:{after:120}, children:[new D.TextRun({ text:name, bold:true, size:18, font:'Calibri', color:'444444' })] }),
-          ];
+        // Body paragraph — justified
+        function para(t, spBefore) {
+          return new D.Paragraph({
+            alignment: D.AlignmentType.JUSTIFIED,
+            spacing:{ before: spBefore||0, after:160, line:276, lineRule:'auto' },
+            children:[new D.TextRun({ text:t||'', size:22, font:'Calibri' })]
+          });
+        }
+        // Paragraph with mixed bold runs
+        function paraRuns(runs, spBefore) {
+          return new D.Paragraph({
+            alignment: D.AlignmentType.JUSTIFIED,
+            spacing:{ before: spBefore||0, after:160, line:276, lineRule:'auto' },
+            children: runs.map(function(r){ return new D.TextRun({ text:r.t||'', size:22, font:'Calibri', bold:!!r.b, italics:!!r.i }); })
+          });
+        }
+        function spacer(sz) { return new D.Paragraph({ spacing:{after:sz||80} }); }
+        function divider() { return new D.Paragraph({ border:{ bottom:{ style:D.BorderStyle.SINGLE, size:6, color:'071a0e' } }, spacing:{after:80} }); }
+        function thinLine() { return new D.Paragraph({ border:{ bottom:{ style:D.BorderStyle.SINGLE, size:2, color:'AAAAAA' } }, spacing:{after:80} }); }
+
+        // ── Build narrative paragraphs ────────────────────────────────────────
+
+        // INTRO sentence
+        var introText = 'This report is submitted for the Board\u2019s review and approval of the loan'
+          + (loanCl && loanCl !== '— Select —' ? ' ' + loanCl.toLowerCase() : '')
+          + ' application of '
+          + nm
+          + (civStat && civStat !== '— Select —' ? ', ' + civStat.toLowerCase() : '')
+          + (address ? ', a resident of ' + address : '')
+          + '. The application seeks financial support'
+          + (loanPurp && loanPurp !== '— Select —' ? ' for ' + loanPurp.toLowerCase() + ' purposes' : '')
+          + '.';
+
+        // I. BORROWER PROFILE narrative
+        var profileText1 = nm
+          + (civStat && civStat !== '— Select —' ? ' is a Filipino, ' + civStat.toLowerCase() : '')
+          + (address ? ', residing at ' + address : '')
+          + (phone ? '. Contact number: ' + phone : '')
+          + '.';
+        var profileText2 = coBorrower
+          ? 'The borrower enlisted ' + coBorrower + ' as co-borrower for this loan application.'
+          : '';
+        var profileText3 = (cbfSummary || adverseF)
+          ? ('Credit Investigation (CI) and CIC report findings show: '
+              + (cbfSummary || 'No adverse findings noted') + '.'
+              + (adverseF ? ' Additional notes: ' + adverseF : ''))
+          : ('Credit Investigation (CI) conducted and CIC reports showed no adverse findings. '
+              + 'Background investigation indicates that the borrower has no pending legal cases and no reported issues with private lending institutions.');
+
+        // II. FINANCIAL CAPACITY narrative
+        var finText1 = 'The applicant, ' + nm + ', reports a gross monthly income of ' + grossInc
+          + (otherInc && otherInc !== 'PHP —' ? ', with other monthly income of ' + otherInc : '')
+          + ', resulting in a total monthly income of ' + totalInc + '.';
+        var finText2 = 'Personal monthly living expenses amount to ' + livExp
+          + ', leaving a net monthly surplus of ' + netSurp + '.';
+        var finText3 = 'The proposed monthly loan amortization of ' + monthAmort
+          + (dscr ? ' yields a Debt Service Coverage Ratio (DSCR) of ' + dscr : '')
+          + (dti ? ' and a Debt-to-Income (DTI) ratio of ' + dti : '')
+          + '. These indicators demonstrate the borrower\u2019s adequate repayment capacity and acceptable financial position to support the proposed loan.';
+        var finText4 = (cbfRemarks ? cbfRemarks : '');
+
+        // III. COLLATERAL SECURITY narrative
+        var colText = '';
+        if (colAddr || colTitleNo || colType) {
+          colText = 'To further strengthen the loan application, the borrower is offering'
+            + (colType && colType !== '— Select —' ? ' a ' + colType.toLowerCase() + ' property' : ' collateral')
+            + (colAddr ? ' located at ' + colAddr : '')
+            + (colTitle && colTitle !== '— Select —' ? ', covered by ' + colTitle : '')
+            + (colTitleNo ? ' No. ' + colTitleNo : '')
+            + (colOwner ? ', registered under the name of ' + colOwner : '')
+            + (colLotArea ? ', with a lot area of ' + colLotArea + ' sq.m.' : '')
+            + (colFloorArea && parseFloat(colFloorArea) > 0 ? ' and a floor area of ' + colFloorArea + ' sq.m.' : '')
+            + (colApprVal && colApprVal !== 'PHP —' ? '. The appraised market value is ' + colApprVal : '')
+            + (colLTV ? ', representing an LTV ratio of ' + colLTV + '%' : '')
+            + '. Collateral condition is assessed as: ' + (colCond && colCond !== '— Select —' ? colCond : 'not specified')
+            + '. Verification status: ' + (colVerif && colVerif !== '— Select —' ? colVerif : 'not specified')
+            + (colRemarks ? '. Notes: ' + colRemarks : '') + '.';
+        } else {
+          colText = 'The loan is ' + (loanCl && loanCl !== '— Select —' ? loanCl.toLowerCase() : 'unsecured') + '. No collateral property has been indicated for this application.';
         }
 
+        // IV. ESRM narrative
+        var esrmText = 'The borrower\u2019s sources of income'
+          + (occup && occup !== '' ? ', primarily from ' + occup + ',' : '')
+          + ' have been assessed for environmental and social risk under the Bank\u2019s ESRM framework.'
+          + ' Environmental risk is classified as: ' + (esrmEnv && esrmEnv !== '— Select —' ? esrmEnv : 'not assessed')
+          + '. Social risk is assessed as: ' + (esrmSoc && esrmSoc !== '— Select —' ? esrmSoc : 'not assessed')
+          + '. Overall ESRM rating: '
+          + (esrmRating && esrmRating !== '— Select —' ? esrmRating : 'not assessed') + '.'
+          + (esrmNotes ? ' ' + esrmNotes : '');
+
+        // V. CREDIT SCORE SUMMARY
+        var scoreText = 'Based on the credit scoring model (RBCC 4.02 Rev.16), the borrower obtained a total credit score of '
+          + sc + ' out of 100, with a score-based rating of ' + rt + '.'
+          + ' Quantitative score: ' + getQSub() + '/50; Qualitative score: ' + getQLSub() + '/50.'
+          + (creditNotes ? ' ' + creditNotes : '');
+
+        // VI. COMPLIANCE
+        var compText = 'KYC verification status: ' + (kyc && kyc !== '— Select —' ? kyc : 'not indicated') + '.'
+          + ' AML/KYC screening: ' + (aml && aml !== '— Select —' ? aml : 'not indicated') + '.'
+          + (compNotes ? ' ' + compNotes : '');
+
+        // VII. RECOMMENDATION
+        var recText = 'Based on the foregoing evaluation, the Background Investigation and Credit Scoring Unit'
+          + (recFinal && recFinal !== '— Select —' ? ' recommends ' + recFinal + ' of the loan application' : ' submits this report for the Board\u2019s consideration')
+          + (recAmt && recAmt !== 'PHP —' ? ' in the amount of ' + recAmt : '')
+          + '. Risk classification: ' + (riskCl && riskCl !== '— Select —' ? riskCl : 'not specified')
+          + '. Loan processing recommendation: ' + (loanRec && loanRec !== '— Select —' ? loanRec : 'not specified') + '.'
+          + (justif ? ' ' + justif : '');
+
+        // ── Assemble Document ─────────────────────────────────────────────────
         var doc = new D.Document({
-          styles:{ default:{ document:{ run:{ font:'Calibri', size:20 } } } },
+          styles:{ default:{ document:{ run:{ font:'Calibri', size:22 } } } },
           sections:[{
-            properties:{ page:{ size:{ width:12240, height:15840 }, margin:{ top:900, right:1080, bottom:900, left:1080 } } },
+            properties:{ page:{ size:{ width:12240, height:15840 }, margin:{ top:1080, right:1080, bottom:1080, left:1080 } } },
             children:[
-              // ── Cover Header ──────────────────────────────────
-              new D.Paragraph({ alignment:D.AlignmentType.CENTER, spacing:{after:40}, children:[new D.TextRun({ text:'RURAL BANK OF CALBAYOG CITY, INC.', bold:true, size:32, font:'Calibri', color:'071a0e' })] }),
-              new D.Paragraph({ alignment:D.AlignmentType.CENTER, spacing:{after:40}, children:[new D.TextRun({ text:'Background Investigation, Checking & Credit Scoring Report', size:24, font:'Calibri', color:'1a5c35' })] }),
-              new D.Paragraph({ alignment:D.AlignmentType.CENTER, spacing:{after:60}, children:[new D.TextRun({ text:'82 T. Bugallon St., Brgy. Central, Calbayog City, W. Samar 6710  |  BSP Lic: RB-0567', size:18, font:'Calibri', color:'666666' })] }),
-              new D.Paragraph({ alignment:D.AlignmentType.CENTER, spacing:{after:80}, children:[new D.TextRun({ text:'RBCC 4.02 Rev.16  |  CONFIDENTIAL', size:18, font:'Calibri', color:'888888', italics:true })] }),
+
+              // ── Letterhead ───────────────────────────────────────────────
+              new D.Paragraph({ alignment:D.AlignmentType.CENTER, spacing:{after:40}, children:[new D.TextRun({ text:'RURAL BANK OF CALBAYOG CITY, INC.', bold:true, size:28, font:'Calibri', color:'071a0e' })] }),
+              new D.Paragraph({ alignment:D.AlignmentType.CENTER, spacing:{after:40}, children:[new D.TextRun({ text:'82 T. Bugallon St., Brgy. Central, Calbayog City, W. Samar 6710  |  BSP Lic: RB-0567', size:18, font:'Calibri', color:'555555' })] }),
               divider(),
+              spacer(60),
 
-              // ── Ref / Date ────────────────────────────────────
-              tbl4([ row4('Reference No.', val('fR'), 'Date', val('fDt')) ]),
-              new D.Paragraph({ spacing:{after:120} }),
+              // ── Report Title ─────────────────────────────────────────────
+              new D.Paragraph({ alignment:D.AlignmentType.CENTER, spacing:{after:60}, children:[new D.TextRun({ text:'CREDIT INVESTIGATION AND BACKGROUND INVESTIGATION REPORT', bold:true, size:24, font:'Calibri', color:'071a0e' })] }),
+              new D.Paragraph({ alignment:D.AlignmentType.CENTER, spacing:{after:80}, children:[new D.TextRun({ text:'RBCC 4.02 Rev.16  —  CONFIDENTIAL', size:18, font:'Calibri', color:'888888', italics:true })] }),
+              thinLine(),
+              spacer(80),
 
-              // ── Section 1 ─────────────────────────────────────
-              hdr('1','Applicant / Borrower Information'),
+              // ── Reference block ──────────────────────────────────────────
               tbl4([
-                row4('Applicant Name', nm, 'TIN', val('fT')),
-                row4('Civil Status', val('fCv'), 'Spouse', val('fSp')),
-                row4('Date of Birth', val('fDOB'), 'Contact No.', val('fPh')),
-                row4('Address', val('fAd'), 'Housing', val('fHs')),
-                row4('Years at Address', val('fYA'), 'Co-Maker / Guarantor', val('fCM')),
-                row4('Source of Repayment', val('fSR'), 'Account Officer', val('fAO')),
+                row4('Reference No.', refNo, 'Date', repDate),
+                row4('Applicant', nm, 'TIN', tin),
+                row4('Loan Amount', loanAmt, 'Term', loanTerm),
+                row4('Interest Rate', loanRate, 'Purpose', loanPurp),
+                row4('Classification', loanCl, 'Account Officer', aoName),
               ]),
-              new D.Paragraph({ spacing:{after:120} }),
+              spacer(120),
 
-              // ── Section 2 ─────────────────────────────────────
-              hdr('2','Loan Details'),
+              // ── Summary Table (Board Memo Style) ────────────────────────
+              tbl2([
+                row2('Applicant', nm),
+                row2('Amount', loanAmt),
+                row2('Term', loanTerm),
+                row2('Interest Rate', loanRate),
+                row2('Collateral Type & Security', loanCl),
+                row2('PEP Rating', 'Low'),
+                row2('DOSRI', 'No'),
+                row2('AFRD', 'No'),
+                row2('ESRM Rating', esrmRating && esrmRating !== '— Select —' ? esrmRating : '—'),
+                row2('Purpose', loanPurp),
+              ]),
+              spacer(200),
+
+              // ── Intro paragraph ──────────────────────────────────────────
+              para(introText),
+              spacer(80),
+
+              // ── I. BORROWER PROFILE ──────────────────────────────────────
+              secHdr('I', 'BORROWER PROFILE'),
+              para(profileText1),
+              profileText2 ? para(profileText2) : spacer(0),
+              para(profileText3),
+
+              // ── II. FINANCIAL CAPACITY ───────────────────────────────────
+              secHdr('II', 'FINANCIAL CAPACITY AND CREDIT ANALYSIS'),
+              para(finText1),
+              para(finText2),
+              para(finText3),
+              finText4 ? para(finText4) : spacer(0),
+
+              // Financial summary mini-table
               tbl4([
-                row4('Loan Purpose', val('fPu'), 'Classification', val('fCl')),
-                row4('Loan Amount', php('fAm'), 'Loan Term', val('fTm')),
-                row4('Interest Rate', val('fRt'), 'Borrower Category', val('fBT')),
-                row4('Repayment Mode', val('fRM'), '', ''),
+                row4('Gross Monthly Income', grossInc, 'Other Income', otherInc),
+                row4('Total Monthly Income', totalInc, 'Living Expenses', livExp),
+                row4('Net Monthly Surplus', netSurp, 'Monthly Amortization', monthAmort),
+                row4('DSCR', dscr||'—', 'DTI Ratio', dti||'—'),
+                row4('CIC Report', cicRpt||'—', 'Payment Behavior', payBeh||'—'),
               ]),
-              new D.Paragraph({ spacing:{after:120} }),
+              spacer(80),
 
-              // ── Section 3 ─────────────────────────────────────
-              hdr('3','Credit Background Findings'),
-              tbl4([
-                row4('CIC Bureau Report', val('fCIC'), 'Payment Behavior', val('fPB')),
-                row4('Monthly Income', php('fIn'), 'Total Monthly Debt', php('fDb')),
-                row4('DTI Ratio', val('fDTI'), 'Occupation', val('fOc')),
-              ]),
-              new D.Paragraph({ spacing:{after:80} }),
-              para('Adverse Findings / Red Flags: ' + val('fAF')),
-              new D.Paragraph({ spacing:{after:120} }),
+              // ── III. COLLATERAL SECURITY ─────────────────────────────────
+              secHdr('III', 'COLLATERAL SECURITY'),
+              para(colText),
 
-              // ── Section 4 ─────────────────────────────────────
-              hdr('4','Credit Score Summary — RBCC 4.02 Rev.16'),
+              // ── IV. ESRM ASSESSMENT ──────────────────────────────────────
+              secHdr('IV', 'ENVIRONMENTAL AND SOCIAL RISK MANAGEMENT (ESRM) ASSESSMENT'),
+              para(esrmText),
+
+              // ── V. CREDIT SCORE SUMMARY ──────────────────────────────────
+              secHdr('V', 'CREDIT SCORE SUMMARY'),
+              para(scoreText),
               tbl4([
                 row4('Quantitative Score (50%)', getQSub() + ' / 50', 'Qualitative Score (50%)', getQLSub() + ' / 50'),
                 row4('TOTAL CREDIT SCORE', sc, 'Score-Based Rating', rt),
               ]),
-              new D.Paragraph({ spacing:{after:120} }),
+              spacer(80),
 
-              // ── Section 5 ─────────────────────────────────────
-              hdr('5','Compliance, KYC & AMLA'),
+              // ── VI. COMPLIANCE, KYC & AMLA ───────────────────────────────
+              secHdr('VI', 'COMPLIANCE, KYC & AMLA'),
+              para(compText),
+
+              // ── VII. RECOMMENDATION ──────────────────────────────────────
+              secHdr('VII', 'FINAL RECOMMENDATION'),
+              para(recText),
+              spacer(80),
               tbl4([
-                row4('KYC Verification', val('fKYC'), 'AML/KYC Status', val('fAML')),
-                row4('ESRM Env. Risk', val('fESRMenv'), 'ESRM Social Risk', val('fESRMsoc')),
-                row4('ESRM Overall Rating', val('fESRMrating'), 'Compliance Officer', val('fCompOfficer')),
-                row4('Compliance Date', val('fCompDate'), '', ''),
+                row4('Investigator Recommendation', recFinal||'—', 'Recommended Amount', recAmt),
+                row4('Risk Classification', riskCl||'—', 'Loan Processing Rec.', loanRec||'—'),
               ]),
-              new D.Paragraph({ spacing:{after:80} }),
-              para('ESRM Notes: ' + val('fESRMnotes')),
-              para('Compliance Findings: ' + val('fCompNotes')),
-              new D.Paragraph({ spacing:{after:120} }),
 
-              // ── Section 6 ─────────────────────────────────────
-              hdr('6','Credit Evaluation'),
-              para(val('fCN')),
-              tbl2([ row2('Credit Evaluation Head', val('fCO')) ]),
-              new D.Paragraph({ spacing:{after:120} }),
-
-              // ── Section 7 ─────────────────────────────────────
-              hdr('7','Final Recommendation'),
-              tbl4([
-                row4('Investigator Recommendation', val('fRc'), 'Recommended Amount', php('fRA')),
-                row4('Risk Classification', val('fRiskClass'), 'Loan Processing Rec.', val('fLoanRec')),
-              ]),
-              new D.Paragraph({ spacing:{after:80} }),
-              para('Justification: ' + val('fJs')),
-              new D.Paragraph({ spacing:{after:400} }),
-
-              // ── Signature Block ───────────────────────────────
+              // ── Signature Block ───────────────────────────────────────────
+              spacer(400),
               divider(),
               new D.Paragraph({
-                spacing:{after:40},
+                spacing:{after:60},
                 children:[
                   new D.TextRun({ text:'Prepared by: ', bold:true, size:20, font:'Calibri' }),
-                  new D.TextRun({ text:val('fBIInv') + '   |   Date: ' + val('fBIInvDt'), size:20, font:'Calibri' }),
+                  new D.TextRun({ text:(invName||'___________________________') + '     Date: ' + (invDate||'____________'), size:20, font:'Calibri' }),
                 ]
               }),
-              new D.Paragraph({ spacing:{after:480} }),
+              spacer(400),
 
-              // Sig lines in a table for alignment
+              // Three-column signature table
               new D.Table({ width:{ size:9360, type:D.WidthType.DXA }, rows:[
                 new D.TableRow({ children:[
-                  new D.TableCell({ borders:{ top:brd, bottom:{style:D.BorderStyle.NONE}, left:{style:D.BorderStyle.NONE}, right:{style:D.BorderStyle.NONE} }, width:{size:3120,type:D.WidthType.DXA}, children:[new D.Paragraph({ spacing:{after:40}, children:[new D.TextRun({ text:'Account / Loan Officer', bold:true, size:18, font:'Calibri', color:'444444' })] })] }),
-                  new D.TableCell({ borders:{ top:brd, bottom:{style:D.BorderStyle.NONE}, left:{style:D.BorderStyle.NONE}, right:{style:D.BorderStyle.NONE} }, width:{size:3120,type:D.WidthType.DXA}, children:[new D.Paragraph({ spacing:{after:40}, children:[new D.TextRun({ text:'Credit Evaluation Head', bold:true, size:18, font:'Calibri', color:'444444' })] })] }),
-                  new D.TableCell({ borders:{ top:brd, bottom:{style:D.BorderStyle.NONE}, left:{style:D.BorderStyle.NONE}, right:{style:D.BorderStyle.NONE} }, width:{size:3120,type:D.WidthType.DXA}, children:[new D.Paragraph({ spacing:{after:40}, children:[new D.TextRun({ text:'President & CEO', bold:true, size:18, font:'Calibri', color:'444444' })] })] }),
+                  new D.TableCell({ borders:{ top:brd, bottom:brdNone, left:brdNone, right:brdNone }, width:{size:3120,type:D.WidthType.DXA}, margins:mgSm, children:[new D.Paragraph({ spacing:{after:40}, children:[new D.TextRun({ text:'Account / Loan Officer', bold:true, size:18, font:'Calibri', color:'333333' })] })] }),
+                  new D.TableCell({ borders:{ top:brd, bottom:brdNone, left:brdNone, right:brdNone }, width:{size:3120,type:D.WidthType.DXA}, margins:mgSm, children:[new D.Paragraph({ spacing:{after:40}, children:[new D.TextRun({ text:'Credit Evaluation Head', bold:true, size:18, font:'Calibri', color:'333333' })] })] }),
+                  new D.TableCell({ borders:{ top:brd, bottom:brdNone, left:brdNone, right:brdNone }, width:{size:3120,type:D.WidthType.DXA}, margins:mgSm, children:[new D.Paragraph({ spacing:{after:40}, children:[new D.TextRun({ text:'President & CEO', bold:true, size:18, font:'Calibri', color:'333333' })] })] }),
                 ]}),
               ]}),
-
-              new D.Paragraph({ spacing:{before:200}, alignment:D.AlignmentType.CENTER, children:[new D.TextRun({ text:'CONFIDENTIAL — For internal use only — Rural Bank of Calbayog City, Inc.', size:16, font:'Calibri', color:'999999', italics:true })] }),
+              spacer(120),
+              new D.Paragraph({ alignment:D.AlignmentType.CENTER, spacing:{before:120}, children:[new D.TextRun({ text:'CONFIDENTIAL \u2014 For internal use only \u2014 Rural Bank of Calbayog City, Inc.', size:16, font:'Calibri', color:'999999', italics:true })] }),
             ]
           }]
         });
@@ -4584,9 +4917,68 @@ function printBICSR() {
       if (canvas) {
         var ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.dataset.eApproved = '';
       }
       var st = document.getElementById('sigStatus' + n);
-      if (st) st.textContent = '';
+      if (st) { st.textContent = ''; st.style.background = ''; st.style.color = ''; st.style.padding = ''; st.style.borderRadius = ''; }
+    }
+
+    function eApproveSig(n) {
+      var nameEl;
+      if (n === 'BI') nameEl = document.getElementById('fBIInv');
+      else if (n === 'CO') nameEl = document.getElementById('fCompOfficer');
+      else nameEl = document.getElementById('sigName' + n);
+      var st = document.getElementById('sigStatus' + n);
+      var canvas = document.getElementById('sigPad' + n);
+      var name = nameEl ? nameEl.value.trim() : '';
+      if (!name && n !== 3) {
+        toast('Please enter your name before approving electronically');
+        if (nameEl) nameEl.focus();
+        return;
+      }
+      var now = new Date();
+      var dateStr = now.toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+      var timeStr = now.toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      if (canvas) {
+        var ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.globalAlpha = 0.10;
+        ctx.fillStyle = '#1a6fa8';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
+        ctx.strokeStyle = '#1a6fa8';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(4, 4, canvas.width - 8, canvas.height - 8);
+        ctx.fillStyle = '#0d1610';
+        ctx.textAlign = 'center';
+        if (name) {
+          ctx.font = 'bold 12px DM Sans, sans-serif';
+          ctx.fillText('Digitally signed by', canvas.width / 2, 28);
+          ctx.font = 'bold 11px DM Sans, sans-serif';
+          ctx.fillStyle = '#1a6fa8';
+          ctx.fillText(name, canvas.width / 2, 46);
+        } else {
+          ctx.font = 'bold 11px DM Sans, sans-serif';
+          ctx.fillText('Digitally signed', canvas.width / 2, 38);
+        }
+        ctx.font = '9px DM Sans, sans-serif';
+        ctx.fillStyle = '#3a5c48';
+        ctx.fillText(dateStr + '  |  ' + timeStr, canvas.width / 2, 68);
+        canvas.dataset.eApproved = 'true';
+      }
+      if (st) {
+        st.innerHTML = '\u2705 <strong>Digitally signed' + (name ? ' by ' + name : '') + '</strong><br>'
+          + '<span style="font-size:0.7rem;opacity:0.85;">' + dateStr + ' &nbsp;|&nbsp; ' + timeStr + '</span>';
+        st.style.background = '#e2f0fc';
+        st.style.color = '#1a6fa8';
+        st.style.padding = '6px 10px';
+        st.style.borderRadius = '6px';
+        st.style.marginTop = '6px';
+        st.style.display = 'block';
+        st.style.lineHeight = '1.5';
+      }
+      toast('\u26A1 Digital signature recorded' + (name ? ' for ' + name : ''));
     }
 
     function saveSig(n) {
@@ -6347,6 +6739,82 @@ function cbfRemoveFile() {
         </table>
       </div>
     </div><!-- /pg4 -->
+
+    <!-- ══════════════════════════════════════════════
+     PAGE 5-BI: Background Investigation — Income/Ratios + Collateral Property
+     ══════════════════════════════════════════════ -->
+    <div class="pg" id="pg5bi">
+
+      <!-- Section A: Income / Ratios -->
+      <div class="gh" style="padding:3pt 8pt;font-size:9pt;font-weight:700;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+        A.&nbsp;&nbsp;INCOME &amp; FINANCIAL RATIOS
+        <span style="float:right;font-size:6.5pt;font-weight:400;">Ref: <span id="bp_bi_ref"></span></span>
+      </div>
+
+      <table style="border-collapse:collapse;width:100%;border:0.75pt solid #000;border-top:0;">
+        <tr>
+          <td style="padding:1pt 4pt;width:25%;"><b>Gross Monthly Income:</b><br><span class="fl" id="bp_bi_grossinc"></span></td>
+          <td style="padding:1pt 4pt;width:25%;"><b>Other Income / Sideline:</b><br><span class="fl" id="bp_bi_otherinc"></span></td>
+          <td style="padding:1pt 4pt;width:25%;"><b>Total Monthly Income:</b><br><span class="fl" id="bp_bi_totalinc" style="font-weight:700;"></span></td>
+          <td style="padding:1pt 4pt;width:25%;"><b>Monthly Living Expenses:</b><br><span class="fl" id="bp_bi_livexp"></span></td>
+        </tr>
+        <tr>
+          <td style="padding:1pt 4pt;"><b>Net Monthly Surplus:</b><br><span class="fl" id="bp_bi_surplus" style="font-weight:700;"></span></td>
+          <td style="padding:1pt 4pt;"><b>Monthly Loan Amortization:</b><br><span class="fl" id="bp_bi_amort"></span></td>
+          <td style="padding:1pt 4pt;"><b>DSCR:</b><br><span class="fl" id="bp_bi_dscr" style="font-weight:700;"></span></td>
+          <td style="padding:1pt 4pt;"><b>Income-to-Loan Ratio:</b><br><span class="fl" id="bp_bi_ilr" style="font-weight:700;"></span></td>
+        </tr>
+        <tr>
+          <td colspan="2" style="padding:1pt 4pt;"><b>DTI Ratio:</b><br><span class="fl" id="bp_bi_dti" style="font-weight:700;"></span></td>
+          <td colspan="2" style="padding:1pt 4pt;font-size:6pt;color:#555;font-style:italic;">
+            DSCR &ge;1.20 = Adequate &bull; Income-to-Loan &ge;3&times; = Good &bull; DTI &le;40% = Acceptable
+          </td>
+        </tr>
+      </table>
+
+      <!-- Section B: Collateral Property -->
+      <div class="gh" style="padding:3pt 8pt;font-size:9pt;font-weight:700;margin-top:4pt;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+        B.&nbsp;&nbsp;COLLATERAL PROPERTY
+      </div>
+
+      <table style="border-collapse:collapse;width:100%;border:0.75pt solid #000;border-top:0;">
+        <tr>
+          <td colspan="4" style="padding:2pt 4pt;">
+            <b>Property Address / Description:</b><br>
+            <span id="bp_col_addr" style="display:block;min-height:10pt;font-size:6.5pt;"></span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:1pt 4pt;width:25%;"><b>Property Type:</b><br><span class="fl" id="bp_col_type"></span></td>
+          <td style="padding:1pt 4pt;width:25%;"><b>Title Type:</b><br><span class="fl" id="bp_col_titletype"></span></td>
+          <td style="padding:1pt 4pt;width:25%;"><b>Title / Document No.:</b><br><span class="fl" id="bp_col_titleno"></span></td>
+          <td style="padding:1pt 4pt;width:25%;"><b>Registered Owner:</b><br><span class="fl" id="bp_col_owner"></span></td>
+        </tr>
+        <tr>
+          <td style="padding:1pt 4pt;"><b>Lot Area (sqm):</b><br><span class="fl" id="bp_col_lotarea"></span></td>
+          <td style="padding:1pt 4pt;"><b>Floor Area (sqm):</b><br><span class="fl" id="bp_col_floorarea"></span></td>
+          <td style="padding:1pt 4pt;"><b>Appraised / Market Value:</b><br><span class="fl" id="bp_col_apprval" style="font-weight:700;"></span></td>
+          <td style="padding:1pt 4pt;"><b>LTV Ratio:</b><br><span class="fl" id="bp_col_ltv" style="font-weight:700;"></span></td>
+        </tr>
+        <tr>
+          <td style="padding:1pt 4pt;"><b>Collateral Condition:</b><br><span class="fl" id="bp_col_cond"></span></td>
+          <td style="padding:1pt 4pt;"><b>Verification Status:</b><br><span class="fl" id="bp_col_verif"></span></td>
+          <td style="padding:1pt 4pt;"><b>Name of Appraiser / Inspector:</b><br><span class="fl" id="bp_col_appraiser"></span></td>
+          <td style="padding:1pt 4pt;"><b>Date of Appraisal:</b><br><span class="fl" id="bp_col_apprdate"></span></td>
+        </tr>
+        <tr>
+          <td colspan="4" style="padding:2pt 4pt;">
+            <b>Collateral Remarks / Encumbrances / Annotations:</b><br>
+            <span id="bp_col_remarks" style="display:block;min-height:14pt;font-size:6.5pt;line-height:1.4;"></span>
+          </td>
+        </tr>
+      </table>
+
+      <div style="text-align:center;font-size:5.5pt;color:#888;margin-top:3pt;font-style:italic;">
+        STRICTLY CONFIDENTIAL &mdash; For Internal Use Only &mdash; Rural Bank of Calbayog City, Inc. &mdash; BSP Lic. RB-0567 &mdash; RBCC 4.02 Rev.16
+      </div>
+
+    </div><!-- /pg5bi -->
 
     <!-- ══════════════════════════════════════════════
      PAGE 5: Credit Background Findings
