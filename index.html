@@ -3650,6 +3650,17 @@ function printBICSR() {
       sv('fAm', snap.fieldLoanAmount ? snap.fieldLoanAmount.replace(/[^0-9.]/g,'') : '');
       sv('fTm', snap.fieldLoanTerm   ? snap.fieldLoanTerm + ' months' : '');
 
+      // Interest Rate
+      sv('fRt', snap.fieldLoanRate || snap.fieldInterestRate || '');
+
+      // Repayment Mode
+      var freqMap = {
+        'Weekly':'Weekly','Monthly':'Monthly','Quarterly':'Quarterly',
+        'Annually':'Annually','Lump sum':'Lump Sum'
+      };
+      var freq = snap['radio_loanFrequency'] || '';
+      if (freq) ss('fRM', freqMap[freq] || freq);
+
       // Loan purpose
       var purposeMap = {
         'purpBusiness':  'Agricultural/Business',
@@ -3678,6 +3689,7 @@ function printBICSR() {
       if      (btype === 'Individual')   ss('fBT','Individual–Personal');
       else if (btype === 'Corporation')  ss('fBT','Corporation');
       else if (btype === 'Cooperative')  ss('fBT','Cooperative');
+      else if (btype === 'Sole Proprietor') ss('fBT','Sole Proprietor');
 
       // Collateral row 1
       var collInputs = document.querySelectorAll('#colS .dt tbody tr:first-child td input');
@@ -3685,6 +3697,39 @@ function printBICSR() {
       if (collInputs[1]) collInputs[1].value = snap.coll1Loc   || '';
       if (collInputs[2]) collInputs[2].value = snap.coll1Title || '';
       if (collInputs[3]) collInputs[3].value = snap.coll1Area  || '';
+
+      // ── Section 3: Background Investigation ─────────────────
+      // Occupation / Employer
+      sv('fOc', snap.fieldEmployer || snap.fieldOccupation || snap.fieldBizName || '');
+
+      // Monthly Income — try all possible field names
+      var incomeVal = snap.fieldMonthlyIncome || snap.fieldSalary ||
+                      snap.fieldIncome || snap['Monthly Income (PHP)'] || '';
+      if (incomeVal) sv('fIn', String(incomeVal).replace(/[^0-9.]/g,''));
+
+      // Years in Job/Business
+      sv('fYr', snap.fieldYearsJob || '');
+
+      // Source of Repayment — also populate the named field
+      sv('fSR', snap.fieldPaySource || '');
+
+      // Co-maker — also populate by ID if it exists
+      var cobFull = [snap.cobFirstName, snap.cobMiddleName, snap.cobLastName]
+        .filter(Boolean).join(' ');
+      sv('fCM', cobFull || '');
+
+      // Also find co-maker/source fields by placeholder for unnamed inputs
+      document.querySelectorAll('#vR .bd .fi input:not([id]):not([type="date"]):not([type="number"]):not([type="file"])').forEach(function(inp) {
+        var ph = (inp.placeholder || '').toLowerCase();
+        if (ph.includes('co-maker') || ph.includes('guarantor')) inp.value = cobFull || '';
+        if (ph.includes('source') || ph.includes('repayment'))   inp.value = snap.fieldPaySource || '';
+        if (ph.includes('occupation') || ph.includes('employer')) inp.value = snap.fieldEmployer || snap.fieldBizName || '';
+        if (ph.includes('years') && ph.includes('job'))           inp.value = snap.fieldYearsJob || '';
+      });
+
+      // Trigger DTI calculation if income and debt are set
+      var fInEl = document.getElementById('fIn');
+      if (fInEl) fInEl.dispatchEvent(new Event('input'));
 
       // ── Section 7: Credit Evaluation ────────────────────────
       sv('fCO', snap.fieldInterviewerName || '');
