@@ -2110,7 +2110,7 @@ function printBICSR() {
                 <option>Living with relatives</option>
               </select></div>
             <div class="fi"><label>Account Officer</label><input id="fAO" placeholder="Enter officer name..."></div>
-            <div class="fi"><label>Co-Maker / Guarantor</label><input value=""></div>
+            <div class="fi"><label>Co-Maker / Guarantor</label><input id="fCM" value=""></div>
             <div class="fi"><label>Source of Repayment</label><input value=""></div>
           </div>
           <div class="sh">Supporting Documents <span class="tg">&#x1F4C1; Upload to Google Drive</span></div>
@@ -2198,7 +2198,7 @@ function printBICSR() {
                 <option>Corporation</option>
                 <option>Cooperative</option>
               </select></div>
-            <div class="fi"><label>Amount (&#x20B1;)</label><input type="number" id="fAm" value=""></div>
+            <div class="fi"><label>Amount (&#x20B1;)</label><input type="text" id="fAm" inputmode="decimal" data-amount="true" value=""></div>
             <div class="fi"><label>Term</label><input id="fTm" value=""></div>
             <div class="fi"><label>Rate</label><input id="fRt" value=""></div>
             <div class="fi"><label>Repayment</label><select>
@@ -2324,7 +2324,7 @@ function printBICSR() {
                 <option>OFW</option>
                 <option>Business owner</option>
               </select></div>
-            <div class="fi"><label>Income (&#x20B1;/mo)</label><input type="number" id="fIn" value=""></div>
+            <div class="fi"><label>Income (&#x20B1;/mo)</label><input type="text" id="fIn" inputmode="decimal" data-amount="true" value=""></div>
             <div class="fi"><label>Years</label><input type="number" value=""></div>
           </div>
 
@@ -2707,7 +2707,7 @@ function printBICSR() {
                   <option>Occasional delays</option>
                   <option>Frequent delays</option>
                 </select></div>
-              <div class="fi"><label>Total Debt (&#x20B1;/mo)</label><input type="number" id="fDb" value=""></div>
+              <div class="fi"><label>Total Debt (&#x20B1;/mo)</label><input type="text" id="fDb" inputmode="decimal" data-amount="true" value=""></div>
               <div class="fi"><label>DTI Ratio</label><input id="fDTI" value="" readonly class="ro"></div>
             </div>
             <div class="fi full" style="margin-top:8px">
@@ -3350,7 +3350,7 @@ function printBICSR() {
                 <option value="DEFER">&#x1F504; DEFER</option>
                 <option value="DECLINE">&#x274C; DECLINE</option>
               </select></div>
-            <div class="fi"><label>Amount (&#x20B1;)</label><input type="number" id="fRA" value=""></div>
+            <div class="fi"><label>Amount (&#x20B1;)</label><input type="text" id="fRA" inputmode="decimal" data-amount="true" value=""></div>
           </div>
           <div class="fg c2" style="margin-top:6px">
             <div class="fi"><label>Credit Evaluation Head Recommendation</label><select>
@@ -3540,7 +3540,7 @@ function printBICSR() {
 
       // ── STEP 1: Clear ALL hardcoded sample data first ───────
       // Ensures fields with no Interview data show blank, not old placeholders
-      ['fN','fT','fAd','fPh','fSp','fAO','fAm','fTm','fCO'].forEach(function(id) {
+      ['fN','fT','fAd','fPh','fSp','fAO','fAm','fTm','fCO','fCM','fSR','fOc','fIn','fRt'].forEach(function(id) {
         var el = document.getElementById(id);
         if (el) el.value = '';
       });
@@ -3647,8 +3647,8 @@ function printBICSR() {
       });
 
       // ── Section 2: Loan Details ──────────────────────────────
-      sv('fAm', snap.fieldLoanAmount ? snap.fieldLoanAmount.replace(/[^0-9.]/g,'') : '');
-      sv('fTm', snap.fieldLoanTerm   ? snap.fieldLoanTerm + ' months' : '');
+      setAmount('fAm', snap.fieldLoanAmount || '');
+      sv('fTm', snap.fieldLoanTerm ? snap.fieldLoanTerm + ' months' : '');
 
       // Interest Rate
       sv('fRt', snap.fieldLoanRate || snap.fieldInterestRate || '');
@@ -3705,7 +3705,7 @@ function printBICSR() {
       // Monthly Income — try all possible field names
       var incomeVal = snap.fieldMonthlyIncome || snap.fieldSalary ||
                       snap.fieldIncome || snap['Monthly Income (PHP)'] || '';
-      if (incomeVal) sv('fIn', String(incomeVal).replace(/[^0-9.]/g,''));
+      if (incomeVal) setAmount('fIn', incomeVal);
 
       // Years in Job/Business
       sv('fYr', snap.fieldYearsJob || '');
@@ -3716,6 +3716,7 @@ function printBICSR() {
       // Co-maker — also populate by ID if it exists
       var cobFull = [snap.cobFirstName, snap.cobMiddleName, snap.cobLastName]
         .filter(Boolean).join(' ');
+      if (snap.cobSuffix) cobFull += (cobFull ? ', ' : '') + snap.cobSuffix;
       sv('fCM', cobFull || '');
 
       // Also find co-maker/source fields by placeholder for unnamed inputs
@@ -3773,7 +3774,7 @@ function printBICSR() {
         address:         gv('fAd'),
         phone:           gv('fPh'),
         spouse:          gv('fSp'),
-        loanAmount:      gv('fAm'),
+        loanAmount:      gv('fAm').replace(/,/g,''),
         loanTerm:        gv('fTm'),
         kycStatus:       gv('fKYC'),
         amlStatus:       gv('fAML'),
@@ -3819,7 +3820,7 @@ function printBICSR() {
       var other   = parseFloat(document.getElementById('fOtherInc')    ? document.getElementById('fOtherInc').value    : 0) || 0;
       var livExp  = parseFloat(document.getElementById('fLivExp')       ? document.getElementById('fLivExp').value      : 0) || 0;
       var amort   = parseFloat(document.getElementById('fMonthlyAmort') ? document.getElementById('fMonthlyAmort').value : 0) || 0;
-      var loanAmt = parseFloat(document.getElementById('fAm')           ? document.getElementById('fAm').value          : 0) || 0;
+      var loanAmt = getRawAmount('fAm');
       var apprVal = parseFloat(document.getElementById('fColApprVal')   ? document.getElementById('fColApprVal').value  : 0) || 0;
 
       // ── Income Ratios ──────────────────────────────────────────
@@ -5572,7 +5573,7 @@ function cbfPopulateSummary(rec) {
 
     // Auto-fill Total Debt field from CBF monthly total
     var fDb = document.getElementById('fDb');
-    if (fDb && totMon > 0) { fDb.value = totMon.toFixed(2); fDb.dispatchEvent(new Event('input')); }
+    if (fDb && totMon > 0) { fDb.value = fmtAmount(totMon.toFixed(2)); fDb.dispatchEvent(new Event('input')); }
   }
 }
 
@@ -7027,4 +7028,50 @@ function cbfRemoveFile() {
 
   </div>
 
+<script>
+// ── Amount Field Formatter ────────────────────────────────────────────────────
+function fmtAmount(val) {
+  if (!val && val !== 0) return '';
+  var raw = String(val).replace(/[^0-9.]/g, '');
+  var parts = raw.split('.');
+  var intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  var decPart = parts.length > 1 ? '.' + parts[1].slice(0, 2) : '';
+  return intPart + decPart;
+}
+
+function getRawAmount(id) {
+  var el = document.getElementById(id);
+  if (!el) return 0;
+  return parseFloat(el.value.replace(/[^0-9.]/g, '')) || 0;
+}
+
+function setAmount(id, val) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var num = parseFloat(String(val).replace(/[^0-9.]/g, '')) || 0;
+  el.value = num > 0 ? fmtAmount(num.toFixed(2)) : '';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('input[data-amount="true"]').forEach(function(inp) {
+    // Format on blur
+    inp.addEventListener('blur', function() {
+      var raw = this.value.replace(/[^0-9.]/g, '');
+      var num = parseFloat(raw) || 0;
+      this.value = num > 0 ? fmtAmount(num.toFixed(2)) : '';
+      if (this.id === 'fIn' || this.id === 'fDb') {
+        this.dispatchEvent(new Event('input'));
+      }
+    });
+    // Strip formatting on focus for easy editing
+    inp.addEventListener('focus', function() {
+      this.value = this.value.replace(/[^0-9.]/g, '');
+    });
+    // Allow only numeric keys while typing
+    inp.addEventListener('keypress', function(e) {
+      if (!/[\d.]/.test(e.key)) e.preventDefault();
+    });
+  });
+});
+</script>
 </html>
