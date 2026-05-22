@@ -2102,7 +2102,7 @@ function printBICSR() {
             <div class="fi full"><label>Address</label><input id="fAd"
                 value=""></div>
             <div class="fi"><label>Contact</label><input id="fPh" value=""></div>
-            <div class="fi"><label>Years at Address</label><input type="number" value=""></div>
+            <div class="fi"><label>Years at Address</label><input type="number" id="fYA" value=""></div>
             <div class="fi"><label>Housing</label><select id="fHs">
                 <option value="">— Select —</option>
                 <option>Owned</option>
@@ -2111,7 +2111,7 @@ function printBICSR() {
               </select></div>
             <div class="fi"><label>Account Officer</label><input id="fAO" placeholder="Enter officer name..."></div>
             <div class="fi"><label>Co-Maker / Guarantor</label><input id="fCM" value=""></div>
-            <div class="fi"><label>Source of Repayment</label><input value=""></div>
+            <div class="fi"><label>Source of Repayment</label><input id="fSR" value=""></div>
           </div>
           <div class="sh">Supporting Documents <span class="tg">&#x1F4C1; Upload to Google Drive</span></div>
 
@@ -2201,7 +2201,7 @@ function printBICSR() {
             <div class="fi"><label>Amount (&#x20B1;)</label><input type="text" id="fAm" inputmode="decimal" data-amount="true" value=""></div>
             <div class="fi"><label>Term</label><input id="fTm" value=""></div>
             <div class="fi"><label>Rate</label><input id="fRt" value=""></div>
-            <div class="fi"><label>Repayment</label><select>
+            <div class="fi"><label>Repayment</label><select id="fRM">
                 <option value="">— Select —</option>
                 <option>Monthly amortization</option>
                 <option>Lump sum at maturity</option>
@@ -3628,8 +3628,7 @@ function printBICSR() {
       if (home) ss('fHs', homeMap[home] || home);
 
       // Years at address
-      var yrsInputs = document.querySelectorAll('#vR .bd .fi input[type="number"]');
-      if (yrsInputs[0]) yrsInputs[0].value = snap.fieldYearsAddr || '';
+      sv('fYA', snap.fieldYearsAddr || '');
 
       // Account Officer = Interviewer
       sv('fAO', snap.fieldInterviewerName || '');
@@ -3710,10 +3709,10 @@ function printBICSR() {
       // Years in Job/Business
       sv('fYr', snap.fieldYearsJob || '');
 
-      // Source of Repayment — also populate the named field
+      // Source of Repayment — populate by ID
       sv('fSR', snap.fieldPaySource || '');
 
-      // Co-maker — also populate by ID if it exists
+      // Co-maker — populate by ID
       var cobFull = [snap.cobFirstName, snap.cobMiddleName, snap.cobLastName]
         .filter(Boolean).join(' ');
       if (snap.cobSuffix) cobFull += (cobFull ? ', ' : '') + snap.cobSuffix;
@@ -4127,7 +4126,13 @@ function printBICSR() {
     function tog(el) { var bd = el.nextElementSibling; if (bd) { bd.classList.toggle('shut'); el.classList.toggle('shut') } }
     function tv(p, v) { var e = document.getElementById(p + 'D'); if (e) e.classList.toggle('on', v === 'Yes') }
     function toast(m) { var t = document.getElementById('tst'); t.textContent = m; t.classList.add('on'); setTimeout(function () { t.classList.remove('on') }, 3500) }
-    function gv(id) { var e = document.getElementById(id); return e ? (e.value || '') : '' }
+    function gv(id) {
+      var e = document.getElementById(id);
+      if (!e) return '';
+      if (e.tagName === 'SELECT') return e.options[e.selectedIndex] ? e.options[e.selectedIndex].text : '';
+      if (e.tagName === 'TEXTAREA') return e.value || e.innerText || '';
+      return e.value || '';
+    }
 
     // Credit score computation
     // ── Region Mode: 'r8' = Region 8 (Weight 1), 'or8' = Outside Region 8 (Weight 2)
@@ -4364,7 +4369,15 @@ function printBICSR() {
     function getRating() { var el = document.getElementById('autoRec'); return el ? el.textContent : '—'; }
     function getQSub()  { var el = document.getElementById('qSub');  return el ? el.textContent : '0'; }
     function getQLSub() { var el = document.getElementById('qlSub'); return el ? el.textContent : '0'; }
-    function php(v)     { var n = Number(v); return n ? '₱ ' + n.toLocaleString() : v || '—'; }
+    function php(v) {
+      // Accept either a field ID string or a raw value
+      var raw = v;
+      if (typeof v === 'string' && document.getElementById(v)) {
+        raw = gv(v);
+      }
+      var n = parseFloat(String(raw).replace(/[^0-9.]/g,''));
+      return n ? '\u20b1 ' + n.toLocaleString('en-PH', {minimumFractionDigits:2, maximumFractionDigits:2}) : (raw || '\u2014');
+    }
     function val(id)    { return gv(id) || '—'; }
 
     // PDF Final Report
@@ -4524,6 +4537,79 @@ function printBICSR() {
         sigY += 10;
         p.setFont(undefined,'normal'); p.setFontSize(7); p.setTextColor(150,150,150);
         p.text('CONFIDENTIAL — For internal use only — Rural Bank of Calbayog City, Inc.', w/2, sigY, { align:'center' });
+
+        // ── Page 3: Summary of Loan Details ─────────────────────
+        p.addPage();
+        y = 18;
+        p.setFontSize(9); p.setFont(undefined,'bold'); p.setTextColor(7,26,14);
+        p.text('SUMMARY OF LOAN DETAILS', 14, y); y += 5;
+
+        // Borrower summary table
+        p.autoTable({ ...ts, startY:y, body:[
+          ['Name of Borrower', nm, 'Civil Status', val('fCv')],
+          ['Name of Co-borrower', val('fCM') || '—', 'Relation to Primary Borrower', '—'],
+          ['Loan Amount', php('fAm'), 'Term', val('fTm')],
+          ['Interest Rate', val('fRt'), 'Repayment Mode', val('fRM')],
+          ['Loan Purpose', val('fPu'), 'Industry Classification', '—'],
+        ], columnStyles:{ 0:{cellWidth:40,fontStyle:'bold'}, 1:{cellWidth:50}, 2:{cellWidth:40,fontStyle:'bold'}, 3:{cellWidth:50} } });
+        y = p.lastAutoTable.finalY + 5;
+
+        // Loan Types and Classifications
+        p.setFontSize(8); p.setFont(undefined,'bold');
+        p.text('Loan Types and Classifications with Corresponding Risk and Controls', w/2, y, {align:'center'}); y += 4;
+
+        var lct = val('fCl') || '—';
+        var esrmR = val('fESRMrating') || '—';
+        var pepV  = val('fKYC') || '—';
+        var loanTypeRows = [
+          ['A.  Loan Creation Type',  'New Loan: ' + (lct.includes('New')?'✓':'☐') + '   Re-loan: ☐   Renewal: ☐   Restructure: ☐'],
+          ['B.  Security Type',       lct.toLowerCase().includes('unsecured') ? 'Unsecured: ✓   Secured: ☐' : 'Unsecured: ☐   Secured: ✓   (' + lct + ')'],
+          ['C.  DOSRI Type',          'Non-DOSRI: ✓   DOSRI: ☐   RI: ☐'],
+          ['D.  AFRD Type',           'Non-AFRD: ✓   AFRD: ☐'],
+          ['E.  Credit Risk Rating',  'Low: ' + (esrmR.includes('Low')?'✓':'☐') + '   Medium: ' + (esrmR.includes('Med')?'✓':'☐') + '   High: ' + (esrmR.includes('High')?'✓':'☐')],
+          ['F.  ESRM',                'Low: ☐   Medium: ☐   High: ☐'],
+          ['G.  PEP',                 'No: ✓   Yes: ☐'],
+        ];
+        p.autoTable({ ...ts, startY:y,
+          body: loanTypeRows,
+          columnStyles:{ 0:{cellWidth:45,fontStyle:'bold'}, 1:{cellWidth:135} }
+        });
+        y = p.lastAutoTable.finalY + 10;
+
+        // Recommending Approval line
+        p.setFont(undefined,'italic'); p.setFontSize(7.5);
+        p.text('Recommending Approval:', w-14, y, {align:'right'}); y += 6;
+        p.setFont(undefined,'bold');
+        p.text(val('fCO') || '___________________________', w-14, y, {align:'right'}); y += 5;
+        p.line(w-90, y, w-14, y); y += 4;
+        p.setFont(undefined,'normal');
+        p.text('Credit Evaluation Officer', w-14, y, {align:'right'});
+
+        // ── Page 4: Authorized Approving Authorities ─────────────
+        p.addPage();
+        y = 20;
+        p.setFontSize(9); p.setFont(undefined,'bold'); p.setTextColor(7,26,14);
+        p.text('Authorized Approving Authorities:', 14, y); y += 8;
+
+        p.autoTable({
+          ...ts,
+          startY: y,
+          head: [['', 'NAME', 'SIGNATURE', 'DATE SIGNED']],
+          body: [
+            ['1.', 'ALAN GILES MARY S. SARMIENTO',    '', ''],
+            ['2.', 'MA. ROSARIO R. SANTOS',            '', ''],
+            ['3.', 'ALFRED DENNIS B. ANCHETA',         '', ''],
+            ['4.', 'REYNALDO M. PRUDENCIADO, JR.',     '', ''],
+            ['5.', 'JOMARI JESS S. ABELLAR',           '', ''],
+          ],
+          headStyles: { ...hs, fillColor:[7,26,14] },
+          columnStyles: {
+            0: { cellWidth:10, fontStyle:'bold' },
+            1: { cellWidth:70, fontStyle:'bold' },
+            2: { cellWidth:70, minCellHeight:20 },
+            3: { cellWidth:30, minCellHeight:20 },
+          }
+        });
 
         p.save(fn);
         toast('✅ PDF saved: ' + fn);
@@ -4889,6 +4975,93 @@ function printBICSR() {
               ]}),
               spacer(120),
               new D.Paragraph({ alignment:D.AlignmentType.CENTER, spacing:{before:120}, children:[new D.TextRun({ text:'CONFIDENTIAL \u2014 For internal use only \u2014 Rural Bank of Calbayog City, Inc.', size:16, font:'Calibri', color:'999999', italics:true })] }),
+
+              // ── PAGE BREAK — Summary of Loan Details ────────────────
+              new D.Paragraph({ pageBreakBefore: true, children:[new D.TextRun({ text:'' })] }),
+
+              // Summary Header
+              new D.Paragraph({ spacing:{before:0,after:200}, children:[new D.TextRun({ text:'SUMMARY OF LOAN DETAILS', bold:true, size:26, font:'Calibri', color:'071a0e' })] }),
+
+              // Borrower Summary Table
+              tbl4([
+                row4('Name of Borrower', nm, 'Civil Status', civStat),
+                row4('Name of Co-borrower', val('fCM')||'\u2014', 'Relation to Primary Borrower', '\u2014'),
+                row4('Loan Amount', loanAmt, 'Term', loanTerm),
+                row4('Interest Rate', loanRate, 'Repayment Mode', val('fRM')),
+                row4('Loan Purpose', loanPurp, 'Industry Classification', '\u2014'),
+              ]),
+              spacer(200),
+
+              // Loan Types and Classifications
+              new D.Paragraph({ spacing:{after:120}, children:[new D.TextRun({ text:'Loan Types and Classifications with Corresponding Risk and Controls', bold:true, size:22, font:'Calibri', color:'071a0e' })] }),
+
+              new D.Table({ width:{size:9360,type:D.WidthType.DXA}, rows:[
+                new D.TableRow({ children:[
+                  new D.TableCell({ width:{size:2340,type:D.WidthType.DXA}, borders:borders, margins:mg, shading:{fill:'EBF5EE'}, children:[new D.Paragraph({ children:[new D.TextRun({ text:'A.  Loan Creation Type', bold:true, size:20, font:'Calibri' })] })] }),
+                  new D.TableCell({ width:{size:7020,type:D.WidthType.DXA}, borders:borders, margins:mg, children:[new D.Paragraph({ children:[new D.TextRun({ text:'\u2610 New Loan   \u2610 Re-loan   \u2610 Renewal   \u2610 Restructure (state no. of times) __________', size:20, font:'Calibri' })] })] }),
+                ]}),
+                new D.TableRow({ children:[
+                  new D.TableCell({ width:{size:2340,type:D.WidthType.DXA}, borders:borders, margins:mg, shading:{fill:'EBF5EE'}, children:[new D.Paragraph({ children:[new D.TextRun({ text:'B.  Security Type', bold:true, size:20, font:'Calibri' })] })] }),
+                  new D.TableCell({ width:{size:7020,type:D.WidthType.DXA}, borders:borders, margins:mg, children:[new D.Paragraph({ children:[new D.TextRun({ text:'\u2610 Unsecured   \u2610 Secured (state type of security) __________   \u2610 Unsecured with attachment', size:20, font:'Calibri' })] })] }),
+                ]}),
+                new D.TableRow({ children:[
+                  new D.TableCell({ width:{size:2340,type:D.WidthType.DXA}, borders:borders, margins:mg, shading:{fill:'EBF5EE'}, children:[new D.Paragraph({ children:[new D.TextRun({ text:'C.  DOSRI Type', bold:true, size:20, font:'Calibri' })] })] }),
+                  new D.TableCell({ width:{size:7020,type:D.WidthType.DXA}, borders:borders, margins:mg, children:[new D.Paragraph({ children:[new D.TextRun({ text:'\u2610 Non-DOSRI   \u2610 DOSRI (state type of DOSRI) __________   \u2610 RI (state type of RI) __________', size:20, font:'Calibri' })] })] }),
+                ]}),
+                new D.TableRow({ children:[
+                  new D.TableCell({ width:{size:2340,type:D.WidthType.DXA}, borders:borders, margins:mg, shading:{fill:'EBF5EE'}, children:[new D.Paragraph({ children:[new D.TextRun({ text:'D.  AFRD Type', bold:true, size:20, font:'Calibri' })] })] }),
+                  new D.TableCell({ width:{size:7020,type:D.WidthType.DXA}, borders:borders, margins:mg, children:[new D.Paragraph({ children:[new D.TextRun({ text:'\u2610 Non-AFRD   \u2610 AFRD (state type of AFRD) __________', size:20, font:'Calibri' })] })] }),
+                ]}),
+                new D.TableRow({ children:[
+                  new D.TableCell({ width:{size:2340,type:D.WidthType.DXA}, borders:borders, margins:mg, shading:{fill:'EBF5EE'}, children:[new D.Paragraph({ children:[new D.TextRun({ text:'E.  Credit Risk Rating', bold:true, size:20, font:'Calibri' })] })] }),
+                  new D.TableCell({ width:{size:7020,type:D.WidthType.DXA}, borders:borders, margins:mg, children:[new D.Paragraph({ children:[new D.TextRun({ text:'- Result:\n\u2610 Low   \u2610 Medium   \u2610 High', size:20, font:'Calibri' })] })] }),
+                ]}),
+                new D.TableRow({ children:[
+                  new D.TableCell({ width:{size:2340,type:D.WidthType.DXA}, borders:borders, margins:mg, shading:{fill:'EBF5EE'}, children:[new D.Paragraph({ children:[new D.TextRun({ text:'F.  ESRM', bold:true, size:20, font:'Calibri' })] })] }),
+                  new D.TableCell({ width:{size:7020,type:D.WidthType.DXA}, borders:borders, margins:mg, children:[new D.Paragraph({ children:[new D.TextRun({ text:'\u2610 Low   \u2610 Medium   \u2610 High', size:20, font:'Calibri' })] })] }),
+                ]}),
+                new D.TableRow({ children:[
+                  new D.TableCell({ width:{size:2340,type:D.WidthType.DXA}, borders:borders, margins:mg, shading:{fill:'EBF5EE'}, children:[new D.Paragraph({ children:[new D.TextRun({ text:'G.  PEP', bold:true, size:20, font:'Calibri' })] })] }),
+                  new D.TableCell({ width:{size:7020,type:D.WidthType.DXA}, borders:borders, margins:mg, children:[new D.Paragraph({ children:[new D.TextRun({ text:'\u2610 No   \u2610 Yes (Position/Designation) __________', size:20, font:'Calibri' })] })] }),
+                ]}),
+              ]}),
+              spacer(400),
+
+              // Recommending Approval
+              new D.Paragraph({ alignment:D.AlignmentType.RIGHT, spacing:{after:60}, children:[new D.TextRun({ text:'Recommending Approval:', italics:true, size:18, font:'Calibri' })] }),
+              new D.Paragraph({ alignment:D.AlignmentType.RIGHT, spacing:{after:60}, children:[new D.TextRun({ text:val('fCO')||'___________________________', bold:true, size:20, font:'Calibri' })] }),
+              new D.Paragraph({ alignment:D.AlignmentType.RIGHT, spacing:{after:40}, border:{ bottom:{ style:D.BorderStyle.SINGLE, size:4, color:'071a0e', space:4 } }, children:[new D.TextRun({ text:' ', size:18 })] }),
+              new D.Paragraph({ alignment:D.AlignmentType.RIGHT, spacing:{after:0}, children:[new D.TextRun({ text:'Credit Evaluation Officer', size:18, font:'Calibri' })] }),
+
+              // ── PAGE BREAK — Authorized Approving Authorities ────────
+              new D.Paragraph({ pageBreakBefore: true, children:[new D.TextRun({ text:'' })] }),
+
+              new D.Paragraph({ spacing:{before:0,after:300}, children:[new D.TextRun({ text:'Authorized Approving Authorities:', bold:true, size:24, font:'Calibri', color:'071a0e' })] }),
+
+              new D.Table({ width:{size:9360,type:D.WidthType.DXA}, rows:[
+                // Header
+                new D.TableRow({ tableHeader:true, children:[
+                  new D.TableCell({ width:{size:480,type:D.WidthType.DXA}, borders:borders, margins:mg, shading:{fill:'071a0e'}, children:[new D.Paragraph({ children:[new D.TextRun({ text:'', bold:true, size:20, font:'Calibri', color:'FFFFFF' })] })] }),
+                  new D.TableCell({ width:{size:3600,type:D.WidthType.DXA}, borders:borders, margins:mg, shading:{fill:'071a0e'}, children:[new D.Paragraph({ alignment:D.AlignmentType.CENTER, children:[new D.TextRun({ text:'NAME', bold:true, size:20, font:'Calibri', color:'FFFFFF' })] })] }),
+                  new D.TableCell({ width:{size:3600,type:D.WidthType.DXA}, borders:borders, margins:mg, shading:{fill:'071a0e'}, children:[new D.Paragraph({ alignment:D.AlignmentType.CENTER, children:[new D.TextRun({ text:'SIGNATURE', bold:true, size:20, font:'Calibri', color:'FFFFFF' })] })] }),
+                  new D.TableCell({ width:{size:1680,type:D.WidthType.DXA}, borders:borders, margins:mg, shading:{fill:'071a0e'}, children:[new D.Paragraph({ alignment:D.AlignmentType.CENTER, children:[new D.TextRun({ text:'DATE SIGNED', bold:true, size:20, font:'Calibri', color:'FFFFFF' })] })] }),
+                ]}),
+                // Rows
+                ...[
+                  ['1.','ALAN GILES MARY S. SARMIENTO'],
+                  ['2.','MA. ROSARIO R. SANTOS'],
+                  ['3.','ALFRED DENNIS B. ANCHETA'],
+                  ['4.','REYNALDO M. PRUDENCIADO, JR.'],
+                  ['5.','JOMARI JESS S. ABELLAR'],
+                ].map(function(r) {
+                  return new D.TableRow({ children:[
+                    new D.TableCell({ width:{size:480,type:D.WidthType.DXA}, borders:borders, margins:mg, children:[new D.Paragraph({ children:[new D.TextRun({ text:r[0], bold:true, size:20, font:'Calibri' })] })] }),
+                    new D.TableCell({ width:{size:3600,type:D.WidthType.DXA}, borders:borders, margins:mg, children:[new D.Paragraph({ children:[new D.TextRun({ text:r[1], bold:true, size:20, font:'Calibri' })] })] }),
+                    new D.TableCell({ width:{size:3600,type:D.WidthType.DXA}, borders:borders, margins:{top:400,bottom:80,left:120,right:120}, children:[new D.Paragraph({ children:[new D.TextRun({ text:'', size:20 })] })] }),
+                    new D.TableCell({ width:{size:1680,type:D.WidthType.DXA}, borders:borders, margins:{top:400,bottom:80,left:120,right:120}, children:[new D.Paragraph({ children:[new D.TextRun({ text:'', size:20 })] })] }),
+                  ]});
+                }),
+              ]}),
             ]
           }]
         });
