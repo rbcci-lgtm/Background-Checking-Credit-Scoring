@@ -2039,7 +2039,8 @@ function printBICSR() {
         </div>
       </div>
       <div class="bar">
-        <button class="btn btn-g" onclick="printBICSR()">&#x1F5A8; Print BICSR</button>
+        <button class="btn" onclick="showApprovalModal()" style="background:#7c3aed;color:#fff;font-weight:700;gap:6px;">&#x1F4E8; Send for Board Approval</button>
+        <button class="btn" onclick="showApprovalModal()" style="background:#7c3aed;color:#fff">&#x1F4E8; Send for Board Approval</button>
         <button class="btn btn-p" onclick="xPDF()">&#x1F4C4; PDF</button>
         <button class="btn btn-w" onclick="xWord()">&#x1F4DD; Word</button>
         <button class="btn btn-s" onclick="xXL()">&#x1F4CA; Excel</button>
@@ -7246,5 +7247,128 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     BOARD APPROVAL MODAL
+════════════════════════════════════════════════════════════════════════ -->
+<div id="approvalModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.6);align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:14px;padding:0;max-width:520px;width:94%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,0.4)">
+    <div style="background:linear-gradient(135deg,#071a0e,#1a5c35);padding:20px 24px;border-radius:14px 14px 0 0;color:#fff;position:relative">
+      <button onclick="hideApprovalModal()" style="position:absolute;top:12px;right:14px;background:rgba(255,255,255,0.15);border:none;color:#fff;width:28px;height:28px;border-radius:50%;font-size:1rem;cursor:pointer">&#x2715;</button>
+      <div style="font-size:1.5rem;margin-bottom:6px">&#x1F4E8;</div>
+      <div style="font-size:1rem;font-weight:700">Send for Board Approval</div>
+      <div style="font-size:0.76rem;color:rgba(255,255,255,0.7);margin-top:3px">Generate unique approval links for all 5 Board of Directors</div>
+    </div>
+    <div style="padding:20px 24px">
+      <div id="aprStatus" style="display:none;margin-bottom:14px;padding:10px 14px;border-radius:8px;font-size:0.82rem;font-weight:600"></div>
+      <div id="aprInitial">
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px;margin-bottom:16px">
+          <div style="font-size:0.75rem;font-weight:700;color:#475569;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Application Summary</div>
+          <div id="aprSummary" style="font-size:0.82rem;color:#334155;line-height:1.6"></div>
+        </div>
+        <div style="background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:0.78rem;color:#92400e">
+          &#x26A0; This will create unique approval links for each of the 5 Board of Directors.
+        </div>
+        <button onclick="sendForApproval()" id="aprSendBtn" style="width:100%;padding:13px;background:#7c3aed;color:#fff;border:none;border-radius:8px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit">
+          &#x1F4E4; Generate Approval Links
+        </button>
+      </div>
+      <div id="aprLinks" style="display:none">
+        <div style="font-size:0.82rem;font-weight:700;color:#071a0e;margin-bottom:10px">&#x2705; Share each link with the respective board member:</div>
+        <div id="aprLinksContainer" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
+        <div style="font-size:0.75rem;color:#94a3b8;text-align:center;margin-bottom:12px">&#x1F4CB; Copy each link and send via Telegram, SMS, or Email</div>
+        <div style="font-size:0.82rem;font-weight:700;color:#071a0e;margin-bottom:8px">&#x1F4CA; Live Approval Status:</div>
+        <div id="aprStatusTable" style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;margin-bottom:12px"></div>
+        <button onclick="refreshApprovalStatus()" style="width:100%;padding:10px;background:transparent;border:1.5px solid #1a5c35;color:#1a5c35;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;font-family:inherit">
+          &#x21BB; Refresh Status
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var _aprCurrentCode='', _aprCurrentLinks=[];
+function showApprovalModal(){
+  var code=(document.getElementById('ilsCodeInput').dataset.loadedCode||'').trim();
+  if(!code){toast('Fetch a client first');return;}
+  _aprCurrentCode=code;
+  document.getElementById('aprSummary').innerHTML='<b>Ref:</b> '+gv('fR')+'<br><b>Borrower:</b> '+gv('fN')+'<br><b>Amount:</b> '+gv('fAm')+'<br><b>Score:</b> '+(document.getElementById('rScD')?document.getElementById('rScD').textContent:'—')+'<br><b>Rating:</b> '+(document.getElementById('autoRec')?document.getElementById('autoRec').textContent:'—');
+  document.getElementById('aprInitial').style.display='block';
+  document.getElementById('aprLinks').style.display='none';
+  document.getElementById('aprStatus').style.display='none';
+  document.getElementById('aprSendBtn').disabled=false;
+  document.getElementById('aprSendBtn').textContent='📤 Generate Approval Links';
+  document.getElementById('approvalModal').style.display='flex';
+  checkExistingApproval(code);
+}
+function hideApprovalModal(){document.getElementById('approvalModal').style.display='none';}
+function buildLinks(code){
+  var BASE='https://rbcci-lgtm.github.io/Approval/';
+  var bods=[{id:'BOD1',name:'Alan Giles Mary S. Sarmiento'},{id:'BOD2',name:'Ma. Rosario R. Santos'},{id:'BOD3',name:'Alfred Dennis B. Ancheta'},{id:'BOD4',name:'Reynaldo M. Prudenciado, Jr.'},{id:'BOD5',name:'Jomari Jess S. Abellar'}];
+  return bods.map(function(b){
+    var raw=code+'|'+b.id+'|RBCCI2026SECRET';
+    var h=0; for(var i=0;i<raw.length;i++){h=((h<<5)-h)+raw.charCodeAt(i);h|=0;}
+    var tok=Math.abs(h).toString(36).toUpperCase().padStart(8,'0');
+    return {bodId:b.id,name:b.name,url:BASE+'?code='+encodeURIComponent(code)+'&bod='+b.id+'&token='+tok};
+  });
+}
+async function checkExistingApproval(code){
+  try{
+    var r=await fetch(DRIVE_SCRIPT_URL,{method:'POST',redirect:'follow',body:JSON.stringify({__action:'fetchApprovalStatus',appCode:code})});
+    var d=await r.json();
+    if(d.result==='success'){_aprCurrentLinks=buildLinks(code);renderLinks();renderStatusTable(d);document.getElementById('aprInitial').style.display='none';document.getElementById('aprLinks').style.display='block';}
+  }catch(e){}
+}
+async function sendForApproval(){
+  var btn=document.getElementById('aprSendBtn');
+  btn.disabled=true; btn.textContent='⏳ Generating...';
+  try{
+    var r=await fetch(DRIVE_SCRIPT_URL,{method:'POST',redirect:'follow',body:JSON.stringify({__action:'sendForBoardApproval',appCode:_aprCurrentCode,fullName:gv('fN'),loanAmount:gv('fAm').replace(/,/g,''),loanTerm:gv('fTm'),loanPurpose:gv('fPu'),loanClass:gv('fCl'),totalScore:document.getElementById('rScD')?document.getElementById('rScD').textContent:'',recommendation:document.getElementById('autoRec')?document.getElementById('autoRec').textContent:'',riskClass:document.getElementById('rLb')?document.getElementById('rLb').textContent:'',recommendedAmount:gv('fRA').replace(/,/g,''),summary:gv('fCN')})});
+    var d=await r.json();
+    if(d.result==='success'){_aprCurrentLinks=d.links||buildLinks(_aprCurrentCode);renderLinks();renderStatusTable(null);document.getElementById('aprInitial').style.display='none';document.getElementById('aprLinks').style.display='block';toast('✅ Approval links generated!');}
+    else throw new Error(d.message||'Failed');
+  }catch(e){
+    var st=document.getElementById('aprStatus');
+    st.style.display='block';st.style.background='#fee2e2';st.style.color='#7f1d1d';st.textContent='✗ '+e.message;
+    btn.disabled=false;btn.textContent='📤 Generate Approval Links';
+  }
+}
+function renderLinks(){
+  var c=document.getElementById('aprLinksContainer');c.innerHTML='';
+  _aprCurrentLinks.forEach(function(lk,i){
+    var d=document.createElement('div');
+    d.style.cssText='background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:10px;';
+    d.innerHTML='<div style="background:#7c3aed;color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;flex-shrink:0">'+(i+1)+'</div><div style="flex:1;min-width:0"><div style="font-size:0.78rem;font-weight:700;color:#334155">'+lk.name+'</div><div style="font-size:0.68rem;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+lk.url+'</div></div><button onclick="copyLink(\''+lk.url.replace(/'/g,"\\'")+'&apos;,this)" style="padding:5px 12px;background:#1a5c35;color:#fff;border:none;border-radius:6px;font-size:0.72rem;font-weight:700;cursor:pointer;flex-shrink:0">&#x1F4CB; Copy</button>';
+    c.appendChild(d);
+  });
+}
+function copyLink(url,btn){
+  navigator.clipboard.writeText(url).then(function(){btn.textContent='✓ Copied!';btn.style.background='#1a8a42';setTimeout(function(){btn.innerHTML='&#x1F4CB; Copy';btn.style.background='#1a5c35';},2000);});
+}
+async function refreshApprovalStatus(){
+  try{
+    var r=await fetch(DRIVE_SCRIPT_URL,{method:'POST',redirect:'follow',body:JSON.stringify({__action:'fetchApprovalStatus',appCode:_aprCurrentCode})});
+    var d=await r.json();
+    if(d.result==='success')renderStatusTable(d);
+  }catch(e){toast('Could not refresh');}
+}
+function renderStatusTable(data){
+  var tbl=document.getElementById('aprStatusTable');
+  if(!data||!data.approvals){tbl.innerHTML='<div style="padding:10px;font-size:0.78rem;color:#94a3b8;text-align:center">Status will appear after board members respond.</div>';return;}
+  var bods=[{id:'BOD1',name:'A. Sarmiento'},{id:'BOD2',name:'R. Santos'},{id:'BOD3',name:'D. Ancheta'},{id:'BOD4',name:'R. Prudenciado'},{id:'BOD5',name:'J. Abellar'}];
+  var overall=data.overallStatus||'Pending';
+  var oBg=overall.includes('FULLY')?'#f0fdf4':overall.includes('REJECTED')?'#fee2e2':overall.includes('Partial')?'#fffbeb':'#f8fafc';
+  var oCol=overall.includes('FULLY')?'#1a8a42':overall.includes('REJECTED')?'#dc2626':overall.includes('Partial')?'#d97706':'#94a3b8';
+  var h='<div style="padding:8px 12px;background:'+oBg+';border-bottom:1px solid #e2e8f0;font-size:0.75rem;font-weight:700;color:'+oCol+'">Overall: '+overall+'</div><table style="width:100%;border-collapse:collapse;font-size:0.75rem">';
+  var cmap={'Approved':'#f0fdf4|#1a8a42','Rejected':'#fee2e2|#dc2626','Pending':'#f8fafc|#94a3b8'};
+  bods.forEach(function(b){
+    var dec=(data.approvals[b.id]||{});var st=dec.status||'Pending';var c=(cmap[st]||cmap['Pending']).split('|');
+    h+='<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:7px 12px;font-weight:600;color:#475569">'+b.name+'</td><td style="padding:7px 12px;text-align:right"><span style="padding:2px 10px;border-radius:12px;background:'+c[0]+';color:'+c[1]+';font-weight:700">'+st+'</span></td></tr>';
+  });
+  h+='</table>';tbl.innerHTML=h;
+}
+document.getElementById('approvalModal').addEventListener('click',function(e){if(e.target===this)hideApprovalModal();});
 </script>
 </html>
