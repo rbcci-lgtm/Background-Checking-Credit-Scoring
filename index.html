@@ -1470,6 +1470,7 @@
   body > *:not(.pdoc) { display: none !important; }
   .no-print { display: none !important; }
   .pdoc { display: block !important; }
+  #bicsrPrintView { display: block !important; }
 
   /* Each pg div = exactly one A4 page */
   .pdoc .pg {
@@ -1491,44 +1492,121 @@
 </style>
 <script>
 function printBICSR() {
-  // ── Helpers ─────────────────────────────────────────────────────────────────
-  // Get snapshot stored when client was fetched
+  var pv = document.getElementById('bicsrPrintView');
+  if (!pv) { alert('Print view not found'); return; }
+
+  // Show fully on screen so browser renders all elements
+  pv.style.cssText = 'display:block !important; position:fixed; top:0; left:0; width:210mm; min-height:297mm; background:#fff; z-index:99999; overflow:visible;';
+
+  // Two animation frames ensures browser has painted before we read/write DOM
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      _doPrintBICSR();
+      setTimeout(function() {
+        window.print();
+        setTimeout(function() {
+          pv.style.cssText = 'display:none';
+        }, 1200);
+      }, 600);
+    });
+  });
+}
+
+// ── Also trigger on Ctrl+P (browser native print) ─────────────────────────────
+window.addEventListener('beforeprint', function() {
+  var pv = document.getElementById('bicsrPrintView');
+  if (!pv) return;
+  pv.style.cssText = 'display:block !important;';
+  _doPrintBICSR();
+});
+
+window.addEventListener('afterprint', function() {
+  var pv = document.getElementById('bicsrPrintView');
+  if (pv) pv.style.cssText = 'display:none';
+});
+
+function _doPrintBICSR() {
   var snap = {};
   try {
     var il = document.getElementById('ilsCodeInput');
     snap = JSON.parse(il ? (il.dataset.snap || '{}') : '{}');
   } catch(e) {}
 
-  // Read from snapshot (like v() in Interview Form)
-  function s(key) { return (snap[key] || ''); }
-  // Read radio from snapshot
+  // DIAGNOSTIC TEST — remove after confirming
+  var diagPvFn  = document.getElementById('pv_fn');
+  var diagFN    = document.getElementById('fN');
+  console.log('pv_fn found:', !!diagPvFn, '| fN value:', diagFN ? diagFN.value : 'NOT FOUND');
+  if (diagPvFn) diagPvFn.textContent = '';
+
+  var snapEmpty = Object.keys(snap).length < 5;
+  if (snapEmpty) console.warn('Snapshot empty — using form fields directly');
+
+  // s(): read snapshot key, fallback to BG form field
+  function s(key, fbId) {
+    var v = snap[key] || '';
+    if (!v && fbId) {
+      var el = document.getElementById(fbId);
+      if (el) v = el.tagName === 'SELECT'
+        ? (el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '')
+        : (el.value || el.textContent || '');
+    }
+    return (v || '').trim();
+  }
   function sr(name) { return snap['radio_' + name] || ''; }
-  // Read checkbox from snapshot
-  function sc(key) { return !!snap[key]; }
-  // Set text content of print view element
-  function t(id, val) { var e = document.getElementById(id); if (e) e.textContent = val || ''; }
-  // Set checkbox state in print view
+  function sc(key)  { return !!snap[key]; }
+  function t(id, val) {
+    var e = document.getElementById(id);
+    if (!e) return;
+    var v = val || '';
+    e.textContent = v;
+    e.innerHTML   = v; // belt-and-suspenders
+  }
   function ck(id, on) {
     var e = document.getElementById(id);
     if (!e) return;
-    if (on) { e.style.background = '#1B4332'; e.style.webkitPrintColorAdjust = 'exact'; e.style.printColorAdjust = 'exact'; }
-    else { e.style.background = ''; }
+    if (on) {
+      e.style.background = '#1B4332';
+      e.style.webkitPrintColorAdjust = 'exact';
+      e.style.printColorAdjust = 'exact';
+    } else {
+      e.style.background = '';
+    }
   }
-  // Read BG Checking form field value
-  function gv(id) { var e = document.getElementById(id); if (!e) return ''; return (e.value || e.textContent || '').trim(); }
-  // Format PHP amount
-  function php(n) { var x = parseFloat(String(n).replace(/[^0-9.]/g,'')) || 0; return x > 0 ? 'Php ' + x.toLocaleString('en-PH', {minimumFractionDigits:2}) : ''; }
+  function gv(id) {
+    var e = document.getElementById(id);
+    if (!e) return '';
+    if (e.tagName === 'SELECT') return e.options[e.selectedIndex] ? e.options[e.selectedIndex].text : '';
+    return (e.value || e.textContent || '').trim();
+  }
+  function php(n) {
+    var x = parseFloat(String(n).replace(/[^0-9.]/g, '')) || 0;
+    return x > 0 ? 'Php ' + x.toLocaleString('en-PH', {minimumFractionDigits:2}) : '';
+  }
 
   var today = new Date().toLocaleDateString('en-PH', {month:'long', day:'numeric', year:'numeric'});
 
   // ── PAGE 1: BORROWER INFORMATION ────────────────────────────────────────────
+  // Name — snapshot first, fallback to fN field
   var fn = s('fieldFirstName'), mn = s('fieldMiddleName'), ln = s('fieldLastName'), sx = s('fieldSuffix');
+  if (!fn && !ln) {
+    var fullNameRaw = gv('fN') || '';
+    // Handle "LAST, SUFFIX FIRST MIDDLE" or "FIRST MIDDLE LAST, SUFFIX"
+    var commaParts = fullNameRaw.split(',');
+    var nameMain = commaParts[0].trim();
+    sx = commaParts.length > 1 ? commaParts[1].trim() : '';
+    var parts = nameMain.trim().split(/\s+/);
+    if (parts.length === 1) { fn = parts[0]; }
+    else if (parts.length === 2) { fn = parts[0]; ln = parts[1]; }
+    else if (parts.length === 3) { fn = parts[0]; mn = parts[1]; ln = parts[2]; }
+    else if (parts.length > 3)   { fn = parts[0]; mn = parts.slice(1,-1).join(' '); ln = parts[parts.length-1]; }
+  }
   t('pv_fn', fn); t('pv_mn', mn); t('pv_ln', ln); t('pv_sx', sx);
   var fullName = [fn, mn, ln].filter(Boolean).join(' ') + (sx ? ', ' + sx : '');
   t('pv_borrower_fullname', s('fieldApplicantSigName') || fullName);
 
   // DOB
   var dob = [s('dobMM'), s('dobDD'), s('dobYY')].filter(Boolean).join('/');
+  if (!dob) dob = gv('fDOB') || '';
   t('pv_dob', dob);
   t('pv_pob', s('fieldPlaceOfBirth'));
   t('pv_cit', s('fieldCitizenship'));
@@ -1539,32 +1617,33 @@ function printBICSR() {
   ck('pc_fm', sex === 'Female');
 
   // Contact
-  t('pv_mo',      s('fieldMobile'));
+  // Contact
+  t('pv_mo',      s('fieldMobile',  'fPh'));
   t('pv_em',      s('fieldEmail'));
-  t('pv_tin',     s('fieldTIN'));
+  t('pv_tin',     s('fieldTIN',     'fT'));
   t('pv_philsys', s('fieldPhilSys'));
   t('pv_govid',   s('fieldOtherGovID'));
-  t('pv_ha',      s('fieldAddress'));
-  t('pv_los',     s('fieldYearsAddr'));
+  t('pv_ha',      s('fieldAddress', 'fAd'));
+  t('pv_los',     s('fieldYearsAddr','fYA'));
 
-  // Home Ownership
-  var ho = sr('homeOwnership');
-  ck('pc_home_unen', ho === 'Owned (unencumbered)');
-  ck('pc_home_mort', ho === 'Owned (mortgaged)');
-  ck('pc_home_rent', ho === 'Rented');
-  ck('pc_home_relv', ho === 'Living with relatives');
+  // Home Ownership — fallback to fHs
+  var ho = sr('homeOwnership') || gv('fHs') || '';
+  ck('pc_home_unen', ho.toLowerCase().indexOf('unenc')   > -1);
+  ck('pc_home_mort', ho.toLowerCase().indexOf('mortg')   > -1);
+  ck('pc_home_rent', ho.toLowerCase().indexOf('rent')    > -1);
+  ck('pc_home_relv', ho.toLowerCase().indexOf('relat')   > -1 || ho.toLowerCase().indexOf('living') > -1);
 
-  // Civil Status
-  var civil = sr('civil');
-  ck('pc_si', civil === 'Single');
-  ck('pc_ma', civil === 'Married');
-  ck('pc_wd', civil === 'Widowed');
-  ck('pc_se', civil === 'Separated');
+  // Civil Status — try snapshot radio, fallback to BG Checking select
+  var civil = sr('civil') || gv('fCv') || '';
+  ck('pc_si', civil === 'Single'   || civil.toLowerCase() === 'single');
+  ck('pc_ma', civil === 'Married'  || civil.toLowerCase() === 'married');
+  ck('pc_wd', civil.toLowerCase().indexOf('wid') > -1);
+  ck('pc_se', civil.toLowerCase().indexOf('sep') > -1);
 
-  // Borrower Type
-  var bt = sr('btype');
-  ck('pc_in', bt === 'Individual');
-  ck('pc_sp', bt === 'Sole Proprietor');
+  // Borrower Type — fallback to fBT
+  var bt = sr('btype') || gv('fBT') || '';
+  ck('pc_in', bt.toLowerCase().indexOf('individual') > -1);
+  ck('pc_sp', bt.toLowerCase().indexOf('sole') > -1 || bt.toLowerCase().indexOf('proprietor') > -1);
 
   // Mother's Maiden Name
   t('pv_momfn', s('momFirstName'));
@@ -1629,37 +1708,40 @@ function printBICSR() {
 
   // ── PAGE 2 / SECTION B: LOAN APPLICATION ────────────────────────────────────
   // Loan Creation Type (header checkboxes)
-  var lct = sr('loanCreationType');
+  var lct = sr('loanCreationType') || '';
   ck('pc_nl', lct === 'New Loan');
   ck('pc_al', lct === 'Additional Loan');
   ck('pc_rl', lct === 'Re-Loan');
   ck('pc_rn', lct === 'Renewal');
   ck('pc_rs', lct === 'Restructure');
 
-  t('pv_la', s('fieldLoanAmount'));
-  t('pv_lt', s('fieldLoanTerm'));
+  // Loan Amount & Term — fallback to BG Checking fields
+  t('pv_la', s('fieldLoanAmount') || gv('fAm').replace(/,/g,''));
+  t('pv_lt', s('fieldLoanTerm')   || gv('fTm'));
 
-  // Repayment Frequency
-  var freq = sr('loanFrequency');
-  ck('pc_freq_w',  freq === 'Weekly');
-  ck('pc_freq_m',  freq === 'Monthly');
-  ck('pc_freq_q',  freq === 'Quarterly');
-  ck('pc_freq_a',  freq === 'Annually');
-  ck('pc_freq_ls', freq === 'Lump sum');
-  ck('pc_freq_o',  freq === 'Others');
+  // Repayment Frequency — fallback to fRM
+  var freq = sr('loanFrequency') || gv('fRM') || '';
+  ck('pc_freq_w',  freq.toLowerCase().indexOf('week')   > -1);
+  ck('pc_freq_m',  freq.toLowerCase().indexOf('month')  > -1);
+  ck('pc_freq_q',  freq.toLowerCase().indexOf('quart')  > -1);
+  ck('pc_freq_a',  freq.toLowerCase().indexOf('annual') > -1);
+  ck('pc_freq_ls', freq.toLowerCase().indexOf('lump')   > -1);
+  ck('pc_freq_o',  freq.toLowerCase().indexOf('other')  > -1);
   t('pv_freq_other', freq === 'Others' ? s('loanFrequencyOther') : '');
 
   // Loan Facility
-  var fac = sr('loanFacility');
+  var fac = sr('loanFacility') || '';
   ck('pc_fac_cl', fac === 'Credit Line');
   ck('pc_fac_tl', fac === 'Term Loan');
   ck('pc_fac_o',  fac === 'Others');
   t('pv_fac_other', fac === 'Others' ? s('loanFacilityOther') : '');
 
-  // Loan Purpose
-  ck('pc_lp_wc', sc('purpBusiness'));
+  // Loan Purpose — fallback to fPu
+  var purpFB = gv('fPu') || '';
+  ck('pc_lp_wc', sc('purpBusiness') || purpFB.toLowerCase().indexOf('business') > -1 || purpFB.toLowerCase().indexOf('agricult') > -1);
   ck('pc_lp_lt', sc('purpPayoff'));
   var hasOther = sc('purpPersonal') || sc('purpEducation') || sc('purpMedical') || sc('purpHouse') || sc('purpTax') || sc('purpOther');
+  if (!hasOther && purpFB && purpFB.toLowerCase().indexOf('personal') > -1) hasOther = true;
   ck('pc_lp_o', hasOther);
   var otherParts = [];
   if (sc('purpPersonal'))  otherParts.push('Personal');
@@ -1668,12 +1750,14 @@ function printBICSR() {
   if (sc('purpHouse'))     otherParts.push('House Repair');
   if (sc('purpTax'))       otherParts.push('Property/Estate Tax');
   if (sc('purpOther') && s('purpOtherText')) otherParts.push(s('purpOtherText'));
+  if (!otherParts.length && purpFB) otherParts.push(purpFB);
   t('pv_lp_other', otherParts.join(', '));
 
-  // Type of Loan
-  var tol = sr('loanType');
-  ck('pc_tol_un', tol === 'Unsecured Loan');
-  ck('pc_tol_sc', tol === 'Secured Loan');
+  // Type of Loan — fallback to fCl
+  var clFB = gv('fCl') || '';
+  var tol = sr('loanType') || '';
+  ck('pc_tol_un', tol === 'Unsecured Loan' || clFB.toLowerCase().indexOf('unsecured') > -1);
+  ck('pc_tol_sc', tol === 'Secured Loan'   || clFB.toLowerCase().indexOf('secured')   > -1);
 
   // Source of Funds
   ck('pc_src_rev', sc('srcRevenue'));
@@ -1710,8 +1794,9 @@ function printBICSR() {
 
   // ── PAGE 3: SUMMARY ──────────────────────────────────────────────────────────
   t('pv_sln', ln); t('pv_sfn', fn); t('pv_smn', mn); t('pv_scs', civil);
-  t('pv_sla', s('fieldLoanAmount'));
-  var mo = parseFloat(s('fieldLoanTerm'));
+  var laAmt = s('fieldLoanAmount') || gv('fAm').replace(/,/g,'');
+  t('pv_sla', laAmt);
+  var mo = parseFloat(s('fieldLoanTerm') || gv('fTm'));
   t('pv_str', mo ? (mo / 12).toFixed(1) + ' yr(s)' : '');
 
   // Loan Creation Type — Page 3 Summary checkboxes
@@ -1720,10 +1805,10 @@ function printBICSR() {
   ck('pcs_rn', lct === 'Renewal');
   ck('pcs_rs', lct === 'Restructure');
   // Security Type
-  ck('pcs_sec_un', tol === 'Unsecured Loan');
-  ck('pcs_sec_sc', tol === 'Secured Loan');
+  ck('pcs_sec_un', tol === 'Unsecured Loan' || clFB.toLowerCase().indexOf('unsecured') > -1);
+  ck('pcs_sec_sc', tol === 'Secured Loan'   || clFB.toLowerCase().indexOf('secured')   > -1);
 
-  // Loan Purpose summary
+  // Loan Purpose summary — with BG Checking fallback
   var pp = [];
   if (sc('purpBusiness'))  pp.push('Business');
   if (sc('purpPersonal'))  pp.push('Personal');
@@ -1733,18 +1818,17 @@ function printBICSR() {
   if (sc('purpTax'))       pp.push('Property/Estate Tax');
   if (sc('purpPayoff'))    pp.push('Pay-off Loan');
   if (sc('purpOther') && s('purpOtherText')) pp.push(s('purpOtherText'));
+  if (!pp.length && purpFB) pp.push(purpFB);
   t('pv_spu', pp.join(', '));
 
-  // Co-borrower
+  // Co-borrower — fallback to fCM
   var cobln = s('cobLastName'), cobfn = s('cobFirstName'), cobmn = s('cobMiddleName'), cobsx = s('cobSuffix');
   t('pv_cobln', [cobln, cobsx].filter(Boolean).join(', '));
   t('pv_cobfn', cobfn);
   t('pv_cobmn', cobmn);
   t('pv_cobrel', s('cobRelation'));
   var cobFull = [cobfn, cobmn, cobln].filter(Boolean).join(' ') + (cobsx ? ', ' + cobsx : '');
-  if (!cobFull) {
-    cobFull = [s('spFirstName'), s('spMiddleName'), s('spLastName')].filter(Boolean).join(' ');
-  }
+  if (!cobFull) cobFull = gv('fCM') || [s('spFirstName'), s('spMiddleName'), s('spLastName')].filter(Boolean).join(' ');
   t('pv_coborrower_fullname', cobFull);
 
   // Signature dates
@@ -1904,7 +1988,7 @@ function printBICSR() {
   t('bp_col_remarks',   gv('fColRemarks')   || '\u2014');
 
   // ── PRINT ────────────────────────────────────────────────────────────────────
-  window.print();
+  // ── End of field population ───────────────────────────────────────────────
 }
 
 </script>
@@ -2038,16 +2122,60 @@ function printBICSR() {
           <div class="fr">REF: BI-2026-0248 | RBCCI-BI-001 Rev.16 | Control: RBCC 4.02</div>
         </div>
       </div>
-      <div class="bar">
-        <button class="btn" onclick="showApprovalModal()" style="background:#7c3aed;color:#fff;font-weight:700;gap:6px;">&#x1F4E8; Send for Board Approval</button>
-        <button class="btn btn-p" onclick="xPDF()">&#x1F4C4; PDF</button>
-        <button class="btn btn-w" onclick="xWord()">&#x1F4DD; Word</button>
-        <button class="btn btn-s" onclick="xXL()">&#x1F4CA; Excel</button>
-        <button class="btn" style="background:#d97706;color:#fff;font-weight:700" onclick="showReportModal()">&#x1F4CB; Generate Report</button>
-        <button class="btn" style="background:#8b5cf6;color:#fff" onclick="saveDraft()">&#x1F4BE; Save Draft</button>
-        <button class="btn" style="background:#6366f1;color:#fff" onclick="loadDraft()">&#x1F4C2; Load Draft</button>
-        <button class="btn" style="background:#1a8a42;color:#fff;font-weight:700" onclick="saveToSheets()" id="btnSaveSheets">&#x1F4BE; Save to Sheets</button>
-        <button class="btn btn-s" onclick="go('dash')">&#x2190; Back</button>
+      <div class="bar" style="display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px;background:rgba(0,0,0,.15);border-radius:10px;margin-bottom:10px;align-items:center;">
+
+        <!-- Group 1: Print & BICSR -->
+        <div style="display:flex;gap:5px;align-items:center;">
+          <button class="btn" onclick="printBICSR()" style="background:#071a0e;color:#fff;font-weight:700;font-size:.78rem;padding:7px 12px;border-radius:7px;display:flex;align-items:center;gap:5px;">
+            &#x1F5A8; Print BICSR
+          </button>
+        </div>
+
+        <div style="width:1px;height:28px;background:rgba(255,255,255,.15);margin:0 2px;"></div>
+
+        <!-- Group 2: Export -->
+        <div style="display:flex;gap:5px;align-items:center;">
+          <button class="btn btn-p" onclick="xPDF()" style="font-size:.78rem;padding:7px 11px;border-radius:7px;display:flex;align-items:center;gap:4px;">
+            &#x1F4C4; PDF
+          </button>
+          <button class="btn btn-w" onclick="xWord()" style="font-size:.78rem;padding:7px 11px;border-radius:7px;display:flex;align-items:center;gap:4px;">
+            &#x1F4DD; Word
+          </button>
+          <button class="btn btn-s" onclick="xXL()" style="font-size:.78rem;padding:7px 11px;border-radius:7px;display:flex;align-items:center;gap:4px;">
+            &#x1F4CA; Excel
+          </button>
+          <button class="btn" onclick="showReportModal()" style="background:#d97706;color:#fff;font-weight:700;font-size:.78rem;padding:7px 12px;border-radius:7px;display:flex;align-items:center;gap:4px;">
+            &#x1F4CB; Generate Report
+          </button>
+        </div>
+
+        <div style="width:1px;height:28px;background:rgba(255,255,255,.15);margin:0 2px;"></div>
+
+        <!-- Group 3: Save/Load -->
+        <div style="display:flex;gap:5px;align-items:center;">
+          <button class="btn" onclick="saveDraft()" style="background:#8b5cf6;color:#fff;font-size:.78rem;padding:7px 11px;border-radius:7px;display:flex;align-items:center;gap:4px;">
+            &#x1F4BE; Save Draft
+          </button>
+          <button class="btn" onclick="loadDraft()" style="background:#6366f1;color:#fff;font-size:.78rem;padding:7px 11px;border-radius:7px;display:flex;align-items:center;gap:4px;">
+            &#x1F4C2; Load Draft
+          </button>
+          <button class="btn" onclick="saveToSheets()" id="btnSaveSheets" style="background:#1a8a42;color:#fff;font-weight:700;font-size:.78rem;padding:7px 12px;border-radius:7px;display:flex;align-items:center;gap:4px;">
+            &#x1F4BE; Save to Sheets
+          </button>
+        </div>
+
+        <div style="width:1px;height:28px;background:rgba(255,255,255,.15);margin:0 2px;"></div>
+
+        <!-- Group 4: Approval & Navigation -->
+        <div style="display:flex;gap:5px;align-items:center;">
+          <button class="btn" onclick="showApprovalModal()" style="background:#7c3aed;color:#fff;font-weight:700;font-size:.78rem;padding:7px 12px;border-radius:7px;display:flex;align-items:center;gap:4px;">
+            &#x1F4E8; Board Approval
+          </button>
+          <button class="btn btn-s" onclick="go('dash')" style="font-size:.78rem;padding:7px 11px;border-radius:7px;display:flex;align-items:center;gap:4px;">
+            &#x2190; Back
+          </button>
+        </div>
+
       </div>
 
       <!-- ══ INTERVIEW DATA LOOKUP PANEL ══ -->
@@ -2080,7 +2208,7 @@ function printBICSR() {
       </div>
 
       <!-- S1: APPLICANT -->
-      <div class="cd">
+      <div class="cd" id="secCard1">
         <div class="hd" onclick="tog(this)">
           <div class="cn">1</div>Applicant / Borrower Information<span class="ar">&#x25BC;</span>
         </div>
@@ -2171,7 +2299,7 @@ function printBICSR() {
       </div>
 
       <!-- S2: LOAN DETAILS -->
-      <div class="cd">
+      <div class="cd" id="secCard2">
         <div class="hd" onclick="tog(this)">
           <div class="cn">2</div>Loan Details<span class="ar">&#x25BC;</span>
         </div>
@@ -2213,7 +2341,7 @@ function printBICSR() {
       </div>
 
       <!-- S3: BACKGROUND INVESTIGATION REPORT -->
-      <div class="cd">
+      <div class="cd" id="secCard3">
         <div class="hd" onclick="tog(this)">
           <div class="cn">3</div>Background Investigation Report<span class="ar">&#x25BC;</span>
         </div>
@@ -2618,7 +2746,7 @@ function printBICSR() {
       </div>
 
       <!-- S4: CREDIT BACKGROUND -->
-      <div class="cd">
+      <div class="cd" id="secCard4">
         <div class="hd" onclick="tog(this)">
           <div class="cn">4</div>Credit Background Findings<span class="ar">&#x25BC;</span>
         </div>
@@ -2759,7 +2887,7 @@ function printBICSR() {
       </div>
 
       <!-- S5: MANDATORY QUALIFIERS -->
-      <div class="cd">
+      <div class="cd" id="secCard5">
         <div class="hd" onclick="tog(this)">
           <div class="cn">5</div>Mandatory Qualifiers / Disqualifying Flags<span class="ar">&#x25BC;</span>
         </div>
@@ -2862,7 +2990,7 @@ function printBICSR() {
       </div>
 
       <!-- S6: CREDIT SCORING (Full Rev.16 Model) -->
-      <div class="cd">
+      <div class="cd" id="secCard6">
         <div class="hd" onclick="tog(this)">
           <div class="cn">6</div>Credit Scoring &#x2014; RBCC 4.02 Rev.16
           <button onclick="event.stopPropagation();resetCreditScore()" style="margin-left:auto;margin-right:8px;padding:4px 12px;background:#dc2626;color:#fff;border:none;border-radius:5px;font-size:0.72rem;font-weight:700;cursor:pointer;letter-spacing:0.3px">&#x21BA; Reset Score</button>
@@ -3107,7 +3235,7 @@ function printBICSR() {
         </div>
       </div>
 
-      <div class="cd">
+      <div class="cd" id="secCard7">
         <div class="hd" onclick="tog(this)">
           <div class="cn">7</div>Credit Evaluation<span class="ar">&#x25BC;</span>
         </div>
@@ -3123,7 +3251,7 @@ function printBICSR() {
       </div>
 
       <!-- S8: COMPLIANCE AND KYC - AMLA AND RELATED AML/CFT, ANTI-TERRORISM, SANCTIONS REGULATIONS, AND ESRM -->
-      <div class="cd">
+      <div class="cd" id="secCard8">
         <div class="hd" onclick="tog(this)">
           <div class="cn">8</div>Compliance and KYC &#x2014; AMLA and Related AML/CFT, Anti-Terrorism, Sanctions
           Regulations, and Environmental and Social Risk Management (ESRM)<span class="ar">&#x25BC;</span>
@@ -3311,7 +3439,7 @@ function printBICSR() {
       </div>
 
       <!-- S9: RISK RATING + RECOMMENDATION -->
-      <div class="cd">
+      <div class="cd" id="secCard9">
         <div class="hd" onclick="tog(this)">
           <div class="cn">9</div>Risk Rating &amp; Recommendation<span class="ar">&#x25BC;</span>
         </div>
@@ -3475,6 +3603,377 @@ function printBICSR() {
 
   </div><!-- .mx -->
   <div class="toast" id="tst"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       FLOATING SECTION NAVIGATOR
+  ════════════════════════════════════════════════════════════════════════ -->
+  <style>
+    /* ── Floating Nav Panel ── */
+    #secNav {
+      position: fixed;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 800;
+      display: none; /* shown only when #vR is active */
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0;
+      pointer-events: none;
+    }
+    #secNav.visible { display: flex; }
+
+    /* The toggle tab (always visible part) */
+    #secNavToggle {
+      position: fixed;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 801;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: linear-gradient(180deg, #071a0e, #174425);
+      color: #b8960f;
+      border-radius: 10px 0 0 10px;
+      padding: 10px 7px;
+      cursor: pointer;
+      border: 1.5px solid rgba(184,150,15,0.35);
+      border-right: none;
+      box-shadow: -4px 0 18px rgba(7,26,14,0.25);
+      pointer-events: all;
+      user-select: none;
+      transition: background 0.2s, padding 0.2s;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+    }
+    #secNavToggle.visible { display: flex; }
+    #secNavToggle:hover { background: linear-gradient(180deg, #0c2615, #1d5a30); }
+    #secNavToggle .snt-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #b8960f;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+    #secNavToggle .snt-icon {
+      font-size: 1rem;
+      writing-mode: horizontal-tb;
+      transform: none;
+      color: #b8960f;
+    }
+
+    /* The panel itself */
+    #secNavPanel {
+      position: fixed;
+      right: -240px; /* hidden off-screen */
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 800;
+      width: 228px;
+      background: linear-gradient(160deg, #071a0e 0%, #0c2615 60%, #11331d 100%);
+      border: 1.5px solid rgba(184,150,15,0.3);
+      border-right: none;
+      border-radius: 12px 0 0 12px;
+      box-shadow: -6px 0 32px rgba(7,26,14,0.35);
+      padding: 14px 0 14px 0;
+      pointer-events: all;
+      transition: right 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+      display: none;
+      max-height: 85vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(184,150,15,0.3) transparent;
+    }
+    #secNavPanel.visible { display: block; }
+    #secNavPanel.open { right: 0; }
+
+    #secNavPanel::-webkit-scrollbar { width: 4px; }
+    #secNavPanel::-webkit-scrollbar-thumb { background: rgba(184,150,15,0.3); border-radius: 4px; }
+
+    /* Panel header */
+    .snp-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      margin-bottom: 8px;
+    }
+    .snp-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #b8960f;
+      letter-spacing: 0.3px;
+    }
+    .snp-close {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50%;
+      color: rgba(255,255,255,0.5);
+      width: 22px; height: 22px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: 0.15s;
+    }
+    .snp-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+    /* Each nav item */
+    .snp-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+      border-left: 3px solid transparent;
+      position: relative;
+    }
+    .snp-item:hover {
+      background: rgba(255,255,255,0.05);
+      border-left-color: rgba(184,150,15,0.5);
+    }
+    .snp-item.active {
+      background: rgba(184,150,15,0.08);
+      border-left-color: #b8960f;
+    }
+    .snp-num {
+      background: rgba(39,116,62,0.4);
+      color: #93d4a3;
+      border: 1px solid rgba(93,186,116,0.25);
+      border-radius: 50%;
+      width: 22px; height: 22px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.64rem;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .snp-item.active .snp-num {
+      background: rgba(184,150,15,0.25);
+      color: #dab82e;
+      border-color: rgba(184,150,15,0.5);
+    }
+    .snp-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.25;
+      flex: 1;
+    }
+    .snp-item:hover .snp-text,
+    .snp-item.active .snp-text { color: rgba(255,255,255,0.9); }
+
+    .snp-arrow {
+      font-size: 0.55rem;
+      color: rgba(255,255,255,0.2);
+      transition: 0.15s;
+    }
+    .snp-item:hover .snp-arrow { color: #b8960f; transform: translateX(2px); }
+
+    /* Progress bar at the top of panel */
+    .snp-progress {
+      padding: 0 14px 10px 14px;
+    }
+    .snp-progress-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+    }
+    .snp-progress-bar {
+      height: 3px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .snp-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #27743e, #b8960f);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+  </style>
+
+  <!-- Toggle Tab -->
+  <div id="secNavToggle" onclick="secNavTogglePanel()">
+    <span class="snt-icon">☰</span>
+    <span class="snt-label">Sections</span>
+  </div>
+
+  <!-- Slide-out Panel -->
+  <div id="secNavPanel">
+    <div class="snp-header">
+      <span class="snp-title">📋 Sections</span>
+      <button class="snp-close" onclick="secNavTogglePanel()">✕</button>
+    </div>
+    <div class="snp-progress">
+      <div class="snp-progress-label">Scroll Position</div>
+      <div class="snp-progress-bar"><div class="snp-progress-fill" id="snpFill"></div></div>
+    </div>
+    <div id="snpItems"></div>
+  </div>
+
+  <script>
+  (function () {
+    // cardId  = the <div class="cd" id="..."> for that section (set directly in HTML)
+    // fieldId = the exact input/select/textarea to scroll to and focus (null = card header)
+    var SECTIONS = [
+      { num:'1', label:'Applicant / Borrower Info',    cardId:'secCard1', fieldId:'fR'    },
+      { num:'2', label:'Loan Details',                 cardId:'secCard2', fieldId:'fPu'   },
+      { num:'3', label:'Background Investigation',     cardId:'secCard3', fieldId:'fOc'   },
+      { num:'4', label:'Credit Background Findings',   cardId:'secCard4', fieldId:null    },
+      { num:'5', label:'Mandatory Qualifiers',         cardId:'secCard5', fieldId:null    },
+      { num:'6', label:'Credit Scoring',               cardId:'secCard6', fieldId:'modeR8'},
+      { num:'7', label:'Credit Evaluation',            cardId:'secCard7', fieldId:'fCN'   },
+      { num:'8', label:'Compliance & KYC',             cardId:'secCard8', fieldId:'fKYC'  },
+      { num:'9', label:'Risk Rating & Recommendation', cardId:'secCard9', fieldId:'fRc'   },
+    ];
+
+    var panelOpen = false;
+    var TOPBAR    = 68; // sticky topbar height px
+
+    /* ── Build nav list ──────────────────────────────────────── */
+    function buildNav() {
+      var container = document.getElementById('snpItems');
+      if (!container) return;
+      container.innerHTML = '';
+      SECTIONS.forEach(function (sec, i) {
+        var item = document.createElement('div');
+        item.className = 'snp-item';
+        item.id = 'snpItem_' + i;
+        item.innerHTML =
+          '<span class="snp-num">' + sec.num + '</span>' +
+          '<span class="snp-text">' + sec.label + '</span>' +
+          '<span class="snp-arrow">&#x25BA;</span>';
+        item.addEventListener('click', function () { secNavGoTo(i); });
+        container.appendChild(item);
+      });
+    }
+
+    /* ── Scroll helper ───────────────────────────────────────── */
+    function scrollToEl(el) {
+      var top = el.getBoundingClientRect().top + window.pageYOffset - TOPBAR;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    }
+
+    /* ── Main navigation ─────────────────────────────────────── */
+    window.secNavGoTo = function (i) {
+      var sec  = SECTIONS[i];
+      var card = document.getElementById(sec.cardId);
+      if (!card) return;
+
+      // Expand card if collapsed — capture wasShut BEFORE removing class
+      var hd      = card.querySelector('.hd');
+      var bd      = card.querySelector('.bd');
+      var wasShut = bd ? bd.classList.contains('shut') : false;
+      if (wasShut) {
+        bd.classList.remove('shut');
+        if (hd) hd.classList.remove('shut');
+      }
+
+      // Target: exact field, or card header as fallback
+      var targetEl = sec.fieldId ? document.getElementById(sec.fieldId) : null;
+      if (!targetEl) targetEl = hd || card;
+
+      // Wait for CSS expand animation (transition: max-height .4s) if card was shut
+      var delay = wasShut ? 450 : 0;
+      setTimeout(function () {
+        scrollToEl(targetEl);
+        // Focus after scroll animation (~600 ms smooth scroll)
+        if (sec.fieldId) {
+          setTimeout(function () {
+            var f = document.getElementById(sec.fieldId);
+            if (f && typeof f.focus === 'function') { try { f.focus(); } catch(e){} }
+          }, 650);
+        }
+      }, delay);
+
+      // Highlight nav item
+      document.querySelectorAll('.snp-item').forEach(function (x) { x.classList.remove('active'); });
+      var ni = document.getElementById('snpItem_' + i);
+      if (ni) ni.classList.add('active');
+
+      // Auto-close on narrow screens
+      if (window.innerWidth < 900) secNavClose();
+    };
+
+    /* ── Panel toggle ────────────────────────────────────────── */
+    window.secNavTogglePanel = function () {
+      panelOpen = !panelOpen;
+      var p = document.getElementById('secNavPanel');
+      if (p) p.classList.toggle('open', panelOpen);
+    };
+
+    function secNavClose() {
+      panelOpen = false;
+      var p = document.getElementById('secNavPanel');
+      if (p) p.classList.remove('open');
+    }
+
+    /* ── Show / hide when view changes ──────────────────────── */
+    function secNavSync() {
+      var vR    = document.getElementById('vR');
+      var isRpt = vR && vR.classList.contains('on');
+      var t     = document.getElementById('secNavToggle');
+      var p     = document.getElementById('secNavPanel');
+      if (!t || !p) return;
+      t.classList.toggle('visible', !!isRpt);
+      p.classList.toggle('visible', !!isRpt);
+      if (!isRpt) secNavClose();
+    }
+
+    /* ── Scroll-spy ──────────────────────────────────────────── */
+    function secNavHighlight() {
+      var best = -1;
+      SECTIONS.forEach(function (sec, i) {
+        var card = document.getElementById(sec.cardId);
+        if (!card) return;
+        if (card.getBoundingClientRect().top <= TOPBAR + 30) best = i;
+      });
+      document.querySelectorAll('.snp-item').forEach(function (x, i) {
+        x.classList.toggle('active', i === best);
+      });
+      var scrolled = window.pageYOffset;
+      var total    = document.body.scrollHeight - window.innerHeight;
+      var pct      = total > 0 ? Math.min(100, (scrolled / total) * 100) : 0;
+      var fill     = document.getElementById('snpFill');
+      if (fill) fill.style.width = pct.toFixed(1) + '%';
+    }
+
+    /* ── Init ────────────────────────────────────────────────── */
+    document.addEventListener('DOMContentLoaded', function () {
+      buildNav();
+
+      // Patch go() after it is defined
+      var _origGo = window.go;
+      if (typeof _origGo === 'function') {
+        window.go = function (v) { _origGo(v); setTimeout(secNavSync, 60); };
+      }
+
+      // MutationObserver watches #vR class directly
+      var vR = document.getElementById('vR');
+      if (vR) {
+        new MutationObserver(secNavSync)
+            .observe(vR, { attributes: true, attributeFilter: ['class'] });
+      }
+
+      secNavSync();
+      window.addEventListener('scroll', secNavHighlight, { passive: true });
+    });
+  })();
+  </script>
   <script>
     // ═══════════════════════════════════════════════════════════
     //  INTERVIEW FORM INTEGRATION — Shared Apps Script URL
@@ -4380,6 +4879,23 @@ function printBICSR() {
     }
     function val(id)    { return gv(id) || '—'; }
 
+    // ── Shared field format helpers (used by both xPDF and xWord) ─────────────
+    function fmtN(id) {
+      var e = document.getElementById(id); if (!e) return '—';
+      var n = parseFloat(String(e.value).replace(/[^0-9.]/g,'')) || 0;
+      return n > 0 ? 'PHP ' + n.toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
+    }
+    function fmtS(id) {
+      var e = document.getElementById(id); if (!e) return '—';
+      var t = e.tagName==='SELECT' ? (e.options[e.selectedIndex]?e.options[e.selectedIndex].text:'') : e.value;
+      return (t && t.trim() && t !== '— Select —') ? t.trim() : '—';
+    }
+    function fmtI(id) {
+      var e = document.getElementById(id); if (!e) return '—';
+      var v = e.tagName==='TEXTAREA' ? (e.value||e.innerText||'') : e.value;
+      return v.trim() || '—';
+    }
+
     // PDF Final Report
     function xPDF() {
       try {
@@ -4453,25 +4969,26 @@ function printBICSR() {
         // ── Section 3A: Income / Ratios ──────────────────────────
         p.setFont(undefined,'bold'); p.text('3A. INCOME / FINANCIAL RATIOS', 14, y); y += 4;
         p.autoTable({ ...ts, startY:y, body:[
-          ['Gross Monthly Income', php('fGrossInc'), 'Other Income / Sideline', php('fOtherInc')],
-          ['Total Monthly Income', php('fTotalInc'), 'Monthly Living Expenses', php('fLivExp')],
-          ['Net Monthly Surplus', php('fNetSurplus'), 'Monthly Loan Amortization', php('fMonthlyAmort')],
-          ['DSCR', val('fBIDSCR'), 'Income-to-Loan Ratio', val('fBIILR')],
-          ['DTI Ratio', val('fBIDTI'), '', ''],
+          ['Gross Monthly Income', fmtN('fGrossInc'), 'Other Income / Sideline', fmtN('fOtherInc')],
+          ['Total Monthly Income', fmtN('fTotalInc'), 'Monthly Living Expenses', fmtN('fLivExp')],
+          ['Net Monthly Surplus',  fmtN('fNetSurplus'), 'Monthly Loan Amortization', fmtN('fMonthlyAmort')],
+          ['DSCR', fmtI('fBIDSCR'), 'Income-to-Loan Ratio', fmtI('fBIILR')],
+          ['DTI Ratio', fmtI('fBIDTI'), 'CIC Report', fmtS('fCIC')],
+          ['Payment Behavior', fmtS('fPB'), 'Total Monthly Debt', fmtN('fDb')],
         ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
         y = p.lastAutoTable.finalY + 5;
 
         // ── Section 3B: Collateral Property ─────────────────────
         p.setFont(undefined,'bold'); p.text('3B. COLLATERAL PROPERTY', 14, y); y += 4;
         p.autoTable({ ...ts, startY:y, body:[
-          ['Property Address', val('fColAddr'), '', ''],
-          ['Property Type', val('fColType'), 'Title Type', val('fColTitleType')],
-          ['Title / Document No.', val('fColTitleNo'), 'Registered Owner', val('fColOwner')],
-          ['Lot Area (sqm)', val('fColLotArea'), 'Floor Area (sqm)', val('fColFloorArea')],
-          ['Appraised Value', php('fColApprVal'), 'LTV Ratio', val('fColLTV')],
-          ['Collateral Condition', val('fColCond'), 'Verification Status', val('fColVerif')],
-          ['Name of Appraiser', val('fColAppraiser'), 'Date of Appraisal', val('fColApprDate')],
-          ['Collateral Remarks', val('fColRemarks'), '', ''],
+          ['Property Address', fmtI('fColAddr'), '', ''],
+          ['Property Type', fmtS('fColType'), 'Title Type', fmtS('fColTitleType')],
+          ['Title / Document No.', fmtI('fColTitleNo'), 'Registered Owner', fmtI('fColOwner')],
+          ['Lot Area (sqm)', fmtI('fColLotArea'), 'Floor Area (sqm)', fmtI('fColFloorArea')],
+          ['Appraised Value', fmtN('fColApprVal'), 'LTV Ratio', fmtI('fColLTV')],
+          ['Collateral Condition', fmtS('fColCond'), 'Verification Status', fmtS('fColVerif')],
+          ['Name of Appraiser', fmtI('fColAppraiser'), 'Date of Appraisal', fmtI('fColApprDate')],
+          ['Collateral Remarks', fmtI('fColRemarks'), '', ''],
         ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
         y = p.lastAutoTable.finalY + 5;
 
@@ -4488,37 +5005,37 @@ function printBICSR() {
         y = 18;
         p.setFont(undefined,'bold'); p.text('5. COMPLIANCE, KYC & AMLA', 14, y); y += 4;
         p.autoTable({ ...ts, startY:y, body:[
-          ['KYC Verification', val('fKYC'), 'AML/KYC Status', val('fAML')],
-          ['ESRM Env. Risk', val('fESRMenv'), 'ESRM Social Risk', val('fESRMsoc')],
-          ['ESRM Overall Rating', val('fESRMrating'), 'Compliance Officer', val('fCompOfficer')],
-          ['Compliance Date', val('fCompDate'), '', ''],
+          ['KYC Verification', fmtS('fKYC'), 'AML/KYC Status', fmtS('fAML')],
+          ['ESRM Env. Risk', fmtS('fESRMenv'), 'ESRM Social Risk', fmtS('fESRMsoc')],
+          ['ESRM Overall Rating', fmtS('fESRMrating'), 'Compliance Officer', fmtI('fCompOfficer')],
+          ['Compliance Date', fmtI('fCompDate'), '', ''],
         ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
         y = p.lastAutoTable.finalY + 3;
         p.setFontSize(8); p.setFont(undefined,'normal');
         p.text('ESRM Notes:', 14, y+4); y += 5;
-        var esrmLines = p.splitTextToSize(val('fESRMnotes'), w-28);
+        var esrmLines = p.splitTextToSize(fmtI('fESRMnotes'), w-28);
         p.text(esrmLines, 14, y); y += esrmLines.length * 4 + 3;
         p.text('Compliance Findings:', 14, y); y += 5;
-        var compLines = p.splitTextToSize(val('fCompNotes'), w-28);
+        var compLines = p.splitTextToSize(fmtI('fCompNotes'), w-28);
         p.text(compLines, 14, y); y += compLines.length * 4 + 5;
 
         // ── Section 6: Credit Evaluation ────────────────────────
         p.setFontSize(9); p.setFont(undefined,'bold'); p.text('6. CREDIT EVALUATION', 14, y); y += 4;
         p.setFontSize(8); p.setFont(undefined,'normal');
-        var cnLines = p.splitTextToSize(val('fCN'), w-28);
+        var cnLines = p.splitTextToSize(fmtI('fCN'), w-28);
         p.text(cnLines, 14, y); y += cnLines.length * 4 + 3;
         p.setFont(undefined,'bold'); p.text('Credit Evaluation Head: ', 14, y);
-        p.setFont(undefined,'normal'); p.text(val('fCO'), 60, y); y += 8;
+        p.setFont(undefined,'normal'); p.text(fmtI('fCO'), 60, y); y += 8;
 
         // ── Section 7: Final Recommendation ─────────────────────
         p.setFontSize(9); p.setFont(undefined,'bold'); p.text('7. FINAL RECOMMENDATION', 14, y); y += 4;
         p.autoTable({ ...ts, startY:y, body:[
-          ['Investigator Recommendation', val('fRc'), 'Recommended Amount', php('fRA')],
-          ['Risk Classification', val('fRiskClass'), 'Loan Processing Rec.', val('fLoanRec')],
+          ['Investigator Recommendation', fmtS('fRc'), 'Recommended Amount', fmtN('fRA')],
+          ['Risk Classification', fmtS('fRiskClass'), 'Loan Processing Rec.', fmtS('fLoanRec')],
         ], columnStyles:{ 0:{cellWidth:55,fontStyle:'bold'}, 1:{cellWidth:35}, 2:{cellWidth:50,fontStyle:'bold'}, 3:{cellWidth:40} } });
         y = p.lastAutoTable.finalY + 3;
         p.setFontSize(8); p.setFont(undefined,'normal');
-        var jsLines = p.splitTextToSize(val('fJs'), w-28);
+        var jsLines = p.splitTextToSize(fmtI('fJs'), w-28);
         p.text(jsLines, 14, y); y += jsLines.length * 4 + 15;
 
         // ── Signature lines ──────────────────────────────────────
@@ -4650,59 +5167,68 @@ function printBICSR() {
         var aoName   = val('fAO');
         var loanAmt  = php('fAm');
         var loanTerm = val('fTm');
-        var loanRate = val('fRt');
+        var loanRate = val('fRt') || '—';
         var loanPurp = val('fPu');
         var loanCl   = val('fCl');
         var loanBT   = val('fBT');
         var occup    = val('fOc');
-        var grossInc = php('fGrossInc');
-        var otherInc = php('fOtherInc');
-        var totalInc = php('fTotalInc');
-        var livExp   = php('fLivExp');
-        var netSurp  = php('fNetSurplus');
-        var monthAmort = php('fMonthlyAmort');
-        var dscr     = val('fBIDSCR');
-        var ilr      = val('fBIILR');
-        var dti      = val('fBIDTI') || val('fDTI');
-        var cicRpt   = val('fCIC');
-        var payBeh   = val('fPB');
-        var totDebt  = php('fDb');
-        var adverseF = val('fAF');
-        var colAddr  = val('fColAddr');
-        var colType  = val('fColType');
-        var colTitle = val('fColTitleType');
-        var colTitleNo = val('fColTitleNo');
-        var colOwner = val('fColOwner');
-        var colLotArea = val('fColLotArea');
-        var colFloorArea = val('fColFloorArea');
-        var colApprVal = php('fColApprVal');
-        var colLTV   = val('fColLTV');
-        var colCond  = val('fColCond');
-        var colVerif = val('fColVerif');
-        var colRemarks = val('fColRemarks');
-        var esrmEnv  = val('fESRMenv');
-        var esrmSoc  = val('fESRMsoc');
-        var esrmRating = val('fESRMrating');
-        var esrmNotes = val('fESRMnotes');
-        var kyc      = val('fKYC');
-        var aml      = val('fAML');
-        var compOfficer = val('fCompOfficer');
-        var compNotes = val('fCompNotes');
-        var creditNotes = val('fCN');
-        var creditHead = val('fCO');
-        var recFinal = val('fRc');
-        var recAmt   = php('fRA');
-        var riskCl   = val('fRiskClass');
-        var loanRec  = val('fLoanRec');
-        var justif   = val('fJs');
-        var invName  = val('fBIInv');
-        var invDate  = val('fBIInvDt');
-        var refNo    = val('fR');
-        var repDate  = val('fDt');
-        var tin      = val('fT');
-        var cbfSummary = (document.getElementById('cbfSummaryDisplay') ? document.getElementById('cbfSummaryDisplay').value : '') || '';
-        var cbfRemarks = (document.getElementById('cbfRemarksDisplay') ? document.getElementById('cbfRemarksDisplay').value : '') || '';
-        var coBorrower = (document.getElementById('sigNameCB') ? document.getElementById('sigNameCB').value : '') || '';
+
+        var grossInc   = fmtN('fGrossInc');
+        var otherInc   = fmtN('fOtherInc');
+        var totalInc   = fmtN('fTotalInc');
+        var livExp     = fmtN('fLivExp');
+        var netSurp    = fmtN('fNetSurplus');
+        var monthAmort = fmtN('fMonthlyAmort');
+        var dscr       = fmtI('fBIDSCR');
+        var ilr        = fmtI('fBIILR');
+        var dti        = fmtI('fBIDTI') !== '—' ? fmtI('fBIDTI') : fmtI('fDTI');
+        var cicRpt     = fmtS('fCIC');
+        var payBeh     = fmtS('fPB');
+        var totDebt    = fmtN('fDb');
+        var adverseF   = fmtI('fAF');
+
+        // ── Collateral ────────────────────────────────────────────────────────
+        var colAddr      = fmtI('fColAddr');
+        var colType      = fmtS('fColType');
+        var colTitle     = fmtS('fColTitleType');
+        var colTitleNo   = fmtI('fColTitleNo');
+        var colOwner     = fmtI('fColOwner');
+        var colLotArea   = fmtI('fColLotArea');
+        var colFloorArea = fmtI('fColFloorArea');
+        var colApprVal   = fmtN('fColApprVal');
+        var colLTV       = fmtI('fColLTV');
+        var colCond      = fmtS('fColCond');
+        var colVerif     = fmtS('fColVerif');
+        var colRemarks   = fmtI('fColRemarks');
+
+        // ── ESRM & Compliance ─────────────────────────────────────────────────
+        var esrmEnv     = fmtS('fESRMenv');
+        var esrmSoc     = fmtS('fESRMsoc');
+        var esrmRating  = fmtS('fESRMrating');
+        var esrmNotes   = fmtI('fESRMnotes');
+        var kyc         = fmtS('fKYC');
+        var aml         = fmtS('fAML');
+        var compOfficer = fmtI('fCompOfficer');
+        var compNotes   = fmtI('fCompNotes');
+
+        // ── Credit Evaluation & Recommendation ────────────────────────────────
+        var creditNotes = fmtI('fCN');
+        var creditHead  = fmtI('fCO');
+        var recFinal    = fmtS('fRc') !== '—' ? fmtS('fRc') : fmtI('fRc');
+        var recAmt      = fmtN('fRA');
+        var riskCl      = fmtS('fRiskClass');
+        var loanRec     = fmtS('fLoanRec');
+        var justif      = fmtI('fJs');
+        var invName     = fmtI('fBIInv');
+        var invDate     = fmtI('fBIInvDt');
+        var refNo       = val('fR');
+        var repDate     = val('fDt');
+        var tin         = val('fT');
+
+        // ── CBF data ──────────────────────────────────────────────────────────
+        var cbfSummary = gv('cbfSummaryDisplay') || '';
+        var cbfRemarks = gv('cbfRemarksDisplay') || '';
+        var coBorrower = val('fCM') || '';
 
         // ── Helpers ──────────────────────────────────────────────────────────
         var brd      = { style: D.BorderStyle.SINGLE, size: 4, color: '071a0e' };
@@ -5364,6 +5890,7 @@ function printBICSR() {
 <script>
 // ── Dashboard Loader ─────────────────────────────────────────────────────────
 var DASH_URL = 'https://script.google.com/macros/s/AKfycbx5cfixkka7bcw7PyrY8iGDNE3ea6vym5ox2xnEMEol_Z4kkxwhzD2QHpIh5OUKgoMiwg/exec';
+var DRIVE_SCRIPT_URL = DASH_URL; // global alias
 
 async function loadDashboard() {
   var loading  = document.getElementById('dshLoading');
