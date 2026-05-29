@@ -2081,7 +2081,7 @@ function _doPrintBICSR() {
         <button class="btn btn-s" onclick="go('trk')">All Cases</button>
         <button class="btn" style="background:#1a5c35;color:#fff;margin-left:auto" onclick="loadDashboard()">&#x21BB; Refresh</button>
       </div>
-      <div class="cd" id="sec-applicant">
+      <div class="cd">
         <div class="hd" onclick="tog(this)">
           <div class="cn">&#x21BB;</div>Recent Activity<span class="ar">&#x25BC;</span>
         </div>
@@ -4882,13 +4882,10 @@ function _doPrintBICSR() {
     function getQSub()  { var el = document.getElementById('qSub');  return el ? el.textContent : '0'; }
     function getQLSub() { var el = document.getElementById('qlSub'); return el ? el.textContent : '0'; }
     function php(v) {
-      // Accept either a field ID string or a raw value
       var raw = v;
-      if (typeof v === 'string' && document.getElementById(v)) {
-        raw = gv(v);
-      }
+      if (typeof v === 'string' && document.getElementById(v)) raw = gv(v);
       var n = parseFloat(String(raw).replace(/[^0-9.]/g,''));
-      return n ? '\u20b1 ' + n.toLocaleString('en-PH', {minimumFractionDigits:2, maximumFractionDigits:2}) : (raw || '\u2014');
+      return n ? 'PHP ' + n.toLocaleString('en-PH', {minimumFractionDigits:2, maximumFractionDigits:2}) : (raw || '\u2014');
     }
     function val(id)    { return gv(id) || '—'; }
 
@@ -4914,238 +4911,355 @@ function _doPrintBICSR() {
       try {
         var J = window.jspdf;
         if (!J) { toast('PDF library not loaded'); return; }
-        var p = new J.jsPDF('p', 'mm', 'a4');
-        var w = p.internal.pageSize.getWidth();
-        var date = new Date().toLocaleDateString('en-PH', { year:'numeric', month:'long', day:'numeric' });
-        var nm = val('fN');
-        var fn = 'RBCCI_BI_' + nm.replace(/[^a-zA-Z0-9]/g,'_') + '_' + new Date().toISOString().slice(0,10) + '.pdf';
+        var p   = new J.jsPDF('p', 'mm', 'a4');
+        var w   = p.internal.pageSize.getWidth();
+        var h   = p.internal.pageSize.getHeight();
+        var lm  = 18, rm = 18, cw = w - lm - rm;
 
-        // ── Header ──────────────────────────────────────────────
-        p.setFillColor(7, 26, 14);
-        p.rect(0, 0, w, 28, 'F');
-        p.setTextColor(255, 255, 255);
-        p.setFontSize(13); p.setFont(undefined, 'bold');
-        p.text('RURAL BANK OF CALBAYOG CITY, INC.', w/2, 10, { align:'center' });
-        p.setFontSize(8); p.setFont(undefined, 'normal');
-        p.text('Background Investigation, Checking & Credit Scoring Report', w/2, 16, { align:'center' });
-        p.text('82 T. Bugallon St., Brgy. Central, Calbayog City, W. Samar 6710  |  BSP Lic: RB-0567', w/2, 21, { align:'center' });
-        p.text('RBCC 4.02 Rev.16  |  CONFIDENTIAL', w/2, 26, { align:'center' });
+        // ── Read all field values ────────────────────────────────────────────
+        var nm       = val('fN');
+        var fn       = 'RBCCI_BoardMemo_' + nm.replace(/[^a-zA-Z0-9]/g,'_') + '_' + new Date().toISOString().slice(0,10) + '.pdf';
+        var sc       = getScore();
+        var rt       = getRating();
+        var civStat  = val('fCv');
+        var address  = val('fAd');
+        var phone    = val('fPh');
+        var aoName   = val('fAO');
+        var loanAmt  = php('fAm');
+        var loanTerm = val('fTm');
+        var loanRate = val('fRt');
+        var loanPurp = val('fPu');
+        var loanCl   = val('fCl');
+        var occup    = val('fOc');
+        var tin      = val('fT');
+        var refNo    = val('fR');
+        var repDate  = val('fDt');
+        var coBorrower = val('fCM');
+        var grossInc   = fmtN('fGrossInc');
+        var otherInc   = fmtN('fOtherInc');
+        var totalInc   = fmtN('fTotalInc');
+        var livExp     = fmtN('fLivExp');
+        var netSurp    = fmtN('fNetSurplus');
+        var monthAmort = fmtN('fMonthlyAmort');
+        var dscr       = fmtI('fBIDSCR');
+        var dti        = fmtI('fBIDTI') !== '\u2014' ? fmtI('fBIDTI') : fmtI('fDTI');
+        var cicRpt     = fmtS('fCIC');
+        var payBeh     = fmtS('fPB');
+        var adverseF   = fmtI('fAF');
+        var colAddr    = fmtI('fColAddr');
+        var colType    = fmtS('fColType');
+        var colTitle   = fmtS('fColTitleType');
+        var colTitleNo = fmtI('fColTitleNo');
+        var colOwner   = fmtI('fColOwner');
+        var colLotArea = fmtI('fColLotArea');
+        var colApprVal = fmtN('fColApprVal');
+        var colLTV     = fmtI('fColLTV');
+        var colCond    = fmtS('fColCond');
+        var colVerif   = fmtS('fColVerif');
+        var colRemarks = fmtI('fColRemarks');
+        var esrmEnv    = fmtS('fESRMenv');
+        var esrmSoc    = fmtS('fESRMsoc');
+        var esrmRating = fmtS('fESRMrating');
+        var esrmNotes  = fmtI('fESRMnotes');
+        var kyc        = fmtS('fKYC');
+        var aml        = fmtS('fAML');
+        var compNotes  = fmtI('fCompNotes');
+        var creditNotes= fmtI('fCN');
+        var creditHead = fmtI('fCO');
+        var recFinal   = fmtS('fRc') !== '\u2014' ? fmtS('fRc') : fmtI('fRc');
+        var recAmt     = fmtN('fRA');
+        var riskCl     = fmtS('fRiskClass');
+        var loanRec    = fmtS('fLoanRec');
+        var justif     = fmtI('fJs');
+        var invName    = fmtI('fBIInv');
+        var invDate    = fmtI('fBIInvDt');
+        var cbfSummary = gv('cbfSummaryDisplay') || '';
+        var cbfRemarks = gv('cbfRemarksDisplay') || '';
 
-        // ── Meta bar ────────────────────────────────────────────
-        p.setTextColor(15, 26, 19);
-        p.setFillColor(240, 245, 240);
-        p.rect(0, 28, w, 9, 'F');
-        p.setFontSize(8);
-        p.text('Ref: ' + val('fR'), 14, 34);
-        p.text('Date: ' + val('fDt'), w/2, 34, { align:'center' });
-        p.text('Printed: ' + date, w-14, 34, { align:'right' });
+        // ── Table styles ─────────────────────────────────────────────────────
+        var hs  = { fillColor:[17,51,29], textColor:255, fontSize:8.5, fontStyle:'bold' };
+        var bs  = { fontSize:8.5, textColor:[30,30,30] };
+        var ts  = { theme:'grid', headStyles:hs, bodyStyles:bs, margin:{ left:lm, right:rm } };
+        var lbl = [235,245,238]; // label cell shading
 
-        var y = 42;
-        var hs = { fillColor:[17,51,29], textColor:255, fontSize:8, fontStyle:'bold' };
-        var bs = { fontSize:8 };
-        var ts = { theme:'grid', headStyles:hs, bodyStyles:bs, margin:{ left:14, right:14 } };
+        // ── Helpers ──────────────────────────────────────────────────────────
+        var y = 0;
 
-        // ── Section 1: Applicant Info ────────────────────────────
-        p.setFontSize(9); p.setFont(undefined,'bold'); p.setTextColor(7,26,14);
-        p.text('1. APPLICANT / BORROWER INFORMATION', 14, y); y += 4;
-        p.autoTable({ ...ts, startY:y, body:[
-          ['Applicant Name', nm, 'Reference No.', val('fR')],
-          ['TIN', val('fT'), 'Date', val('fDt')],
-          ['Civil Status', val('fCv'), 'Spouse', val('fSp')],
-          ['Address', val('fAd'), 'Contact', val('fPh')],
-          ['Housing', val('fHs'), 'Years at Address', val('fYA')],
-          ['Co-Maker / Guarantor', val('fCM'), 'Source of Repayment', val('fSR')],
-          ['Account Officer', val('fAO'), '', ''],
-        ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
-        y = p.lastAutoTable.finalY + 5;
+        function addPage() {
+          p.addPage(); y = 18;
+          p.setFontSize(7); p.setFont(undefined,'normal'); p.setTextColor(150,150,150);
+          p.text('RBCCI \u2014 Credit Investigation & Background Investigation Report  |  CONFIDENTIAL', lm, 8);
+          p.text('Ref: ' + refNo + '  |  ' + nm, w-rm, 8, {align:'right'});
+          p.setDrawColor(200,200,200); p.setLineWidth(0.2);
+          p.line(lm, 11, w-rm, 11);
+          y = 18;
+        }
 
-        // ── Section 2: Loan Details ──────────────────────────────
-        p.setFont(undefined,'bold'); p.text('2. LOAN DETAILS', 14, y); y += 4;
-        p.autoTable({ ...ts, startY:y, body:[
-          ['Loan Purpose', val('fPu'), 'Classification', val('fCl')],
-          ['Loan Amount', php('fAm'), 'Term', val('fTm')],
-          ['Interest Rate', val('fRt'), 'Category', val('fBT')],
-          ['Repayment Mode', val('fRM'), '', ''],
-        ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
-        y = p.lastAutoTable.finalY + 5;
+        function checkY(needed) {
+          if (y + needed > h - 20) addPage();
+        }
 
-        // ── Section 3: Credit Background ────────────────────────
-        p.setFont(undefined,'bold'); p.text('3. CREDIT BACKGROUND FINDINGS', 14, y); y += 4;
-        p.autoTable({ ...ts, startY:y, body:[
-          ['CIC Bureau Report', val('fCIC'), 'Payment Behavior', val('fPB')],
-          ['Monthly Income', php('fIn'), 'Total Monthly Debt', php('fDb')],
-          ['DTI Ratio', val('fDTI'), 'Occupation', val('fOc')],
-          ['Adverse Findings', val('fAF'), '', ''],
-        ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
-        y = p.lastAutoTable.finalY + 5;
+        function tbl4(rows) {
+          checkY(rows.length * 8 + 4);
+          p.autoTable({ ...ts, startY:y, body:rows,
+            columnStyles:{
+              0:{cellWidth:cw*0.265,fontStyle:'bold',fillColor:lbl},
+              1:{cellWidth:cw*0.235},
+              2:{cellWidth:cw*0.265,fontStyle:'bold',fillColor:lbl},
+              3:{cellWidth:cw*0.235}
+            }
+          });
+          y = p.lastAutoTable.finalY + 5;
+        }
 
-        // ── Section 3A: Income / Ratios ──────────────────────────
-        p.setFont(undefined,'bold'); p.text('3A. INCOME / FINANCIAL RATIOS', 14, y); y += 4;
-        p.autoTable({ ...ts, startY:y, body:[
-          ['Gross Monthly Income', fmtN('fGrossInc'), 'Other Income / Sideline', fmtN('fOtherInc')],
-          ['Total Monthly Income', fmtN('fTotalInc'), 'Monthly Living Expenses', fmtN('fLivExp')],
-          ['Net Monthly Surplus',  fmtN('fNetSurplus'), 'Monthly Loan Amortization', fmtN('fMonthlyAmort')],
-          ['DSCR', fmtI('fBIDSCR'), 'Income-to-Loan Ratio', fmtI('fBIILR')],
-          ['DTI Ratio', fmtI('fBIDTI'), 'CIC Report', fmtS('fCIC')],
-          ['Payment Behavior', fmtS('fPB'), 'Total Monthly Debt', fmtN('fDb')],
-        ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
-        y = p.lastAutoTable.finalY + 5;
+        function tbl2(rows) {
+          checkY(rows.length * 8 + 4);
+          p.autoTable({ ...ts, startY:y, body:rows,
+            columnStyles:{
+              0:{cellWidth:cw*0.35,fontStyle:'bold',fillColor:lbl},
+              1:{cellWidth:cw*0.65}
+            }
+          });
+          y = p.lastAutoTable.finalY + 5;
+        }
 
-        // ── Section 3B: Collateral Property ─────────────────────
-        p.setFont(undefined,'bold'); p.text('3B. COLLATERAL PROPERTY', 14, y); y += 4;
-        p.autoTable({ ...ts, startY:y, body:[
-          ['Property Address', fmtI('fColAddr'), '', ''],
-          ['Property Type', fmtS('fColType'), 'Title Type', fmtS('fColTitleType')],
-          ['Title / Document No.', fmtI('fColTitleNo'), 'Registered Owner', fmtI('fColOwner')],
-          ['Lot Area (sqm)', fmtI('fColLotArea'), 'Floor Area (sqm)', fmtI('fColFloorArea')],
-          ['Appraised Value', fmtN('fColApprVal'), 'LTV Ratio', fmtI('fColLTV')],
-          ['Collateral Condition', fmtS('fColCond'), 'Verification Status', fmtS('fColVerif')],
-          ['Name of Appraiser', fmtI('fColAppraiser'), 'Date of Appraisal', fmtI('fColApprDate')],
-          ['Collateral Remarks', fmtI('fColRemarks'), '', ''],
-        ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
-        y = p.lastAutoTable.finalY + 5;
+        function secTitle(roman, title) {
+          checkY(12);
+          p.setFontSize(9.5); p.setFont(undefined,'bold'); p.setTextColor(7,26,14);
+          var full = roman + '. ' + title;
+          p.text(full, lm, y);
+          p.setLineWidth(0.3); p.setDrawColor(7,26,14);
+          p.line(lm, y+1.2, lm + p.getTextWidth(full), y+1.2);
+          y += 7; p.setTextColor(30,30,30);
+        }
 
-        // ── Section 4: Credit Score ──────────────────────────────
-        p.setFont(undefined,'bold'); p.text('4. CREDIT SCORE SUMMARY — RBCC 4.02 Rev.16', 14, y); y += 4;
-        p.autoTable({ ...ts, startY:y, body:[
+        function narrative(text) {
+          if (!text || text === '\u2014') return;
+          p.setFontSize(8.5); p.setFont(undefined,'normal'); p.setTextColor(30,30,30);
+          var lines = p.splitTextToSize(text, cw);
+          checkY(lines.length * 4.5 + 2);
+          p.text(lines, lm, y);
+          y += lines.length * 4.5 + 3;
+        }
+
+        // ── PAGE 1 HEADER — matches Word exactly ─────────────────────────────
+        p.setTextColor(7,26,14);
+        p.setFontSize(14); p.setFont(undefined,'bold');
+        p.text('RURAL BANK OF CALBAYOG CITY, INC.', w/2, 16, {align:'center'});
+        p.setFontSize(8); p.setFont(undefined,'normal'); p.setTextColor(80,80,80);
+        p.text('82 T. Bugallon St., Brgy. Central, Calbayog City, W. Samar 6710  |  BSP Lic: RB-0567', w/2, 22, {align:'center'});
+        p.setDrawColor(7,26,14); p.setLineWidth(0.5);
+        p.line(lm, 26, w-rm, 26);
+        p.setFontSize(11); p.setFont(undefined,'bold'); p.setTextColor(7,26,14);
+        p.text('CREDIT INVESTIGATION AND BACKGROUND INVESTIGATION REPORT', w/2, 34, {align:'center'});
+        p.setFontSize(7.5); p.setFont(undefined,'italic'); p.setTextColor(120,120,120);
+        p.text('RBCC 4.02 Rev.16  \u2014  CONFIDENTIAL', w/2, 40, {align:'center'});
+        p.setDrawColor(180,180,180); p.setLineWidth(0.2);
+        p.line(lm, 44, w-rm, 44);
+        y = 50;
+
+        // ── Reference block ───────────────────────────────────────────────────
+        tbl4([
+          ['Reference No.', refNo,    'Date',           repDate ],
+          ['Applicant',     nm,        'TIN',            tin     ],
+          ['Loan Amount',   loanAmt,   'Term',           loanTerm],
+          ['Interest Rate', loanRate,  'Purpose',        loanPurp],
+          ['Classification',loanCl,    'Account Officer',aoName  ],
+        ]);
+
+        // ── Board Memo summary table ──────────────────────────────────────────
+        tbl2([
+          ['Applicant',             nm      ],
+          ['Amount',                loanAmt ],
+          ['Term',                  loanTerm],
+          ['Interest Rate',         loanRate],
+          ['Collateral Type & Security', loanCl],
+          ['PEP Rating',            'Low'   ],
+          ['DOSRI',                 'No'    ],
+          ['AFRD',                  'No'    ],
+          ['ESRM Rating',           esrmRating !== '\u2014' ? esrmRating : '\u2014'],
+          ['Purpose',               loanPurp],
+        ]);
+
+        // ── Intro paragraph ───────────────────────────────────────────────────
+        narrative('This report is submitted for the Board\u2019s review and approval of the loan'
+          + (loanCl && loanCl !== '\u2014' ? ' ' + loanCl.toLowerCase() : '')
+          + ' application of ' + nm
+          + (civStat && civStat !== '\u2014' ? ', ' + civStat.toLowerCase() : '')
+          + (address ? ', a resident of ' + address : '')
+          + '. The application seeks financial support'
+          + (loanPurp && loanPurp !== '\u2014' ? ' for ' + loanPurp.toLowerCase() + ' purposes' : '') + '.');
+
+        // ── I. BORROWER PROFILE ───────────────────────────────────────────────
+        secTitle('I', 'BORROWER PROFILE');
+        narrative(nm
+          + (civStat && civStat !== '\u2014' ? ' is a Filipino, ' + civStat.toLowerCase() : '')
+          + (address ? ', residing at ' + address : '')
+          + (phone ? '. Contact number: ' + phone : '') + '.');
+        if (coBorrower && coBorrower !== '\u2014')
+          narrative('The borrower enlisted ' + coBorrower + ' as co-borrower for this loan application.');
+        narrative((cbfSummary || adverseF)
+          ? 'Credit Investigation (CI) and CIC report findings show: ' + (cbfSummary || 'No adverse findings noted') + '.'
+          : 'Credit Investigation (CI) conducted and CIC reports showed no adverse findings. Background investigation indicates that the borrower has no pending legal cases and no reported issues with private lending institutions.');
+
+        // ── II. FINANCIAL CAPACITY ────────────────────────────────────────────
+        secTitle('II', 'FINANCIAL CAPACITY AND CREDIT ANALYSIS');
+        narrative('The applicant, ' + nm + ', reports a gross monthly income of ' + grossInc
+          + (otherInc && otherInc !== '\u2014' ? ', with other monthly income of ' + otherInc : '')
+          + ', resulting in a total monthly income of ' + totalInc + '.');
+        narrative('Personal monthly living expenses amount to ' + livExp + ', leaving a net monthly surplus of ' + netSurp + '.');
+        narrative('The proposed monthly loan amortization of ' + monthAmort
+          + (dscr && dscr !== '\u2014' ? ' yields a Debt Service Coverage Ratio (DSCR) of ' + dscr : '')
+          + (dti && dti !== '\u2014' ? ' and a Debt-to-Income (DTI) ratio of ' + dti : '')
+          + '. These indicators demonstrate the borrower\u2019s adequate repayment capacity and acceptable financial position to support the proposed loan.');
+        if (cbfRemarks) narrative(cbfRemarks);
+        tbl4([
+          ['Gross Monthly Income', grossInc,   'Other Income',       otherInc  ],
+          ['Total Monthly Income', totalInc,   'Living Expenses',    livExp    ],
+          ['Net Monthly Surplus',  netSurp,    'Monthly Amortization',monthAmort],
+          ['DSCR',                 dscr,        'DTI Ratio',         dti       ],
+          ['CIC Report',           cicRpt,      'Payment Behavior',  payBeh    ],
+        ]);
+
+        // ── III. COLLATERAL SECURITY ──────────────────────────────────────────
+        secTitle('III', 'COLLATERAL SECURITY');
+        narrative((colAddr || colTitleNo || (colType && colType !== '\u2014'))
+          ? 'To further strengthen the loan application, the borrower is offering'
+            + (colType && colType !== '\u2014' ? ' a ' + colType.toLowerCase() + ' property' : ' collateral')
+            + (colAddr ? ' located at ' + colAddr : '')
+            + (colTitle && colTitle !== '\u2014' ? ', covered by ' + colTitle : '')
+            + (colTitleNo ? ' No. ' + colTitleNo : '')
+            + (colOwner ? ', registered under the name of ' + colOwner : '')
+            + (colLotArea ? ', with a lot area of ' + colLotArea + ' sq.m.' : '')
+            + (colApprVal && colApprVal !== '\u2014' ? '. The appraised market value is ' + colApprVal : '')
+            + (colLTV ? ', representing an LTV ratio of ' + colLTV + '%' : '')
+            + '. Collateral condition: ' + (colCond && colCond !== '\u2014' ? colCond : 'not specified')
+            + '. Verification: ' + (colVerif && colVerif !== '\u2014' ? colVerif : 'not specified')
+            + (colRemarks && colRemarks !== '\u2014' ? '. Notes: ' + colRemarks : '') + '.'
+          : 'The loan is ' + (loanCl && loanCl !== '\u2014' ? loanCl.toLowerCase() : 'unsecured') + '. No collateral property has been indicated.');
+
+        // ── IV. ESRM ──────────────────────────────────────────────────────────
+        secTitle('IV', 'ENVIRONMENTAL AND SOCIAL RISK MANAGEMENT (ESRM) ASSESSMENT');
+        narrative('The borrower\u2019s sources of income'
+          + (occup && occup !== '\u2014' ? ', primarily from ' + occup + ',' : '')
+          + ' have been assessed for environmental and social risk under the Bank\u2019s ESRM framework.'
+          + ' Environmental risk: ' + (esrmEnv && esrmEnv !== '\u2014' ? esrmEnv : 'not assessed')
+          + '. Social risk: ' + (esrmSoc && esrmSoc !== '\u2014' ? esrmSoc : 'not assessed')
+          + '. Overall ESRM rating: ' + (esrmRating && esrmRating !== '\u2014' ? esrmRating : 'not assessed') + '.'
+          + (esrmNotes && esrmNotes !== '\u2014' ? ' ' + esrmNotes : ''));
+
+        // ── V. CREDIT SCORE SUMMARY ───────────────────────────────────────────
+        secTitle('V', 'CREDIT SCORE SUMMARY');
+        narrative('Based on the credit scoring model (RBCC 4.02 Rev.16), the borrower obtained a total credit score of '
+          + sc + ' out of 100, with a score-based rating of ' + rt + '.'
+          + ' Quantitative score: ' + getQSub() + '/50; Qualitative score: ' + getQLSub() + '/50.'
+          + (creditNotes && creditNotes !== '\u2014' ? ' ' + creditNotes : ''));
+        tbl4([
           ['Quantitative Score (50%)', getQSub() + ' / 50', 'Qualitative Score (50%)', getQLSub() + ' / 50'],
-          ['TOTAL CREDIT SCORE', getScore(), 'Score-Based Rating', getRating()],
-        ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
-        y = p.lastAutoTable.finalY + 5;
+          ['TOTAL CREDIT SCORE', sc + '/100', 'Score-Based Rating', rt],
+        ]);
 
-        // ── Section 5: Compliance & KYC ─────────────────────────
-        p.addPage();
-        y = 18;
-        p.setFont(undefined,'bold'); p.text('5. COMPLIANCE, KYC & AMLA', 14, y); y += 4;
-        p.autoTable({ ...ts, startY:y, body:[
-          ['KYC Verification', fmtS('fKYC'), 'AML/KYC Status', fmtS('fAML')],
-          ['ESRM Env. Risk', fmtS('fESRMenv'), 'ESRM Social Risk', fmtS('fESRMsoc')],
-          ['ESRM Overall Rating', fmtS('fESRMrating'), 'Compliance Officer', fmtI('fCompOfficer')],
-          ['Compliance Date', fmtI('fCompDate'), '', ''],
-        ], columnStyles:{ 0:{cellWidth:38,fontStyle:'bold'}, 1:{cellWidth:52}, 2:{cellWidth:38,fontStyle:'bold'}, 3:{cellWidth:52} } });
-        y = p.lastAutoTable.finalY + 3;
-        p.setFontSize(8); p.setFont(undefined,'normal');
-        p.text('ESRM Notes:', 14, y+4); y += 5;
-        var esrmLines = p.splitTextToSize(fmtI('fESRMnotes'), w-28);
-        p.text(esrmLines, 14, y); y += esrmLines.length * 4 + 3;
-        p.text('Compliance Findings:', 14, y); y += 5;
-        var compLines = p.splitTextToSize(fmtI('fCompNotes'), w-28);
-        p.text(compLines, 14, y); y += compLines.length * 4 + 5;
+        // ── VI. COMPLIANCE ────────────────────────────────────────────────────
+        secTitle('VI', 'COMPLIANCE, KYC & AMLA');
+        narrative('KYC verification status: ' + (kyc && kyc !== '\u2014' ? kyc : 'not indicated')
+          + '. AML/KYC screening: ' + (aml && aml !== '\u2014' ? aml : 'not indicated') + '.'
+          + (compNotes && compNotes !== '\u2014' ? ' ' + compNotes : ''));
 
-        // ── Section 6: Credit Evaluation ────────────────────────
-        p.setFontSize(9); p.setFont(undefined,'bold'); p.text('6. CREDIT EVALUATION', 14, y); y += 4;
-        p.setFontSize(8); p.setFont(undefined,'normal');
-        var cnLines = p.splitTextToSize(fmtI('fCN'), w-28);
-        p.text(cnLines, 14, y); y += cnLines.length * 4 + 3;
-        p.setFont(undefined,'bold'); p.text('Credit Evaluation Head: ', 14, y);
-        p.setFont(undefined,'normal'); p.text(fmtI('fCO'), 60, y); y += 8;
+        // ── VII. FINAL RECOMMENDATION ─────────────────────────────────────────
+        secTitle('VII', 'FINAL RECOMMENDATION');
+        narrative('Based on the foregoing evaluation, the Background Investigation and Credit Scoring Unit'
+          + (recFinal && recFinal !== '\u2014' ? ' recommends ' + recFinal + ' of the loan application' : ' submits this report for the Board\u2019s consideration')
+          + (recAmt && recAmt !== '\u2014' ? ' in the amount of ' + recAmt : '')
+          + '. Risk classification: ' + (riskCl && riskCl !== '\u2014' ? riskCl : 'not specified')
+          + '. Loan processing recommendation: ' + (loanRec && loanRec !== '\u2014' ? loanRec : 'not specified') + '.'
+          + (justif && justif !== '\u2014' ? ' ' + justif : ''));
+        tbl4([
+          ['Investigator Recommendation', recFinal, 'Recommended Amount', recAmt],
+          ['Risk Classification',         riskCl,   'Loan Processing Rec.', loanRec],
+        ]);
 
-        // ── Section 7: Final Recommendation ─────────────────────
-        p.setFontSize(9); p.setFont(undefined,'bold'); p.text('7. FINAL RECOMMENDATION', 14, y); y += 4;
-        p.autoTable({ ...ts, startY:y, body:[
-          ['Investigator Recommendation', fmtS('fRc'), 'Recommended Amount', fmtN('fRA')],
-          ['Risk Classification', fmtS('fRiskClass'), 'Loan Processing Rec.', fmtS('fLoanRec')],
-        ], columnStyles:{ 0:{cellWidth:55,fontStyle:'bold'}, 1:{cellWidth:35}, 2:{cellWidth:50,fontStyle:'bold'}, 3:{cellWidth:40} } });
-        y = p.lastAutoTable.finalY + 3;
-        p.setFontSize(8); p.setFont(undefined,'normal');
-        var jsLines = p.splitTextToSize(fmtI('fJs'), w-28);
-        p.text(jsLines, 14, y); y += jsLines.length * 4 + 15;
-
-        // ── Signature lines ──────────────────────────────────────
-        if (y > 240) { p.addPage(); y = 20; }
-        var sigY = Math.max(y, 220);
-        var sigW = (w - 28) / 3;
+        // ── Signature Block ───────────────────────────────────────────────────
+        checkY(35);
+        y += 5;
+        p.setFontSize(8); p.setFont(undefined,'normal'); p.setTextColor(50,50,50);
+        p.text('Prepared by: ' + (invName !== '\u2014' ? invName : '_____________________') + '     Date: ' + (invDate !== '\u2014' ? invDate : '____________'), lm, y);
+        y += 14;
+        var sw = cw / 3;
         [0,1,2].forEach(function(i) {
-          var x = 14 + i * (sigW + 7);
-          p.line(x, sigY, x + sigW, sigY);
+          p.setDrawColor(7,26,14); p.setLineWidth(0.5);
+          p.line(lm + i*(sw+3), y, lm + i*(sw+3) + sw-3, y);
         });
-        sigY += 5;
-        p.setFontSize(7.5); p.setFont(undefined,'bold');
-        p.text('Account / Loan Officer', 14 + sigW/2, sigY, { align:'center' });
-        p.text('Credit Evaluation Head', 14 + sigW + 7 + sigW/2, sigY, { align:'center' });
-        p.text('President & CEO', 14 + 2*(sigW+7) + sigW/2, sigY, { align:'center' });
-        sigY += 10;
-        p.setFont(undefined,'normal'); p.setFontSize(7); p.setTextColor(150,150,150);
-        p.text('CONFIDENTIAL — For internal use only — Rural Bank of Calbayog City, Inc.', w/2, sigY, { align:'center' });
+        y += 5;
+        p.setFontSize(7.5); p.setFont(undefined,'bold'); p.setTextColor(50,50,50);
+        p.text('Account / Loan Officer', lm + sw/2,         y, {align:'center'});
+        p.text('Credit Evaluation Head',  lm + sw+3+(sw-3)/2, y, {align:'center'});
+        p.text('President & CEO',         lm+(sw+3)*2+(sw-3)/2,y,{align:'center'});
+        y += 10;
+        p.setFontSize(7); p.setFont(undefined,'italic'); p.setTextColor(150,150,150);
+        p.text('CONFIDENTIAL \u2014 For internal use only \u2014 Rural Bank of Calbayog City, Inc.', w/2, y, {align:'center'});
 
-        // ── Page 3: Summary of Loan Details ─────────────────────
-        p.addPage();
-        y = 18;
-        p.setFontSize(9); p.setFont(undefined,'bold'); p.setTextColor(7,26,14);
-        p.text('SUMMARY OF LOAN DETAILS', 14, y); y += 5;
-
-        // Borrower summary table
-        p.autoTable({ ...ts, startY:y, body:[
-          ['Name of Borrower', nm, 'Civil Status', val('fCv')],
-          ['Name of Co-borrower', val('fCM') || '—', 'Relation to Primary Borrower', '—'],
-          ['Loan Amount', php('fAm'), 'Term', val('fTm')],
-          ['Interest Rate', val('fRt'), 'Repayment Mode', val('fRM')],
-          ['Loan Purpose', val('fPu'), 'Industry Classification', '—'],
-        ], columnStyles:{ 0:{cellWidth:40,fontStyle:'bold'}, 1:{cellWidth:50}, 2:{cellWidth:40,fontStyle:'bold'}, 3:{cellWidth:50} } });
-        y = p.lastAutoTable.finalY + 5;
-
-        // Loan Types and Classifications
-        p.setFontSize(8); p.setFont(undefined,'bold');
-        p.text('Loan Types and Classifications with Corresponding Risk and Controls', w/2, y, {align:'center'}); y += 4;
-
-        var lct = val('fCl') || '—';
-        var esrmR = val('fESRMrating') || '—';
-        var pepV  = val('fKYC') || '—';
-        var loanTypeRows = [
-          ['A.  Loan Creation Type',  'New Loan: ' + (lct.includes('New')?'✓':'☐') + '   Re-loan: ☐   Renewal: ☐   Restructure: ☐'],
-          ['B.  Security Type',       lct.toLowerCase().includes('unsecured') ? 'Unsecured: ✓   Secured: ☐' : 'Unsecured: ☐   Secured: ✓   (' + lct + ')'],
-          ['C.  DOSRI Type',          'Non-DOSRI: ✓   DOSRI: ☐   RI: ☐'],
-          ['D.  AFRD Type',           'Non-AFRD: ✓   AFRD: ☐'],
-          ['E.  Credit Risk Rating',  'Low: ' + (esrmR.includes('Low')?'✓':'☐') + '   Medium: ' + (esrmR.includes('Med')?'✓':'☐') + '   High: ' + (esrmR.includes('High')?'✓':'☐')],
-          ['F.  ESRM',                'Low: ☐   Medium: ☐   High: ☐'],
-          ['G.  PEP',                 'No: ✓   Yes: ☐'],
-        ];
+        // ── Summary of Loan Details page ─────────────────────────────────────
+        addPage();
+        p.setFontSize(12); p.setFont(undefined,'bold'); p.setTextColor(7,26,14);
+        p.text('SUMMARY OF LOAN DETAILS', lm, y); y += 8;
+        tbl4([
+          ['Name of Borrower',   nm,                 'Civil Status',            civStat],
+          ['Name of Co-borrower',coBorrower||'\u2014','Relation to Primary Borrower','\u2014'],
+          ['Loan Amount',        loanAmt,             'Term',                    loanTerm],
+          ['Interest Rate',      loanRate,            'Repayment Mode',          val('fRM')],
+          ['Loan Purpose',       loanPurp,            'Industry Classification', '\u2014'],
+        ]);
+        p.setFontSize(8.5); p.setFont(undefined,'bold'); p.setTextColor(7,26,14);
+        p.text('Loan Types and Classifications with Corresponding Risk and Controls', w/2, y, {align:'center'}); y += 5;
+        var clV = val('fCl') || '';
         p.autoTable({ ...ts, startY:y,
-          body: loanTypeRows,
-          columnStyles:{ 0:{cellWidth:45,fontStyle:'bold'}, 1:{cellWidth:135} }
+          body:[
+            ['A.  Loan Creation Type', '\u2610 New Loan   \u2610 Re-loan   \u2610 Renewal   \u2610 Restructure (state no. of times) __________'],
+            ['B.  Security Type',       clV.toLowerCase().indexOf('unsecured')>-1 ? '\u2611 Unsecured   \u2610 Secured' : '\u2610 Unsecured   \u2611 Secured (' + clV + ')'],
+            ['C.  DOSRI Type',          '\u2610 Non-DOSRI   \u2610 DOSRI   \u2610 RI'],
+            ['D.  AFRD Type',           '\u2610 Non-AFRD   \u2610 AFRD'],
+            ['E.  Credit Risk Rating',  '\u2610 Low   \u2610 Medium   \u2610 High'],
+            ['F.  ESRM',               '\u2610 Low   \u2610 Medium   \u2610 High'],
+            ['G.  PEP',                '\u2610 No   \u2610 Yes (Position/Designation) __________'],
+          ],
+          columnStyles:{ 0:{cellWidth:50,fontStyle:'bold',fillColor:lbl}, 1:{cellWidth:cw-50} }
         });
         y = p.lastAutoTable.finalY + 10;
+        checkY(20);
+        p.setFontSize(8); p.setFont(undefined,'italic'); p.setTextColor(80,80,80);
+        p.text('Recommending Approval:', w-rm, y, {align:'right'}); y += 7;
+        p.setFont(undefined,'bold'); p.setTextColor(15,15,15);
+        p.text(creditHead !== '\u2014' ? creditHead : '_____________________', w-rm, y, {align:'right'}); y += 4;
+        p.setDrawColor(7,26,14); p.line(w-rm-75, y, w-rm, y); y += 5;
+        p.setFont(undefined,'normal'); p.setFontSize(7.5);
+        p.text('Credit Evaluation Officer', w-rm, y, {align:'right'});
 
-        // Recommending Approval line
-        p.setFont(undefined,'italic'); p.setFontSize(7.5);
-        p.text('Recommending Approval:', w-14, y, {align:'right'}); y += 6;
-        p.setFont(undefined,'bold');
-        p.text(val('fCO') || '___________________________', w-14, y, {align:'right'}); y += 5;
-        p.line(w-90, y, w-14, y); y += 4;
-        p.setFont(undefined,'normal');
-        p.text('Credit Evaluation Officer', w-14, y, {align:'right'});
-
-        // ── Page 4: Authorized Approving Authorities ─────────────
-        p.addPage();
-        y = 20;
-        p.setFontSize(9); p.setFont(undefined,'bold'); p.setTextColor(7,26,14);
-        p.text('Authorized Approving Authorities:', 14, y); y += 8;
-
-        p.autoTable({
-          ...ts,
-          startY: y,
-          head: [['', 'NAME', 'SIGNATURE', 'DATE SIGNED']],
-          body: [
-            ['1.', 'ALAN GILES MARY S. SARMIENTO',    '', ''],
-            ['2.', 'MA. ROSARIO R. SANTOS',            '', ''],
-            ['3.', 'ALFRED DENNIS B. ANCHETA',         '', ''],
-            ['4.', 'REYNALDO M. PRUDENCIADO, JR.',     '', ''],
-            ['5.', 'JOMARI JESS S. ABELLAR',           '', ''],
+        // ── Authorized Approving Authorities ─────────────────────────────────
+        addPage();
+        p.setFontSize(12); p.setFont(undefined,'bold'); p.setTextColor(7,26,14);
+        p.text('Authorized Approving Authorities:', lm, y); y += 8;
+        p.autoTable({ ...ts, startY:y,
+          head:[['', 'NAME', 'SIGNATURE', 'DATE SIGNED']],
+          body:[
+            ['1.','ALAN GILES MARY S. SARMIENTO','',''],
+            ['2.','MA. ROSARIO R. SANTOS','',''],
+            ['3.','ALFRED DENNIS B. ANCHETA','',''],
+            ['4.','REYNALDO M. PRUDENCIADO, JR.','',''],
+            ['5.','JOMARI JESS S. ABELLAR','',''],
           ],
-          headStyles: { ...hs, fillColor:[7,26,14] },
-          columnStyles: {
-            0: { cellWidth:10, fontStyle:'bold' },
-            1: { cellWidth:70, fontStyle:'bold' },
-            2: { cellWidth:70, minCellHeight:20 },
-            3: { cellWidth:30, minCellHeight:20 },
+          headStyles:{ ...hs, fillColor:[7,26,14] },
+          columnStyles:{
+            0:{cellWidth:10,fontStyle:'bold'},
+            1:{cellWidth:70,fontStyle:'bold'},
+            2:{cellWidth:cw-110,minCellHeight:22},
+            3:{cellWidth:30,minCellHeight:22},
           }
         });
 
         p.save(fn);
-        toast('✅ PDF saved: ' + fn);
-      } catch(e) { console.error(e); toast('✗ PDF Error: ' + e.message); }
+        toast('\u2705 PDF saved: ' + fn);
+      } catch(e) { console.error(e); toast('\u2717 PDF Error: ' + e.message); }
     }
-
     // Excel Export
     function xXL() {
       try {
@@ -6278,7 +6392,7 @@ function cbfPopulateSummary(rec) {
       tbody.appendChild(tr);
     });
 
-    function fmt(n) { return n > 0 ? '\u20b1 ' + n.toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2}) : '\u2014'; }
+    function fmt(n) { return n > 0 ? 'PHP ' + n.toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2}) : '\u2014'; }
     document.getElementById('cbfTotOriginal').textContent    = fmt(totOrig);
     document.getElementById('cbfTotOutstanding').textContent = fmt(totOut);
     document.getElementById('cbfTotMonthly').textContent     = fmt(totMon);
@@ -7910,4 +8024,5 @@ function renderStatusTable(data){
 }
 document.getElementById('approvalModal').addEventListener('click',function(e){if(e.target===this)hideApprovalModal();});
 </script>
+</body>
 </html>
