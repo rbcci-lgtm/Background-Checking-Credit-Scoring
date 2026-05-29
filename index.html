@@ -2081,7 +2081,7 @@ function _doPrintBICSR() {
         <button class="btn btn-s" onclick="go('trk')">All Cases</button>
         <button class="btn" style="background:#1a5c35;color:#fff;margin-left:auto" onclick="loadDashboard()">&#x21BB; Refresh</button>
       </div>
-      <div class="cd">
+      <div class="cd" id="sec-applicant">
         <div class="hd" onclick="tog(this)">
           <div class="cn">&#x21BB;</div>Recent Activity<span class="ar">&#x25BC;</span>
         </div>
@@ -3857,7 +3857,9 @@ function _doPrintBICSR() {
           '<span class="snp-num">' + sec.num + '</span>' +
           '<span class="snp-text">' + sec.label + '</span>' +
           '<span class="snp-arrow">&#x25BA;</span>';
-        item.addEventListener('click', function () { secNavGoTo(i); });
+        item.addEventListener('click', (function(idx) {
+          return function() { secNavGoTo(idx); };
+        })(i));
         container.appendChild(item);
       });
     }
@@ -3971,6 +3973,17 @@ function _doPrintBICSR() {
 
       secNavSync();
       window.addEventListener('scroll', secNavHighlight, { passive: true });
+
+      // Keyboard shortcuts: press 1-9 to jump to sections
+      document.addEventListener('keydown', function(e) {
+        var tag = document.activeElement ? document.activeElement.tagName : '';
+        if (['INPUT','TEXTAREA','SELECT'].includes(tag)) return;
+        var num = parseInt(e.key);
+        if (num >= 1 && num <= 9) {
+          secNavGoTo(num - 1);
+          e.preventDefault();
+        }
+      });
     });
   })();
   </script>
